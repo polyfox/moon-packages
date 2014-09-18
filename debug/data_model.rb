@@ -1,0 +1,83 @@
+module Debug
+  module DataModel
+    include Debug
+
+    def self.pretty_value(value)
+      value.inspect
+    end
+
+    def self.pretty_type(type)
+      case type
+      when Array
+        if type.size == 0
+          "#{type.class}"
+        elsif type.size == 1
+          "#{type.class}<#{type.first}>"
+        else
+          "#{type.class}#{type.inspect}"
+        end
+      when Hash
+        if type.size == 0
+          "#{type.class}"
+        elsif type.size == 1
+          pair = type.first
+          "#{type.class}<#{pair[0]}, #{pair[1]}>"
+        else
+          "#{type.class}#{type.inspect}"
+        end
+      else
+        type.inspect
+      end
+    end
+
+    def self.pretty_depth(str, depth)
+      "#{"  "*depth}#{str}"
+    end
+
+    def self.pretty_model(stream, model, depth=0)
+      stream << pretty_depth("struct #{model.class.inspect} {\n", depth)
+      model.each_field_with_value do |key, field, value|
+        stream << pretty_depth("  #{key}: #{pretty_type(field.type)} = #{pretty_value(value)},\n", depth)
+      end
+      stream << pretty_depth("}\n", depth)
+      stream
+    end
+
+    def self.pretty_obj_stream(stream, obj, depth=0)
+      if obj.is_a?(Moon::DataModel::Metal)
+        pretty_model(stream, obj, depth)
+      elsif obj.is_a?(Hash)
+        stream << pretty_depth("{ # size: #{obj.size}\n", depth)
+        obj.each do |k, v|
+          stream << pretty_depth("#{pretty_value(k)}", depth+1)
+          pretty_obj_stream(stream, value, depth+2)
+        end
+        stream << pretty_depth("}\n", depth)
+      elsif obj.is_a?(Array)
+        stream << pretty_depth("[ # size: #{obj.size}\n", depth)
+        obj.each do |o|
+          pretty_obj_stream(stream, o, depth+1)
+        end
+        stream << pretty_depth("]\n", depth)
+      else
+        stream << pretty_depth(pretty_value(obj) << "\n", depth)
+      end
+      stream
+    end
+
+    def self.pretty_print(obj, depth=0)
+      puts pretty_obj_stream("", obj, depth)
+    end
+  end
+end
+
+module Moon
+  module DataModel
+    class Metal
+      def ppd_dm(depth=0)
+        Debug::DataModel.pretty_print(self, depth)
+        self
+      end
+    end
+  end
+end
