@@ -203,6 +203,7 @@ module Moon
 
     def resize(w, h)
       @width, @height = w, h
+      trigger :resize
       self
     end
 
