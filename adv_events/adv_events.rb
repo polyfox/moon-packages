@@ -78,6 +78,12 @@ module Moon
       @height = height
       trigger ResizeEvent.new(self)
     end
+
+    def resize(w, h)
+      @width, @height = w, h
+      trigger ResizeEvent.new(self)
+      self
+    end
   end
 
   module Eventable
