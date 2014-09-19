@@ -62,7 +62,7 @@ module Moon
   end
   class MouseMove < Event
     attr_reader :x, :y
-    attr_reader :position
+    attr_accessor :position
     attr_accessor :relative
 
     def initialize(x, y)

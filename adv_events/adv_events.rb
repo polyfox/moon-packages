@@ -9,8 +9,47 @@ module Moon
     end
   end
 
+  class WrapEvent < Event
+    attr_accessor :original_event
+    attr_accessor :parent
+
+    def initialize(event, parent)
+      @original_event = event
+      @parent = parent
+      super :wrap
+    end
+  end
+
+  class MouseHoverEvent < WrapEvent
+    attr_reader :state
+
+    def initialize(event, parent, state)
+      @state = state
+      super event, parent
+    end
+  end
+
+  class MouseFocusedEvent < WrapEvent
+    attr_reader :state
+
+    def initialize(event, parent, state)
+      @state = state
+      super event, parent
+    end
+  end
+
   class RenderContainer
+    class ResizeEvent < Event
+      attr_accessor :parent
+
+      def initialize(parent)
+        @parent = parent
+        super :resize
+      end
+    end
+
     def init_events
+      ##
       # generic event passing callback
       # this callback will trigger the passed event in the children elements
       # Input::MouseEvent are handled specially, since it requires adjusting
@@ -20,6 +59,24 @@ module Moon
           element.trigger event
         end
       end
+
+      on Moon::MouseEvent do |event|
+        trigger MouseFocusedEvent.new(event, self, screen_bounds.inside?(event.position))
+      end
+
+      on Moon::MouseMove do |event|
+        trigger MouseHoverEvent.new(event, self, screen_bounds.inside?(event.position))
+      end
+    end
+
+    def width=(width)
+      @width = width
+      trigger ResizeEvent.new(self)
+    end
+
+    def height=(height)
+      @height = height
+      trigger ResizeEvent.new(self)
     end
   end
 
@@ -38,11 +95,17 @@ module Moon
       end
     end
 
+    private def register_event(klass, options, &block)
+      event_filter = klass.make_filter(options)
+      listener = Listener.new(klass, event_filter, block)
+      (@event_listeners[klass] ||= []).push(listener)
+    end
+
     def on(klass, options={}, &block)
       if klass.is_a?(Class)
-        event_filter = klass.make_filter(options)
-        listener = Listener.new(klass, event_filter, block)
-        (@event_listeners[klass] ||= []).push(listener)
+        register_event(klass, options, &block)
+      elsif klass.is_a?(Array)
+        klass.each { |k| register_event(k, options, &block) }
       else
         puts "Ignoring event: #{klass}"
       end
@@ -53,7 +116,6 @@ module Moon
     end
 
     def trigger_event(event)
-      #puts "#{event}"
       event.class.ancestors.each do |klass|
         @event_listeners[klass].try(:each) do |listener|
           if listener.filter.call(event)

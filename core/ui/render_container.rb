@@ -191,6 +191,11 @@ module Moon
       pos
     end
 
+    def screen_bounds
+      x, y = *screen_position
+      Rect.new(x, y, width, height)
+    end
+
     def move(x, y, z=self.z)
       @position.set(x, y, z)
       self

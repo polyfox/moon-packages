@@ -47,7 +47,7 @@ module Moon
     end
 
     def inside?(obj)
-      x, y = Vector2.extract(obj)
+      x, y = *Vector2.extract(obj)
       x.between?(self.x, self.x2-1) && y.between?(self.y, self.y2-1)
     end
 
