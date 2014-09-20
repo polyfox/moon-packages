@@ -65,4 +65,10 @@ class RenderArray < Moon::RenderContainer
     element.parent = nil
     element
   end
+
+  def size
+    @elements.size
+  end
+
+  alias :length :size
 end
