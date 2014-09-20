@@ -3,10 +3,6 @@ class Object
     self || nil
   end
 
-  def to_link_node
-    LinkNode.new(self)
-  end
-
   def try(meth=nil, *args, &block)
     if meth
       self.send(meth, *args, &block)

@@ -2,7 +2,6 @@
 # core/load.rb
 #   Entry script for Moon's mrb
 require 'core/core_ext'
-require 'core/link_node'
 require 'core/mixins'
 require 'core/event'
 require "core/input"
