@@ -42,7 +42,9 @@ class RenderArray < Moon::RenderContainer
   end
 
   def clear
-    @elements.each_with_object(nil, &:parent=)
+    @elements.each do |element|
+      element.parent = nil
+    end
     @elements.clear
   end
 
