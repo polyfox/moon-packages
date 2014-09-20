@@ -121,7 +121,7 @@ module Moon
 
       ##
       # @eg
-      #   each_field do |key, field, value|
+      #   each_field_with_value do |key, field, value|
       #   end
       def each_field_with_value
         each_field do |k, field|
@@ -135,6 +135,8 @@ module Moon
         true
       end
 
+      ##
+      # @return [Hash<Symbol, Object>]
       def fields_hash
         hsh = {}
         each_field_name { |k| hsh[k] = send(k) }
