@@ -39,6 +39,14 @@ module Moon
       assert_true(a != b, msg || "expected #{a} != #{b}")
     end
 
+    def assert_same(a, b, msg=nil)
+      assert_true(a.equal?(b), msg || "expected #{a} to #equal? #{b}")
+    end
+
+    def assert_not_same(a, b, msg=nil)
+      assert_false(a.equal?(b), msg || "expected #{a} to not #equal? #{b}")
+    end
+
     def assert_nil(a, msg=nil)
       assert_equal(a, nil, msg)
     end
