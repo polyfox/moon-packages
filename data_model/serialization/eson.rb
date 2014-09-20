@@ -4,9 +4,9 @@ module Moon
       module ClassExtension
         ##
         # @param [Hash] data
-        def load(data)
+        def load(data, depth=0)
           instance = new
-          instance.import data
+          instance.import data, depth+1
           instance
         end
       end
@@ -14,26 +14,26 @@ module Moon
       ###
       # @return [Hash|Array]
       ###
-      def export_obj(obj)
+      def export_obj(obj, depth=0)
         if obj.is_a?(Array)
-          obj.map { |o| export_obj(o) }
+          obj.map { |o| export_obj(o, depth+1) }
         elsif obj.is_a?(Hash)
           obj.each_with_object({}) do |a, hash|
             k, v = *a
-            hash[k] = export_obj(v)
+            hash[k] = export_obj(v, depth+1)
           end
         else
-          obj.respond_to?(:export) ? obj.export : obj
+          obj.respond_to?(:export) ? obj.export(depth+1) : obj
         end
       end
 
       ###
       # @return [Hash]
       ###
-      def export
+      def export(depth=0)
         hsh = {}
         each_field_name do |k|
-          hsh[k] = export_obj(send(k))
+          hsh[k] = export_obj(send(k), depth+1)
         end
         hsh["&class"] = self.class.to_s
         hsh.stringify_keys
@@ -41,10 +41,9 @@ module Moon
 
       ###
       # @param [Object] obj
-      ###
-      def import_obj(obj)
+      def import_obj(obj, depth=0)
         if obj.is_a?(Array)
-          obj.map { |o| import_obj(o) }
+          obj.map { |o| import_obj(o, depth+1) }
         elsif obj.is_a?(Hash)
           if obj.key?("&class")
             safe_obj = obj.dup
@@ -54,7 +53,7 @@ module Moon
           else
             obj.each_with_object({}) do |a, hash|
               k, v = *a
-              hash[k] = import_obj(v)
+              hash[k] = import_obj(v, depth+1)
             end
           end
         else
@@ -63,12 +62,13 @@ module Moon
       end
 
       ###
+      # Tries to load every field present using the data
       # @param [Hash] data
+      # @param [Integer] depth
       # @return [self]
-      ###
-      def import(data)
+      def import(data, depth=0)
         each_field_name do |k|
-          send("#{k}=", import_obj(data[k.to_s]))
+          send("#{k}=", import_obj(data[k.to_s], depth+1))
         end
         self
       end

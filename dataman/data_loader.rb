@@ -1,5 +1,5 @@
 #
-# DataLoader assumes that all data will be dumped as YAML
+# DataLoader assumes that all data will be serialized as YAML
 #
 module DataLoader
   def self.string(string)

@@ -6,8 +6,8 @@ module DataSerializer
         resolve_references(obj, depth+1)
       end
     when Hash
-      if ref = data["&ref"]
-        DataLoader.file(ref)
+      if refname = data["&ref"]
+        DataLoader.file(refname)
       else
         data.each_with_object({}) do |a, r|
           k, v = *a
@@ -19,16 +19,24 @@ module DataSerializer
     end
   end
 
+  def self.load_obj_from_classname(classname, data, depth=0)
+    Object.const_get(dumpklass).load(data, depth+1)
+  end
+
+  def self.load_obj_hash(data, depth=0)
+    result = {}
+    data.each do |key, value|
+      result[key] = load_obj(value, depth+1)
+    end
+    result
+  end
+
   def self.load_obj(data, depth=0)
     if data.is_a?(Hash)
       if dumpklass = data["&class"]
-        Object.const_get(dumpklass).load(data)
+        load_obj_from_classname(dumpklass, data, depth)
       else
-        result = {}
-        data.each do |key, value|
-          result[key] = load_obj(value, depth+1)
-        end
-        result
+        load_obj_hash(data, depth)
       end
     elsif data.is_a?(Array)
       data.map do |value|
@@ -39,16 +47,16 @@ module DataSerializer
     end
   end
 
-  def self.load(data)
-    load_obj(resolve_references(data))
+  def self.load(data, depth=0)
+    load_obj(resolve_references(data, depth+1))
   end
 
-  def self.load_file(filename)
+  def self.load_file(filename, depth=0)
     data = DataLoader.raw_file(filename)
-    load(DataLoader.string(data))
+    load(DataLoader.string(data), depth+1)
   end
 
-  def self.dump(obj)
+  def self.dump(obj, depth)
     # TODO
   end
 
