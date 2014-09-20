@@ -74,6 +74,15 @@ module Moon
           field sym, options.merge(type: [options.fetch(:type)],
                                    default: default)
         end
+
+        ##
+        # Defines a new Hash field, is a shorthand for field type: {Type=>Type}
+        # @return [Symbol]
+        def dict(sym, options)
+          default = (options[:default] || proc{Hash.new})
+          field sym, options.merge(type: {options.fetch(:key)=>options.fetch(:value)},
+                                   default: default)
+        end
       end
 
       ##
