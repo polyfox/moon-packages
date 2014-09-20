@@ -1,12 +1,23 @@
 module Moon
   class Text < RenderContainer
-    attr_accessor :color    # Moon::Vector4
-    attr_reader   :font     # Moon::Font
-    attr_accessor :align    # Symbol [:left, :right, :center]
-    attr_reader   :string   # String
-    attr_reader   :width
-    attr_reader   :height
-    attr_accessor :line_height
+    attr_reader   :color       # Moon::Vector4
+    attr_reader   :font        # Moon::Font
+    attr_reader   :opacity     # Float
+    attr_accessor :align       # Symbol [:left, :right, :center]
+    attr_reader   :string      # String
+    attr_reader   :width       # Integer
+    attr_reader   :height      # Integer
+    attr_accessor :line_height # Float
+
+    def opacity=(new_opacity)
+      @opacity = new_opacity
+      refresh_opacity
+    end
+
+    def color=(new_color)
+      @color = new_color
+      refresh_color
+    end
 
     def font=(new_font)
       @font = new_font
@@ -23,9 +34,10 @@ module Moon
       @lines = []
       @font = font
       @align = align
-      @color = Vector4.new 1.0, 1.0, 1.0, 1.0
       @line_height = 1.2
+      @opacity = 1.0
       super()
+      self.color = Vector4.new(1.0, 1.0, 1.0, 1.0)
       self.string = string
     end
 
@@ -57,7 +69,7 @@ module Moon
           end
 
           font.render(pos.x, pos.y + index * line_height, pos.z,
-                      line, @color, options)
+                      line, @render_color, options)
         end
       end
       super x, y, z
@@ -78,6 +90,15 @@ module Moon
       else
         @width, @height = 0, 0
       end
+    end
+
+    def refresh_opacity
+      refresh_color
+    end
+
+    def refresh_color
+      @render_color = Vector4[@color]
+      @render_color.a *= @opacity
     end
   end
 end
