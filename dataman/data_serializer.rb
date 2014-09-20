@@ -20,7 +20,7 @@ module DataSerializer
   end
 
   def self.load_obj_from_classname(classname, data, depth=0)
-    Object.const_get(dumpklass).load(data, depth+1)
+    Object.const_get(classname).load(data, depth+1)
   end
 
   def self.load_obj_hash(data, depth=0)
