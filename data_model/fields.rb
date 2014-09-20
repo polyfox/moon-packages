@@ -125,7 +125,7 @@ module Moon
       #   end
       def each_field_with_value
         each_field do |k, field|
-          yield k, field, self[k]
+          yield k, field, send(k)
         end
       end
 
@@ -145,7 +145,7 @@ module Moon
       # @return [self]
       def validate
         each_field do |key, field|
-          field.check_type(key, self[key])
+          field.check_type(key, send(key))
         end
         self
       end
