@@ -85,6 +85,19 @@ module Moon
         end
       end
 
+      # this allows Models to behave like hashes :)
+      include Enumerable
+
+      ##
+      # @eg
+      #   each do |key, value|
+      #   end
+      def each
+        each_field_with_value do |key, field, value|
+          yield key, value
+        end
+      end
+
       ##
       # @eg
       #   each_field do |key, field|
@@ -97,13 +110,14 @@ module Moon
 
       ##
       # @eg
-      #   each_field do |key|
+      #   each_field_name do |key|
       #   end
       def each_field_name
         each_field do |k,_|
           yield k
         end
       end
+      alias :each_key :each_field_name
 
       ##
       # @eg
