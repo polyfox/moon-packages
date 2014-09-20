@@ -4,6 +4,7 @@ module Moon
       module ClassExtension
         ##
         # @param [Hash] data
+        # @param [Integer] depth
         def load(data, depth=0)
           instance = new
           instance.import data, depth+1
@@ -11,9 +12,10 @@ module Moon
         end
       end
 
-      ###
+      ##
+      # @param [Object] obj
+      # @param [Integer] depth
       # @return [Hash|Array]
-      ###
       def export_obj(obj, depth=0)
         if obj.is_a?(Array)
           obj.map { |o| export_obj(o, depth+1) }
@@ -27,9 +29,9 @@ module Moon
         end
       end
 
-      ###
+      ##
+      # @param [Integer] depth
       # @return [Hash]
-      ###
       def export(depth=0)
         hsh = {}
         each_field_name do |k|
@@ -39,8 +41,9 @@ module Moon
         hsh.stringify_keys
       end
 
-      ###
+      ##
       # @param [Object] obj
+      # @param [Integer] depth
       def import_obj(obj, depth=0)
         if obj.is_a?(Array)
           obj.map { |o| import_obj(o, depth+1) }
@@ -61,14 +64,18 @@ module Moon
         end
       end
 
-      ###
-      # Tries to load every field present using the data
+      ##
+      # Tries to load every field present using the data provided.
       # @param [Hash] data
       # @param [Integer] depth
       # @return [self]
       def import(data, depth=0)
-        each_field_name do |k|
-          send("#{k}=", import_obj(data[k.to_s], depth+1))
+        each_field_with_value do |k, _, value|
+          if value.respond_to?(:import)
+            value.import(data[k.to_s])
+          else
+            send("#{k}=", import_obj(data[k.to_s], depth+1))
+          end
         end
         self
       end
