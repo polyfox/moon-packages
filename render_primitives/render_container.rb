@@ -1,41 +1,31 @@
 # Inspired by
 # http://dev.chromium.org/developers/design-documents/aura
-#
+##
+# RenderContainers are as there name says, Render Containers, they can contain
+# other RenderContainers or RenderContext objects, they serve the purpose
+# of constructing Render Trees
 module Moon
-  class RenderContainer
-    include ScreenElement  # Moon::Core
-    include Transitionable # Moon::Core
-    include Eventable      # Moon::Core
-    include Renderable     # Moon::Core
+  class RenderContainer < RenderContext
     include Enumerable
 
-    @@container_id = 0
-
-    attr_reader :id
     attr_reader :elements
-    attr_accessor :parent
-    attr_accessor :position
-    attr_accessor :visible
 
-    def initialize
-      @id = @@container_id += 1
-      @parent = nil
-      @elements = []
-      @visible = true
-      @position = Vector3.new
-
-      init_eventable
-      init_elements
-      init_events
-
-      trigger :resize
+    private def init_from_options(options)
+      super
+      @elements = options.fetch(:elements) { [] }
     end
 
-    def init_elements
+    private def init_content
+      super
+      init_elements
+    end
+
+    private def init_elements
       #
     end
 
-    def init_events
+    private def init_events
+      super
       # generic event passing callback
       # this callback will trigger the passed event in the children elements
       # Input::MouseEvent are handled specially, since it requires adjusting
@@ -115,26 +105,6 @@ module Moon
       end
     end
 
-    def input_trigger(event)
-      if event.is_a?(Moon::Input::MouseEvent)
-        trigger(event) if pos_inside?(event.position)
-      else
-        trigger(event)
-      end
-    end
-
-    def x
-      @position.x
-    end
-
-    def y
-      @position.y
-    end
-
-    def z
-      @position.z
-    end
-
     def width
       @width ||= begin
         x = 0
@@ -173,40 +143,6 @@ module Moon
       trigger :resize
     end
 
-    def x2
-      x + width
-    end
-
-    def y2
-      y + height
-    end
-
-    def screen_position
-      pos = position
-      elem = self
-      while p = elem.parent
-        pos += p.position
-        elem = p
-      end
-      pos
-    end
-
-    def screen_bounds
-      x, y = *screen_position
-      Rect.new(x, y, width, height)
-    end
-
-    def move(x, y, z=self.z)
-      @position.set(x, y, z)
-      self
-    end
-
-    def resize(w, h)
-      @width, @height = w, h
-      trigger :resize
-      self
-    end
-
     def each(&block)
       @elements.each(&block)
     end
@@ -227,30 +163,23 @@ module Moon
       @elements.clear
     end
 
-    def update_elements(delta)
+    private def update_elements(delta)
       @elements.each { |element| element.update(delta) }
     end
 
-    def update(delta)
+    private def update_content(delta)
       update_elements(delta)
-      update_transitions(delta)
     end
 
-    def render_elements(x, y, z, options={})
+    private def render_elements(x, y, z, options={})
       @elements.each do |e|
-        e.render x, y, z if e.visible
+        e.render x, y, z
       end
     end
 
-    def render(x=0, y=0, z=0, options={})
-      px, py, pz = *(@position + [x, y, z])
-      render_elements(px, py, pz, options)
+    private def render_content(x, y, z, options={})
+      render_elements(x, y, z, options)
       super
     end
-
-    protected :elements
-    private :init_elements
-    private :init_events
-    private :init_eventable
   end
 end

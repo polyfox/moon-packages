@@ -1,5 +1,5 @@
 module Moon
-  class Text < RenderContainer
+  class Text < RenderContext
     attr_reader   :color       # Moon::Vector4
     attr_reader   :font        # Moon::Font
     attr_reader   :opacity     # Float

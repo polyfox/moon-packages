@@ -1,15 +1,14 @@
 module Moon
-  class SkinSlice9 < RenderContainer
+  class SkinSlice9 < RenderContext
     attr_accessor :windowskin # Spritesheet
 
-    def initialize
+    def init_content
       super
       @windowskin = nil
     end
 
-    def render(ix=0, iy=0, iz=0, options={})
+    def render_content(x, y, z, options={})
       if @windowskin
-        x, y, z = *(@position + [ix, iy, iz])
         cw, ch = @windowskin.cell_width, @windowskin.cell_height
 
         # render the windowskin (background)

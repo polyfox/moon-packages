@@ -1,13 +1,13 @@
-module Containable
-  attr_accessor :parent
+module Moon
+  module RenderPrimitive
+    module Containable
+      attr_accessor :parent
 
-  def containerize
-    container = RenderContainer.new
-    container.add(self)
-    container
-  end
-
-  def align!(*args)
-    position.set(to_rect.align(*args).xyz)
+      def containerize
+        container = RenderContainer.new
+        container.add(self)
+        container
+      end
+    end
   end
 end

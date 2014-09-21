@@ -1,18 +1,17 @@
-module Visibility
-  attr_writer :visible
+module Moon
+  module RenderPrimitive
+    module Visibility
+      attr_accessor :visible
 
-  def visible
-    @visible = true if @visible.nil?
-    @visible
-  end
+      def hide
+        @visible = false
+        self
+      end
 
-  def hide
-    @visible = false
-    self
-  end
-
-  def show
-    @visible = true
-    self
+      def show
+        @visible = true
+        self
+      end
+    end
   end
 end
