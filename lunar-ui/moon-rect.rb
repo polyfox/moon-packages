@@ -2,6 +2,10 @@ module Moon
   class Rect
     include RenderPrimitive::Rectangular
 
+    def align(*args, &block)
+      dup.align!(*args, &block)
+    end
+
     def contract(cx, cy=cx)
       cx = cx.to_i
       cy = cy.to_i
