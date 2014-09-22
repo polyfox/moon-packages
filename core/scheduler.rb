@@ -67,26 +67,31 @@ module Moon
       @paused = false
     end
 
+    ##
+    # @param [SchedulerJob class] klass
+    # @param [Numeric|String] duration
+    # @return [SchedulerJob] instance
+    private def new_job(klass, duration, &block)
+      duration = self.class.parse_duration(duration) if duration.is_a?(String)
+      job = klass.new(duration, &block)
+      @jobs.push job
+      job
+    end
+
     ###
     # every(duration) { execute_every_duration }
-    ###
+    # @param [Integer] duration
+    # @return [Interval]
     def every(duration, &block)
-      duration = self.class.parse_duration(duration) if duration.is_a?(String)
-      interval = Interval.new(duration, &block)
-      @jobs.push interval
-      interval
+      new_job(Interval, duration, &block)
     end
 
     ###
     # in(duration) { to_execute_on_timeout }
     # @param [Integer] duration
     # @return [Timeout]
-    ###
     def in(duration, &block)
-      duration = self.class.parse_duration(duration) if duration.is_a?(String)
-      timeout = Timeout.new(duration, &block)
-      @jobs.push timeout
-      timeout
+      new_job(Timeout, duration, &block)
     end
 
     ###
