@@ -18,15 +18,13 @@ module Moon
       yield self if block_given?
     end
 
-    def create_data
+    private def create_data
       @data = Array.new(@xsize * @ysize, @default)
-      #@data = Array.new(@ysize) { Array.new(@xsize, @default) }
     end
 
     def initialize_copy(org)
       super org
       create_data
-      #map_with_xy { |_, x, y| org.data[y][x] }
       map_with_xy { |_, x, y| org.data[x + y * @xsize] }
     end
 
@@ -60,26 +58,26 @@ module Moon
       result
     end
 
+    def in_bounds?(x, y)
+      return ((x >= 0) || (x < @xsize)) ||
+             ((y >= 0) || (y < @ysize))
+    end
+
     def [](x, y)
       x = x.to_i; y = y.to_i
-      return @default if (x < 0 || x >= @xsize) ||
-                         (y < 0 || y >= @ysize)
+      return @default unless in_bounds?(x, y)
       @data[x + y * @xsize]
-      #@data[y][x]
     end
 
     def []=(x, y, n)
       x = x.to_i; y = y.to_i; n = n.to_i
-      return if (x < 0 || x >= @xsize) ||
-                (y < 0 || y >= @ysize)
+      return unless in_bounds?(x, y)
       @data[x + y * @xsize] = n
-      #@data[y][x] = n
     end
 
-    ###
-    # Because sometimes its too damn troublesom to convert an index to the
+    ##
+    # Because sometimes its too damn troublesome to convert an index to the
     # proper coords
-    ###
     def set_by_index(i, value)
       self[i % xsize, i / xsize] = value
     end
@@ -146,10 +144,6 @@ module Moon
 
     def to_s
       result = ""
-      #@ysize.times do |y|
-      #  result.concat(@data[y].join(", "))
-      #  result.concat("\n")
-      #end
       @ysize.times do |y|
         result.concat(@data[y * @xsize, @xsize].join(", "))
         result.concat("\n")
@@ -183,7 +177,5 @@ module Moon
       instance.import data
       instance
     end
-
-    private :create_data
   end
 end

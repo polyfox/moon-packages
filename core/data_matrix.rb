@@ -19,15 +19,13 @@ module Moon
       yield self if block_given?
     end
 
-    def create_data
+    private def create_data
       @data = Array.new(@xsize * @ysize * @zsize, @default)
-      #@data = Array.new(@zsize) { Array.new(@ysize) { Array.new(@xsize, @default) } }
     end
 
     def initialize_copy(org)
       super org
       create_data
-      #map_with_xyz { |_, x, y, z| org.data[z][y][x] }
       map_with_xyz { |_, x, y, z| org.data[x + y * @xsize + z * @xsize * @ysize] }
     end
 
@@ -36,7 +34,7 @@ module Moon
     end
 
     def rect
-      Moon::Rect.new 0, 0, @xsize, @ysize
+      Rect.new 0, 0, @xsize, @ysize
     end
 
     def cuboid
@@ -58,22 +56,22 @@ module Moon
       result
     end
 
+    def in_bounds?(x, y, z)
+      return ((x >= 0) || (x < @xsize)) ||
+             ((y >= 0) || (y < @ysize)) ||
+             ((z >= 0) || (z < @zsize))
+    end
+
     def [](x, y, z)
       x = x.to_i; y = y.to_i; z = z.to_i
-      return @default if ((x < 0) || (x >= @xsize)) ||
-                         ((y < 0) || (y >= @ysize)) ||
-                         ((z < 0) || (z >= @zsize))
+      return @default unless in_bounds?(x, y, z)
       @data[x + y * @xsize + z * @xsize * @ysize]
-      #@data[z][y][x]
     end
 
     def []=(x, y, z, n)
       x = x.to_i; y = y.to_i; z = z.to_i; n = n.to_i
-      return if ((x < 0) || (x >= @xsize)) ||
-                ((y < 0) || (y >= @ysize)) ||
-                ((z < 0) || (z >= @zsize))
+      return unless in_bounds?(x, y, z)
       @data[x + y * @xsize + z * @xsize * @ysize] = n
-      #@data[z][y][x] = n
     end
 
     def each
@@ -90,7 +88,6 @@ module Moon
       @zsize.times do |z|
         @ysize.times do |y|
           @xsize.times do |x|
-            #yield @data[z][y][x], x, y, z
             yield @data[x + y * @xsize + z * @xsize * @ysize], x, y, z
           end
         end
@@ -100,7 +97,6 @@ module Moon
     def map_with_xyz
       each_with_xyz do |n, x, y, z|
         index = x + y * @xsize + z * @xsize * @ysize
-        #@data[z][y][x] = yield n, x, y, z
         @data[index] = yield n, x, y, z
       end
     end
@@ -140,13 +136,6 @@ module Moon
 
     def to_s
       result = ""
-      #@zsize.times do |z|
-      #  @ysize.times do |y|
-      #    result.concat(@data[z][y].join(", "))
-      #    result.concat("\n")
-      #  end
-      #  result.concat("\n")
-      #end
       @zsize.times do |z|
         @ysize.times do |y|
           result.concat(@data[y * @xsize + z * @xsize * @ysize, @xsize].join(", "))
@@ -186,9 +175,5 @@ module Moon
       instance.import data
       instance
     end
-
-    #protected :data
-    private :create_data
-
   end
 end
