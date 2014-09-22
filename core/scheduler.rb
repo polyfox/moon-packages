@@ -4,10 +4,22 @@ module Moon
     attr_accessor :tasks
     attr_accessor :intervals
 
+    ##
+    # @type [Hash<String, Float>]
+    DURATION_SUFFIX = {
+      ""  => 0.001,
+      "s" => 1.0,
+      "m" => 60.0,
+      "h" => 3600.0,
+      "d" => 86400.0,
+      "w" => 604800.0,
+      "M" => 2592000.0,
+      "y" => 31536000.0,
+    }
+
     ###
     # @param [String] str
     # @return [Float] duration  in seconds
-    ###
     def self.parse_duration(str)
       #   - milliseconds
       # s - seconds
@@ -22,25 +34,8 @@ module Moon
       value = 0.0
       str.scan(/(\d+|\d+\.\d+)([smhdwMy])?/).each do |a|
         v = a[0].to_f
-        letter = a[1].to_s
-        case letter
-        when ""
-          value += v / 1000.0
-        when "s"
-          value += v
-        when "m"
-          value += v * 60.0
-        when "h"
-          value += v * 60.0 * 60.0
-        when "d"
-          value += v * 60.0 * 60.0 * 24.0
-        when "w"
-          value += v * 60.0 * 60.0 * 24.0 * 7.0
-        when "M"
-          value += v * 60.0 * 60.0 * 24.0 * 7.0 * 30.0
-        when "y"
-          value += v * 60.0 * 60.0 * 24.0 * 7.0 * 30.0 * 12.0
-        end
+        suffix = a[1].to_s
+        value = v * DURATION_SUFFIX[suffix]
       end
       value
     end
