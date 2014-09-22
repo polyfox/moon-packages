@@ -143,6 +143,11 @@ module Moon
       trigger :resize
     end
 
+    def refresh_size
+      self.width = nil
+      self.height = nil
+    end
+
     def each(&block)
       @elements.each(&block)
     end
@@ -150,17 +155,24 @@ module Moon
     def add(element)
       @elements.push(element)
       element.parent = self
+
+      refresh_size
+
       element
     end
 
     def remove(element)
       @elements.delete(element)
       element.parent = nil
+
+      refresh_size
+
       element
     end
 
     def clear_elements
       @elements.clear
+      refresh_size
     end
 
     private def update_elements(delta)

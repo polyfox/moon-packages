@@ -18,6 +18,8 @@ module Moon
     def initialize(options={})
       @id = @@context_id += 1
 
+      @width = 0
+      @height = 0
       @position = Vector3.new
       @visible  = true
       @parent   = nil
