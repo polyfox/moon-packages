@@ -16,9 +16,9 @@ module Moon
     # @param [Moon::AABBCC] other
     # @return [Boolean]
     def intersect?(other)
-      return false if (@cpos.x - other.cpos.x).abs > (@rad.x + other.rad.x)
-      return false if (@cpos.y - other.cpos.y).abs > (@rad.y + other.rad.y)
-      return false if (@cpos.z - other.cpos.z).abs > (@rad.z + other.rad.z)
+      return false if (@cpos.x - other.cpos.x).abs > (@rad.x + other.rad.x) ||
+                      (@cpos.y - other.cpos.y).abs > (@rad.y + other.rad.y) ||
+                      (@cpos.z - other.cpos.z).abs > (@rad.z + other.rad.z)
       true
     end
 
