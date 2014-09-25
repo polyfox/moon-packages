@@ -3,6 +3,10 @@ class Object
     self || nil
   end
 
+  def blank?
+    !!presence
+  end
+
   def try(meth=nil, *args, &block)
     if meth
       self.send(meth, *args, &block)

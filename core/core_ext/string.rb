@@ -3,6 +3,10 @@ class String
     empty? ? nil : self
   end
 
+  def blank?
+    empty?
+  end
+
   def demodulize
     path = self.to_s
     if i = path.rindex('::')
