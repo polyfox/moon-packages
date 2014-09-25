@@ -55,8 +55,6 @@ module Moon
     end
 
     class << self
-      attr_reader :loader
-      private :branch
       private :cache
     end
   end
