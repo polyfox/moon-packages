@@ -3,7 +3,7 @@
 #
 # This may need to be rewritten in C/++
 module Moon
-  class Tilemap
+  class Tilemap < RenderContext
     module DataFlag
       NONE            = 0        # 0000 0000 # no flag
       # up and down offsets will conflict, left and right offsets will conflict
@@ -30,7 +30,8 @@ module Moon
 
     ##
     # initialize
-    def initialize
+    def init
+      super
       @tileset       = nil
       @data          = nil
       @flags         = nil
@@ -40,23 +41,14 @@ module Moon
       @view          = nil
       @selection     = nil
       @position      = Vector3.new(0, 0, 0)
-      yield self if block_given?
     end
 
-    def update(delta)
-      #
-    end
-
-    ###
-    # render(int x, int y, int z, int ox, int oy, int width, int height)
-    #   (x), (y), (z)
-    #     is the position (in pixels), for the Tilemap to be rendered
-    #   (ox), (oy), (oz)
-    #     is the data offset (where should the Tilemap#data start from)
-    #   (width), (height), (layers)
-    #     is the number of cells to render, and the number of layers to be rendered
-    ###
-    def render(x=0, y=0, z=0, options={})
+    ##
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] z
+    # @param [Hash<Symbol, Object>] options
+    private def render_content(x=0, y=0, z=0, options={})
       return unless @data
       return unless @tileset
 
@@ -83,8 +75,6 @@ module Moon
         vy2 = @view.y2
       end
 
-      px, py, pz = *(@position + [x, y, z])
-
       # we loop by layer
       layers.times do |l|
 
@@ -96,9 +86,10 @@ module Moon
         end
 
         opacity = @layer_opacity ? @layer_opacity[dz] : 1.0
-        render_ops = { opacity: opacity }.merge(options)
+        opacity *= options.fetch(:opacity, 1.0)
+        render_ops = options.merge(opacity: opacity)
 
-        rnz = pz
+        rnz = z
 
         # and then by row
         height.times do |i|
@@ -110,7 +101,7 @@ module Moon
             next if dy < 0 || dy >= @data.ysize
           end
 
-          rny = py + i * cell_height
+          rny = y + i * cell_height
           next if rny < vy || rny > vy2 if vy && vy2
 
           # and then render by cell
@@ -128,7 +119,7 @@ module Moon
             # and therefore should not be rendered
             next if tile_id < 0
 
-            rnx = px + j * cell_width
+            rnx = x + j * cell_width
             next if rnx < vx || rnx > vx2 if vx && vx2
 
             zm = @data_zmap ? @data_zmap[dx, dy, dz] : 0

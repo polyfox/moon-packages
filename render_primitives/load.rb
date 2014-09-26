@@ -11,3 +11,4 @@ require 'render_primitives/render_array'
 require 'render_primitives/selective_render_array'
 # Specialized
 require 'render_primitives/ui/text'
+require 'render_primitives/tilemap'

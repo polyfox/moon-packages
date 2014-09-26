@@ -30,6 +30,8 @@ module Moon
       init_content
       init_events
       init
+
+      yield self if block_given?
     end
 
     private def init_from_options(options)
