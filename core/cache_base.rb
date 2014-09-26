@@ -1,13 +1,13 @@
 #
-# moon/core/cache_base.rb
+# core/cache_base.rb
 #   General purspose cache.
 #   Simply create new branches (loaders) and the cache will do the rest.
 module Moon
   class CacheBase
     ##
     # @param [String] name
-    def initialize(name="Cache")
-      @name = name
+    def initialize(name=nil)
+      @name = name || self.class.to_s
       @cache = {}
 
       post_init
