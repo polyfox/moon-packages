@@ -42,6 +42,10 @@ module Moon
       remove(e)
     end
 
+    def concat(array)
+      array.each { |e| add(e) }; self
+    end
+
     def clear
       @elements.each do |element|
         element.parent = nil
