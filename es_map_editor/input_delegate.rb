@@ -1,7 +1,7 @@
 class MapEditorInputDelegate < State::InputDelegateBase
   def init
     super
-    @control_map = ES.data_cache.controlmap("map_editor")
+    @control_map = DataCache.controlmap("map_editor")
   end
 
   def register_actor_move(input)

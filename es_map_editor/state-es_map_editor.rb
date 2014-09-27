@@ -22,7 +22,7 @@ module States
 
       tileset = Database.find(:tileset, uri: "/tilesets/common")
       @model.tile_palette.tileset = tileset
-      texture = ES.texture_cache.tileset(tileset.filename)
+      texture = TextureCache.tileset(tileset.filename)
       @view.tileset = Moon::Spritesheet.new(texture, tileset.cell_width, tileset.cell_height)
 
       @controller.set_layer(-1)
