@@ -7,7 +7,7 @@ class MapEditorModel < State::ModelBase
   field :selection_rect,         type: Moon::Rect,            default: proc{|t|t.new(0,0,0,0)}
   field :selection_stage,        type: Integer,               default: 0
   field :layer,                  type: Integer,               default: 1
-  field :layer_opacity,          type: [Float],               default: proc{[1.0, 1.0]}
+  array :layer_opacity,          type: Float,                 default: proc{[1.0, 1.0]}
   field :layer_count,            type: Integer,               default: 2
   field :zoom,                   type: Float,                 default: 1.0
   field :flag_show_chunk_labels, type: Boolean,               default: false
