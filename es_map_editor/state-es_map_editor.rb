@@ -28,7 +28,7 @@ module States
       @controller.set_layer(-1)
       @controller.refresh_follow
 
-      @controller.post_init
+      @controller.start
     end
 
     def create_world

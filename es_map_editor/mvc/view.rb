@@ -232,7 +232,7 @@ class MapEditorView < State::ViewBase
     create_passage_layer
   end
 
-  def post_init
+  def start
     refresh_tilemaps
   end
 
