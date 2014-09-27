@@ -7,7 +7,7 @@ module Moon
       @windowskin = nil
     end
 
-    def render_content(x, y, z, options={})
+    def render_content(x, y, z, options)
       if @windowskin
         cw, ch = @windowskin.cell_width, @windowskin.cell_height
 

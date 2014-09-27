@@ -183,13 +183,13 @@ module Moon
       update_elements(delta)
     end
 
-    private def render_elements(x, y, z, options={})
+    private def render_elements(x, y, z, options)
       @elements.each do |e|
         e.render x, y, z
       end
     end
 
-    private def render_content(x, y, z, options={})
+    private def render_content(x, y, z, options)
       render_elements(x, y, z, options)
       super
     end

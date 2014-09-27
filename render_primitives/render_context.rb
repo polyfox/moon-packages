@@ -79,11 +79,11 @@ module Moon
       update_transitions(delta)
     end
 
-    private def render_content(x=0, y=0, z=0, options={})
+    private def render_content(x, y, z, options)
       #
     end
 
-    private def render_abs(x=0, y=0, z=0, options={})
+    private def render_abs(x, y, z, options)
       px, py, pz = *(@position + [x, y, z])
       render_content(px, py, pz, options)
       super

@@ -48,7 +48,7 @@ module Moon
     # @param [Integer] y
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
-    private def render_content(x=0, y=0, z=0, options={})
+    private def render_content(x, y, z, options)
       return unless @data
       return unless @tileset
 

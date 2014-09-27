@@ -37,7 +37,7 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    def render_content(x, y, z, options={})
+    def render_content(x, y, z, options)
       if @string
         offset = @bold ? 256 : 0
         row = 0
