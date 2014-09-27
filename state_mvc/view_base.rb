@@ -6,5 +6,13 @@ class State
       super
       init_view
     end
+
+    def start
+      # called by controller
+    end
+
+    def init_view
+      #
+    end
   end
 end

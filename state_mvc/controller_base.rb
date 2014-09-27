@@ -5,16 +5,15 @@ class State
 
     def initialize(model, view)
       @model, @view = model, view
-      init_controller
+      init
     end
 
-    private def init_controller
-      #
+    def init
     end
 
-    def post_init
-      @model.post_init
-      @view.post_init
+    def start
+      @model.start
+      @view.start
     end
 
     private def update_controller(delta)
