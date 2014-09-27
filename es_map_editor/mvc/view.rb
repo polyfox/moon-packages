@@ -1,3 +1,151 @@
+class MapCursorRenderer < Moon::RenderContext
+  def init
+    super
+    @sprite = Moon::Sprite.new("resources/ui/map_editor_cursor.png")
+  end
+
+  def render_content(x, y, z, options)
+    @sprite.render x, y, z
+    super
+  end
+end
+
+class ChunkRenderer < Moon::RenderContext
+  attr_reader :chunk
+
+  def init
+    super
+    @tilemap = Moon::Tilemap.new
+    @size = Moon::Vector3.new(1, 1, 1)
+  end
+
+  def layer_opacity
+    @tilemap.layer_opacity
+  end
+
+  def layer_opacity=(layer_opacity)
+    @tilemap.layer_opacity = layer_opacity
+  end
+
+  def refresh
+    tileset = @chunk.tileset
+    @texture = TextureCache.tileset(tileset.filename)
+    @tilemap.tileset = Moon::Spritesheet.new(@texture, tileset.cell_width, tileset.cell_height)
+    @tilemap.data = @chunk.data
+    @tilemap.flags = @chunk.flags
+    @size = Moon::Vector3.new(tileset.cell_width, tileset.cell_height, 1)
+  end
+
+  def chunk=(chunk)
+    @chunk = chunk
+    refresh
+  end
+
+  def update(delta)
+    self.position = @chunk.position * @size
+    super
+  end
+
+  def render_content(x, y, z, options)
+    @tilemap.render(x, y, z, options)
+    super
+  end
+end
+
+class EditorChunkRenderer < ChunkRenderer
+  def init
+    super
+    @grid_underlay = Moon::Sprite.new("resources/ui/grid_32x32_ff777777.png")
+    @grid_overlay  = Moon::Sprite.new("resources/ui/grid_32x32_ffffffff.png")
+    @chunk_borders = Moon::Spritesheet.new("resources/ui/chunk_outline_3x3.png", 32, 32)
+
+    @label_color = Moon::Vector4.new(1, 1, 1, 1)
+    @label_font = FontCache.font "uni0553", 16
+  end
+
+  def render_content(x, y, z, options)
+    return unless @chunk
+
+    if options[:show_underlay]
+      @grid_underlay.clip_rect = Moon::Rect.new(0, 0, *(@chunk.bounds.wh*32))
+      @grid_underlay.render(x, y, z-0.5)
+    end
+
+    super
+
+    if options[:show_borders]
+      x2 = @grid_underlay.clip_rect.width-32
+      y2 = @grid_underlay.clip_rect.height-32
+      @chunk_borders.render(x, y, z, 0)
+      @chunk_borders.render(x+x2, y, z, 2)
+      @chunk_borders.render(x, y+y2, z, 6)
+      @chunk_borders.render(x+x2, y+y2, z, 8)
+    end
+
+    if options[:show_overlay]
+      @grid_overlay.clip_rect = Rect.new(0, 0, *@grid_underlay.clip_rect.wh)
+      @grid_overlay.render(x, y, z)
+    end
+
+    if options[:show_labels]
+      oy = @label_font.size+8
+      @label_font.render x, y-oy, z, @chunk.name, @label_color, outline: 0
+    end
+  end
+end
+
+class MapRenderer < Moon::RenderArray
+  attr_accessor :dm_map
+  attr_reader :layer_opacity
+
+  def init
+    super
+    @layer_opacity = [1.0, 1.0]
+  end
+
+  def layer_opacity=(layer_opacity)
+    @layer_opacity = layer_opacity
+    @elements.each do |e|
+      e.layer_opacity = @layer_opacity
+    end
+  end
+
+  def dm_map=(dm_map)
+    clear
+    @dm_map = dm_map
+    @dm_map.chunks.each do |chunk|
+      renderer = EditorChunkRenderer.new
+      renderer.chunk = chunk
+      renderer.layer_opacity = @layer_opacity
+      add(renderer)
+    end
+  end
+end
+
+class EditorMapRenderer < MapRenderer
+  attr_accessor :show_borders
+  attr_accessor :show_labels
+  attr_accessor :show_underlay
+  attr_accessor :show_overlay
+
+  def init
+    super
+    @show_borders = false
+    @show_labels = false
+    @show_underlay = false
+    @show_overlay = false
+  end
+
+  def render_content(x, y, z, options)
+    super x, y, z, options.merge(
+      show_borders: @show_borders,
+      show_labels: @show_labels,
+      show_underlay: @show_underlay,
+      show_overlay: @show_overlay
+    )
+  end
+end
+
 class MapEditorView < State::ViewBase
   attr_accessor :notifications
   attr_reader :screen_rect
@@ -18,9 +166,9 @@ class MapEditorView < State::ViewBase
   def init_view
     @screen_rect = Moon::Screen.rect.contract(16)
 
-    @palette = ES.data_cache.palette
-    @font = ES.font_cache.font "uni0553", 16
-    @controlmap = ES.data_cache.controlmap("map_editor")
+    @palette = DataCache.palette
+    @font = FontCache.font "uni0553", 16
+    @controlmap = DataCache.controlmap("map_editor")
 
     @hud = Moon::RenderContainer.new
 
@@ -40,15 +188,13 @@ class MapEditorView < State::ViewBase
 
     @tileselection_rect = ES::UI::SelectionTileRect.new
 
-    @map_cursor = Moon::Sprite.new("resources/ui/map_editor_cursor.png")
-    texture  = ES.texture_cache.block "e032x032.png"
-    @cursor_ss  = Moon::Spritesheet.new texture, 32, 32
-    texture = ES.texture_cache.block "passage_blocks.png"
-    @passage_ss = Moon::Spritesheet.new texture, 32, 32
+    @map_renderer = EditorMapRenderer.new
 
-    @grid_underlay = Moon::Sprite.new("resources/ui/grid_32x32_ff777777.png")
-    @grid_overlay  = Moon::Sprite.new("resources/ui/grid_32x32_ffffffff.png")
-    @chunk_borders = Moon::Spritesheet.new("resources/ui/chunk_outline_3x3.png", 32, 32)
+    @map_cursor = MapCursorRenderer.new
+    texture  = TextureCache.block "e032x032.png"
+    @cursor_ss  = Moon::Spritesheet.new texture, 32, 32
+    texture = TextureCache.block "passage_blocks.png"
+    @passage_ss = Moon::Spritesheet.new texture, 32, 32
 
     color = @palette["system/selection"]
     @tileselection_rect.spritesheet = @cursor_ss
@@ -72,6 +218,8 @@ class MapEditorView < State::ViewBase
     @hud.add @notifications
     @hud.add @help_panel
 
+    add(@map_renderer)
+    add(@map_cursor)
     add(@hud)
     create_passage_layer
   end
@@ -94,11 +242,8 @@ class MapEditorView < State::ViewBase
   end
 
   def refresh_tilemaps
-    @chunk_renderers = @model.map.chunks.map do |chunk|
-      renderer = ChunkRenderer.new(chunk)
-      renderer.layer_opacity = @model.layer_opacity
-      renderer
-    end
+    @map_renderer.dm_map = @model.map
+    @map_renderer.layer_opacity = @model.layer_opacity
   end
 
   ###
@@ -131,54 +276,28 @@ class MapEditorView < State::ViewBase
     end
   end
 
-  def render_map
-    pos = -@model.camera.view.floor
-    @chunk_renderers.each do |renderer|
-      lp = (pos + renderer.position * 32)
-      @grid_underlay.clip_rect = Moon::Rect.new(0, 0, *(renderer.chunk.bounds.wh*32))
-      @grid_underlay.render(*lp)
-      renderer.render(*pos)
-      if @model.flag_show_chunk_labels
-        @chunk_borders.render(*lp, 0)
-        @chunk_borders.render(*lp+[@grid_underlay.clip_rect.width-32,0,0], 2)
-        @chunk_borders.render(*lp+[0,@grid_underlay.clip_rect.height-32,0], 6)
-        @chunk_borders.render(*lp+(@grid_underlay.clip_rect.whd-[32,32,0]), 8)
-      end
-      #@grid_overlay.clip_rect = Rect.new(0, 0, *@grid_underlay.clip_rect.wh)
-      #@grid_overlay.render(*pos)
-    end
-  end
-
-  def render_chunk_labels
-    color = @palette["white"]
-    oy = @font.size+8
-    @model.map.chunks.each do |chunk|
-      x, y, z = *map_pos_to_screen_pos(chunk.position)
-      @font.render x, y-oy, z, chunk.name, color, outline: 0
-    end
-  end
-
   def render_edit_mode
     campos = @model.camera.view.floor
-    @map_cursor.render(*@model.map_cursor.position*32-campos)
-
     if @model.selection_stage > 0
       @tileselection_rect.render(*(-campos))
     end
-
-    render_chunk_labels if @model.flag_show_chunk_labels
-    @hud.render
   end
 
-  def render(x=0, y=0, z=0, options={})
-    render_map
+  def render_content(x, y, z, options)
     render_edit_mode
     super
   end
 
-  def update_view(delta)
+  def update_content(delta)
+    show_labels = @model.flag_show_chunk_labels
+    campos = @model.camera.view.floor
     @hud.update(delta)
     @dashboard.update(delta)
-    super(delta)
+    @map_cursor.position = @model.map_cursor.position * 32 - campos
+    @map_renderer.show_borders = show_labels
+    @map_renderer.show_labels = show_labels
+    @map_renderer.show_underlay = @model.show_grid
+    @map_renderer.position = -campos
+    super
   end
 end
