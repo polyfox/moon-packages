@@ -110,11 +110,15 @@ class MapRenderer < Moon::RenderArray
     end
   end
 
+  def chunk_renderer_class
+    ChunkRenderer
+  end
+
   def dm_map=(dm_map)
     clear
     @dm_map = dm_map
     @dm_map.chunks.each do |chunk|
-      renderer = EditorChunkRenderer.new
+      renderer = chunk_renderer_class.new
       renderer.chunk = chunk
       renderer.layer_opacity = @layer_opacity
       add(renderer)
@@ -134,6 +138,10 @@ class EditorMapRenderer < MapRenderer
     @show_labels = false
     @show_underlay = false
     @show_overlay = false
+  end
+
+  def chunk_renderer_class
+    EditorChunkRenderer
   end
 
   def render_content(x, y, z, options)
