@@ -13,16 +13,16 @@ module ES
           l = chunk.position
         end
         if r.x < chunk.bounds.x2
-          r = Vector3.new(chunk.bounds.x2, 0)
+          r = Moon::Vector3.new(chunk.bounds.x2, 0)
         end
         if t.y > chunk.position.y
           t = chunk.position
         end
         if b.y < chunk.bounds.y2
-          b = Vector3.new(0, chunk.bounds.y2)
+          b = Moon::Vector3.new(0, chunk.bounds.y2)
         end
       end
-      Rect.new(l.x, t.y, r.x - l.x, b.y - t.y)
+      Moon::Rect.new(l.x, t.y, r.x - l.x, b.y - t.y)
     end
 
     def to_map
