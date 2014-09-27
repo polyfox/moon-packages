@@ -12,6 +12,7 @@ class MapEditorModel < State::ModelBase
   field :zoom,                   type: Float,                 default: 1.0
   field :flag_show_chunk_labels, type: Boolean,               default: false
   field :keyboard_only_mode,     type: Boolean,               default: false
+  field :show_grid,              type: Boolean,               default: false
   field :tile_palette,           type: ES::EditorTilePalette, default: proc{|t|t.new}
 
   def update(delta)

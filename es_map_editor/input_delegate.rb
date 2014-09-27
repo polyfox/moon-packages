@@ -203,6 +203,11 @@ class MapEditorInputDelegate < State::InputDelegateBase
       @controller.show_tile_info
     end
 
+    ## Show Chunk Labels
+    input.on :press, @control_map["toggle_grid"] do
+      @controller.toggle_grid
+    end
+
     ## Edit Tile Palette
     input.on :press, @control_map["edit_tile_palette"] do
       cvar["tile_palette"] = @model.tile_palette

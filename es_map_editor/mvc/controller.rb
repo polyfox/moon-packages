@@ -18,6 +18,11 @@ class MapEditorController < State::ControllerBase
     end
   end
 
+  def toggle_grid
+    @model.show_grid = !@model.show_grid
+    @view.dashboard.toggle 7, @model.show_grid
+  end
+
   def new_map
     @view.dashboard.enable 1
     @view.notifications.notify string: "New Map"
