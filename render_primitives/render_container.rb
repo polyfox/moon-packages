@@ -185,7 +185,7 @@ module Moon
 
     private def render_elements(x, y, z, options)
       @elements.each do |e|
-        e.render x, y, z
+        e.render x, y, z, options
       end
     end
 
