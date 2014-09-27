@@ -57,7 +57,7 @@ module Moon
           col += 1
         end
       end
-      super x, y, z
+      super
     end
   end
 end

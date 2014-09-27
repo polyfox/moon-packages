@@ -54,25 +54,23 @@ module Moon
       @font.size * @line_height
     end
 
-    def render(x=0, y=0, z=0, options={})
+    def render_content(x=0, y=0, z=0, options={})
       if @font && @string
         @lines.each_with_index do |line, index|
-          pos = @position + [x, y, z]
-
           case @align
           when :left
             # do nothing
           when :right
-            pos.x -= @font.calc_bounds(line)[0]
+            x -= @font.calc_bounds(line)[0]
           when :center
-            pos.x -= @font.calc_bounds(line)[0] / 2
+            x -= @font.calc_bounds(line)[0] / 2
           end
 
-          font.render(pos.x, pos.y + index * line_height, pos.z,
+          font.render(x, y + index * line_height, z,
                       line, @render_color, options)
         end
       end
-      super x, y, z
+      super
     end
 
     def refresh_size
