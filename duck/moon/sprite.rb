@@ -15,8 +15,12 @@ module Moon
       @clip_rect = Rect.new(0, 0, 0, 0)
     end
 
-    def render(x, y, z, index, options={})
-      puts "#{self}#render(#{x}, #{y}, #{z}, #{index}, #{options})"
+    def render(x, y, z, options={})
+      puts "#{self}#render(#{x}, #{y}, #{z}, #{options})"
+    end
+
+    def clip_rect=(rect)
+      @clip_rect = rect
     end
   end
 end
