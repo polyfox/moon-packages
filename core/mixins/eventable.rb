@@ -25,7 +25,13 @@ module Moon
       keys = keys.flatten.map! { |k| Input.convert_key(k) }
       listener = { block: block }
       listener[:keys] = keys unless keys.empty?
-      (@event_listeners[action] ||= []).push(listener)
+      if action.is_a?(Enumerable)
+        action.each do |a|
+          (@event_listeners[a] ||= []).push(listener)
+        end
+      else
+        (@event_listeners[action] ||= []).push(listener)
+      end
       listener
     end
 
