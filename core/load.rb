@@ -7,7 +7,6 @@ require 'core/event'
 require "core/input"
 require "core/input/observer"
 require 'core/cache_base'
-require 'core/entity_system'
 require 'core/cuboid'
 require 'core/data_matrix' # 3d Table
 require 'core/rect'
