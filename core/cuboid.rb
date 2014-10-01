@@ -27,6 +27,18 @@ module Moon
       { x: @x, y: @y, z: @z, width: @width, height: @height, depth: @depth }
     end
 
+    def to_rect_xy
+      Moon::Rect.new(@x, @y, @width, @height)
+    end
+
+    def to_rect_xz
+      Moon::Rect.new(@x, @z, @width, @depth)
+    end
+
+    def to_rect_yz
+      Moon::Rect.new(@y, @z, @height, @depth)
+    end
+
     def clear
       @x, @y, @z, @width, @height, @depth = 0, 0, 0, 0, 0, 0
       self
