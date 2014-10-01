@@ -1,7 +1,7 @@
 module Moon
   module DataModel
     module Fields
-      module ClassExtension
+      module ClassMethods
         ##
         # Returns all fields pretaining to this class only
         # @return [Hash<Symbol, Field>]
@@ -85,75 +85,78 @@ module Moon
         end
       end
 
-      # this allows Models to behave like hashes :)
-      include Enumerable
+      module InstanceMethods
+        # this allows Models to behave like hashes :)
+        include Enumerable
 
-      ##
-      # @eg
-      #   each do |key, value|
-      #   end
-      def each
-        each_field_with_value do |key, field, value|
-          yield key, value
+        ##
+        # @eg
+        #   each do |key, value|
+        #   end
+        def each
+          each_field_with_value do |key, field, value|
+            yield key, value
+          end
         end
-      end
 
-      ##
-      # @eg
-      #   each_field do |key, field|
-      #   end
-      def each_field
-        self.class.all_fields.each do |k, field|
-          yield k, field
+        ##
+        # @eg
+        #   each_field do |key, field|
+        #   end
+        def each_field
+          self.class.all_fields.each do |k, field|
+            yield k, field
+          end
         end
-      end
 
-      ##
-      # @eg
-      #   each_field_name do |key|
-      #   end
-      def each_field_name
-        each_field do |k,_|
-          yield k
+        ##
+        # @eg
+        #   each_field_name do |key|
+        #   end
+        def each_field_name
+          each_field do |k,_|
+            yield k
+          end
         end
-      end
-      alias :each_key :each_field_name
+        alias :each_key :each_field_name
 
-      ##
-      # @eg
-      #   each_field_with_value do |key, field, value|
-      #   end
-      def each_field_with_value
-        each_field do |k, field|
-          yield k, field, send(k)
+        ##
+        # @eg
+        #   each_field_with_value do |key, field, value|
+        #   end
+        def each_field_with_value
+          each_field do |k, field|
+            yield k, field, send(k)
+          end
         end
-      end
 
-      ##
-      # @return [Boolean]
-      def validate_fields?
-        true
-      end
-
-      ##
-      # @return [Hash<Symbol, Object>]
-      def fields_hash
-        hsh = {}
-        each_field_name { |k| hsh[k] = send(k) }
-        hsh
-      end
-
-      ##
-      # @return [self]
-      def validate
-        each_field do |key, field|
-          field.check_type(key, send(key))
+        ##
+        # @return [Boolean]
+        def validate_fields?
+          true
         end
-        self
+
+        ##
+        # @return [Hash<Symbol, Object>]
+        def fields_hash
+          hsh = {}
+          each_field_name { |k| hsh[k] = send(k) }
+          hsh
+        end
+
+        ##
+        # @return [self]
+        def validate
+          each_field do |key, field|
+            field.check_type(key, send(key))
+          end
+          self
+        end
       end
 
       def self.included(mod)
-        mod.extend(ClassExtension)
+        mod.extend         ClassMethods
+        mod.send :include, InstanceMethods
       end
     end
   end
