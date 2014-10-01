@@ -225,8 +225,7 @@ class MapEditorInputDelegate < State::InputDelegateBase
     register_dashboard_controls(input)
 
     input.on :press, @control_map["center_on_map"] do
-      bounds = @model.map.bounds
-      @model.cam_cursor.position.set(bounds.cx, bounds.cy, 0)
+      @controller.center_on_map
     end
 
     ## tile panel

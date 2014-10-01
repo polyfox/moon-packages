@@ -1,4 +1,9 @@
 class MapEditorController < State::ControllerBase
+  def center_on_map
+    bounds = @model.map.bounds
+    @model.cam_cursor.position.set(bounds.cx, bounds.cy, 0)
+  end
+
   def camera_follow(obj)
     @model.camera.follow obj
     @view.ui_camera_posmon.obj = obj
