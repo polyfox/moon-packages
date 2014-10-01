@@ -12,11 +12,24 @@ module Moon
     end
 
     ## Entities
+    def on_entity_added(entity)
+      #
+    end
+
+    def on_entity_removed(entity)
+      #
+    end
 
     def spawn # new entity
-      entity = Entity.new self
+      entity = Entity.new(self)
+
       @entities << entity
-      return entity
+
+      yield entity if block_given?
+
+      on_entity_added entity
+
+      entity
     end
 
     def [](*syms) # get entities for each component and intersect
