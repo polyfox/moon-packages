@@ -15,7 +15,7 @@ module Moon
       @@component_list
     end
 
-    module ComponentClass
+    module ClassMethods
 
       attr_reader :registered
 
@@ -42,46 +42,48 @@ module Moon
         @registered = sym
         Component.list[sym] = self
       end
-
     end
 
-    def initialize(options={})
-      setup(options)
-    end
-
-    def setup(options={})
-      self.class.fields.each do |key, data|
-        send("#{key}=", data[:default]) if data.key?(:default)
-        send("#{key}=", options[key]) if options.key?(key)
+    module InstanceMethods
+      def initialize(options={})
+        setup(options)
       end
-    end
 
-    def to_h # predefine to_h for fields
-      self.class.fields.inject({}) do |result, keyval| # res, (k, v) doesn't work?!
-        (key, data) = *keyval
-        result[key] = self.send(key)
-        result
+      def setup(options={})
+        self.class.fields.each do |key, data|
+          send("#{key}=", data[:default]) if data.key?(:default)
+          send("#{key}=", options[key]) if options.key?(key)
+        end
       end
-    end
 
-    def export
-      to_h.merge(component_type: self.class.registered).stringify_keys
-    end
+      def to_h # predefine to_h for fields
+        self.class.fields.inject({}) do |result, keyval| # res, (k, v) doesn't work?!
+          (key, data) = *keyval
+          result[key] = self.send(key)
+          result
+        end
+      end
 
-    def import(data)
-      setup(data)
-      self
+      def export
+        to_h.merge(component_type: self.class.registered).stringify_keys
+      end
+
+      def import(data)
+        setup(data)
+        self
+      end
+
+      private :setup
     end
 
     def self.included(mod)
-      mod.extend ComponentClass
+      mod.extend         ClassMethods
+      mod.send :include, InstanceMethods
       mod.register mod.to_s.demodulize.downcase.to_sym
     end
 
     def self.load(data)
       self[data["component_type"].to_sym].new(data.symbolize_keys)
     end
-
-    private :setup
   end
 end
