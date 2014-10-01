@@ -1,4 +1,12 @@
 class Hash
+  def values_of(*syms)
+    syms.map { |key| self[key] }
+  end
+
+  def fetch_multi(*syms)
+    syms.map { |key| fetch(key) }
+  end
+
   def presence
     empty? ? nil : self
   end
