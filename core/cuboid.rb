@@ -19,6 +19,18 @@ module Moon
       set(*args) unless args.empty?
     end
 
+    def x2
+      @x + @width
+    end
+
+    def y2
+      @y + @height
+    end
+
+    def z2
+      @z + @depth
+    end
+
     def to_a
       return @x, @y, @z, @width, @height, @depth
     end
@@ -45,12 +57,12 @@ module Moon
     end
 
     def set(*args)
-      @x, @y, @z, @width, @height, @depth = *self.class.extract(args.size > 1 ? args : args.first)
+      @x, @y, @z, @width, @height, @depth = *self.class.extract(args.singularize)
       self
     end
 
     def move(*args)
-      @x, @y, @z = *Vector3.extract(args.size > 1 ? args : args.first)
+      @x, @y, @z = *Vector3.extract(args.singularize)
       self
     end
 
@@ -65,8 +77,23 @@ module Moon
     #   @param [Hash<Symbol, Integer>]
     # @return [self]
     def resize(*args)
-      @width, @height, @depth = *Vector3.extract(args.size > 1 ? args : args.first)
+      @width, @height, @depth = *Vector3.extract(args.singularize)
       self
+    end
+
+    ##
+    # @overload inside?(vec3: Vector3)
+    #   @param [Vector3] vec3
+    # @overload inside?(x: Integer, y: Integer, z: Integer)
+    #   @param [Integer] x
+    #   @param [Integer] y
+    #   @param [Integer] z
+    # @return [Boolean]
+    def inside?(*args)
+      x, y, z = *Vector3.extract(args.singularize)
+      x.between?(self.x, self.x2-1) &&
+      y.between?(self.y, self.y2-1) &&
+      z.between?(self.z, self.z2-1)
     end
 
     ##
