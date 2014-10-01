@@ -138,6 +138,8 @@ module Moon
         end
       when Numeric
         return 0, 0, 0, obj, obj, obj
+      when Moon::Vector3
+        return 0, 0, 0, *obj
       else
         raise TypeError,
               "wrong argument type #{obj.class} (expected Array or Numeric)"
