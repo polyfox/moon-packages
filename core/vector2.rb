@@ -89,11 +89,45 @@ module Moon
       self.x, self.y, _ = *Vector3.extract(other)
     end
 
+    alias :to_vec2 :xy
+    alias :to_vec3 :xyz
+
     def inspect
       "<Moon::Vector2: x=#{x} y=#{y}>"
     end
 
     alias :to_s :inspect
+
+    def sum
+      x + y
+    end
+
+    def near?(other, threshold)
+      diff = (self - other).abs
+      (diff.x <= threshold.x && diff.y <= threshold.y)
+    end
+
+    # https://searchcode.com/codesearch/view/561923/
+    # Vector2.MoveTowards
+    def move_towards(target, distance)
+      diff = self - target
+      angle = Math.atan2(diff.y, diff.x)
+      self - [Math.cos(angle) * distance, Math.sin(angle) * distance]
+    end
+
+    def turn_towards(target)
+      diff = target - self
+      angle = Math.atan2(diff.y, diff.x)
+      Vector2.new(Math.cos(angle), Math.sin(angle))
+    end
+
+    def distance_from(target)
+      (self - target).abs.sum
+    end
+
+    def self.polar(m, r)
+      new m * Math.cos(r), m * Math.sin(r)
+    end
 
     def self.zero
       new 0.0, 0.0

@@ -89,6 +89,10 @@ module Moon
       "<Moon::Vector4: x=#{x} y=#{y} z=#{z} w=#{w}>"
     end
 
+    alias :to_vec2 :xy
+    alias :to_vec3 :xyz
+    alias :to_vec4 :xyzw
+
     alias :to_s :inspect
 
     def self.zero
