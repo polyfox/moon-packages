@@ -3,7 +3,6 @@
 #   Everyone loves a Vector class
 module Moon
   class Vector4
-
     include Comparable
 
     def zero?
@@ -95,6 +94,19 @@ module Moon
 
     alias :to_s :inspect
 
+    def sum
+      x + y + z + w
+    end
+
+    def near?(other, threshold)
+      diff = (self - other).abs
+      (diff.x <= threshold.x && diff.y <= threshold.y && diff.z <= threshold.z && diff.w <= threshold.w)
+    end
+
+    def distance_from(target)
+      (self - target).abs.sum
+    end
+
     def self.zero
       new 0.0, 0.0, 0.0, 0.0
     end
@@ -107,6 +119,5 @@ module Moon
     alias :rgb= :xyz=
     alias :rgba :xyzw
     alias :rgba= :xyzw=
-
   end
 end
