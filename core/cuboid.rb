@@ -114,6 +114,16 @@ module Moon
       case obj
       when Moon::Cuboid
         return *obj
+      when Hash
+        if obj.key?(:position)
+          pos  = obj.fetch(:position)
+          size = obj.fetch(:size)
+          x, y, z = *Vector3.extract(pos)
+          w, h, d = *Vector3.extract(size)
+          return x, y, z, w, h, d
+        else
+          return obj.fetch_multi(:x, :y, :z, :width, :height, :depth)
+        end
       when Array
         case obj.size
         when 2
