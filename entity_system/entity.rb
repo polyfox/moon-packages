@@ -48,6 +48,10 @@ module Moon
       self.id == obj.id
     end
 
+    def components
+      @world.get_components(self)
+    end
+
     def add(component, options={})
       case component
       when Hash
@@ -90,6 +94,12 @@ module Moon
     def import(data)
       @id = data["id"]
       self
+    end
+
+    def inherit(entity)
+      entity.components.each do |component|
+        add(component.as_inheritance)
+      end
     end
   end
 end

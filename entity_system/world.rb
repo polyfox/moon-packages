@@ -11,17 +11,25 @@ module Moon
       @systems = []
     end
 
-    ## Entities
+    ##
+    # @param [Entity] entity
     def on_entity_added(entity)
       #
     end
 
+    ##
+    # @param [Entity] entity
     def on_entity_removed(entity)
       #
     end
 
-    def spawn # new entity
+    ##
+    # @param [Entity] template
+    #   @optional
+    # @return [Entity]
+    def spawn(template=nil)
       entity = Entity.new(self)
+      entity.inherit template if template
 
       @entities << entity
 
@@ -32,19 +40,38 @@ module Moon
       entity
     end
 
-    def [](*syms) # get entities for each component and intersect
-      syms.map { |sym| @components[sym].keys }.inject(:&)
+    ##
+    # Get Entities for each component and intersect
+    # @param [Array<Symbol>] *syms
+    def [](*syms)
+      return [] if syms.empty?
+      if syms.size == 1
+        @components[syms.first].keys
+      else
+        sym = syms.shift
+        result = (@components[sym] || {}).keys
+        return [] if result.empty?
+        syms.each_with_object(result) do |sym, result|
+          result &= @components[sym].keys
+        end
+      end
     end
 
-    ## Components
-
-    # not to be used directly
-    def set_component(entity, component_sym, component)
+    ##
+    # @param [Entity] entity
+    # @param [Symbol] component_sym
+    # @param [Component] component
+    # @return [Component]
+    private def set_component(entity, component_sym, component)
       #(@components[component_sym][entity] ||= []) << component
       @components[component_sym][entity] = component
       component
     end
 
+    ##
+    # @param [Entity] entity
+    # @param [Symbol] component_sym
+    # @return [Component]
     def get_component(entity, component_sym) # component is class here
       # .first is a hack? return first element, always
       # will be hard when we have more than one component
@@ -52,6 +79,21 @@ module Moon
       @components[component_sym][entity]
     end
 
+    ##
+    # @param [Entity] entity
+    # @return [Array<Component>]  components
+    def get_components(entity)
+      @components.each_with_object([]) do |a, r|
+        (key, hash) = *a
+        if d = hash[entity]
+          r.push(d)
+        end
+      end
+    end
+
+    ##
+    # @param [Entity] entity
+    # @param [Component] component
     def add_component(entity, component)
       component_sym = component.class.registered
       set_component(entity, component_sym, component)
@@ -59,17 +101,26 @@ module Moon
 
     ## Systems
 
-    def register(system)
-      system = System[system] if system.is_a?(Symbol)
+    def register(system_klass)
+      if system_klass.is_a?(Symbol)
+        system = System[system_klass].new(self)
+      else
+        system = system_klass.new(self)
+      end
       @systems << system
     end
 
     #---
 
     def update(delta) # parallelize in the future
-      @systems.each do |system|
-        system.process(delta, self)
+      for system in @systems
+        system.update(delta)
       end
+      #for entity in @entities
+      #  for system in @systems
+      #    system.process(delta, entity)
+      #  end
+      #end
     end
 
     def to_h
