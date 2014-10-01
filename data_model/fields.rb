@@ -43,7 +43,7 @@ module Moon
         # Define a new field, without option adjustments
         # @param [Symbol] name
         # @param [Hash] options
-        def add_field(name, options)
+        private def add_field(name, options)
           field = fields[name.to_sym] = Field.new(options)
 
           setter = "_#{name}_set"
@@ -88,6 +88,21 @@ module Moon
       module InstanceMethods
         # this allows Models to behave like hashes :)
         include Enumerable
+
+        ##
+        # @param [Symbol] key
+        private def init_field(key)
+          field = self.class.all_fields.fetch(key)
+          send "#{key}=", field.make_default(self)
+        end
+
+        ##
+        # Initializes all available fields for the model
+        private def init_fields
+          each_field_name do |key|
+            init_field(key)
+          end
+        end
 
         ##
         # @eg

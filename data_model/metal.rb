@@ -31,19 +31,12 @@ module Moon
       end
 
       ##
-      # @param [Symbol] key
-      def initialize_field(key)
-        field = self.class.all_fields.fetch(key)
-        self.send("#{key}=", field.make_default(self))
-      end
-
-      ##
       # @param [Array<Symbol>] dont_init
       #   A list of keys not to initialize
       def initialize_fields(dont_init=[])
-        each_field do |k, field|
+        each_field_name do |k|
           next if dont_init.include?(k)
-          self.send("#{k}=", field.make_default(self))
+          init_field(k)
         end
       end
 
