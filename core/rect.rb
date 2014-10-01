@@ -96,28 +96,30 @@ module Moon
     ###
     # Extracts Rect related arguments from the given Object (obj)
     # @param [Object] obj
-    ###
     def self.extract(obj)
       case obj
-      when Moon::Rect
-        return *obj
-      when Hash
-        return obj.fetch(:x), obj.fetch(:y),
-               obj.fetch(:width), obj.fetch(:height)
       when Array
         case obj.size
         when 2
           return [*Vector2.extract(obj[0]), *Vector2.extract(obj[1])]
         # x, y, w, h
-        when 4 then
+        when 4
           return *obj
         else
           raise ArgumentError,
                 "wrong Array size #{obj.size} (expected 1, 2 or 4)"
         end
+      when Hash
+        return obj.fetch_multi(:x, :y, :width, :height)
+      when Numeric
+        return 0, 0, obj, obj
+      when Moon::Rect
+        return *obj
+      when Moon::Vector2
+        return 0, 0, *obj
       else
         raise TypeError,
-              "wrong argument type #{obj.class.inspect} (expected Rect or Array)"
+              "wrong argument type #{obj.class.inspect} (expected Array, Hash, Numeric, Rect or Vector2)"
       end
     end
 
