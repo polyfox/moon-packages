@@ -5,6 +5,14 @@ module Moon
     alias :h :height
     alias :h= :height=
 
+    def empty
+      set(0, 0, 0, 0)
+    end
+
+    def empty?
+      return width == 0 && height == 0
+    end
+
     def &(other)
       nx  = x < other.x ? other.x : x
       ny  = y < other.y ? other.y : y
