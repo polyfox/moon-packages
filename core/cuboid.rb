@@ -59,6 +59,17 @@ module Moon
       self
     end
 
+    ##
+    # @return [self]
+    def empty
+      set(0, 0, 0, 0, 0, 0)
+    end
+
+    ##
+    # @return [Boolean]
+    def empty?
+      return width == 0 && height == 0 && depth == 0
+    end
     def xy
       Vector2.new @x, @y
     end
