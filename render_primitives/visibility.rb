@@ -3,6 +3,10 @@ module Moon
     module Visibility
       attr_accessor :visible
 
+      def visible?
+        !!@visible
+      end
+
       def hide
         @visible = false
         self
