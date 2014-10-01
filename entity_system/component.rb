@@ -16,25 +16,7 @@ module Moon
     end
 
     module ClassMethods
-
       attr_reader :registered
-
-      def field(name, data)
-        (@fields ||= {})[name] = data
-
-        attr_reader name unless method_defined?(name)
-        attr_writer name unless method_defined?(name.to_s+"=")
-        name
-      end
-
-      def fields
-        @fields ||= {}
-        if superclass.respond_to?(:fields)
-          superclass.fields.merge(@fields)
-        else
-          @fields
-        end
-      end
 
       def register(sym)
         # of course we'd like something prettier... -,-
@@ -49,23 +31,26 @@ module Moon
         setup(options)
       end
 
+      def symbol
+        self.class.registered
+      end
+
       def setup(options={})
-        self.class.fields.each do |key, data|
-          send("#{key}=", data[:default]) if data.key?(:default)
-          send("#{key}=", options[key]) if options.key?(key)
+        each_field do |key, field|
+          if options.key?(key)
+            send("#{key}=", options[key]) if options.key?(key)
+          else
+            init_field(key)
+          end
         end
       end
 
-      def to_h # predefine to_h for fields
-        self.class.fields.inject({}) do |result, keyval| # res, (k, v) doesn't work?!
-          (key, data) = *keyval
-          result[key] = self.send(key)
-          result
-        end
+      def to_h
+        fields_hash
       end
 
       def export
-        to_h.merge(component_type: self.class.registered).stringify_keys
+        to_h.merge(component_type: symbol).stringify_keys
       end
 
       def import(data)
@@ -73,10 +58,15 @@ module Moon
         self
       end
 
+      def as_inheritance
+        { symbol => to_h }
+      end
+
       private :setup
     end
 
     def self.included(mod)
+      mod.send :include, Moon::DataModel::Fields
       mod.extend         ClassMethods
       mod.send :include, InstanceMethods
       mod.register mod.to_s.demodulize.downcase.to_sym
