@@ -61,12 +61,20 @@ module Moon
       end
     end
 
-    def [](key)
+    def get_component(key)
       @world.get_component(self, key)
     end
 
+    alias :[] :get_component
+
     def []=(key, component)
       @world.set_component(self, key, component)
+    end
+
+    def comp(*keys)
+      components = keys.map { |key| get_component(key) }
+      yield(*components) if components.all? if block_given?
+      components
     end
 
     def to_h
