@@ -71,8 +71,14 @@ module Moon
 
     ##
     # @return [self]
-    def empty
-      set(0, 0, 0, 0, 0, 0)
+    def clear
+      self.x = 0
+      self.y = 0
+      self.z = 0
+      self.width = 0
+      self.height = 0
+      self.depth = 0
+      self
     end
 
     ##
