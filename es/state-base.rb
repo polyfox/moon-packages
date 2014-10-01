@@ -4,8 +4,24 @@ module States
 
     @@__cvar__ = {}
 
+    def cvar
+      @@__cvar__
+    end
+
     def init
       super
+      @renderer = Moon::RenderContainer.new
+      @gui = Moon::RenderContainer.new
+
+      register_default_events
+    end
+
+    def register_default_events
+      @input.on :any do |e|
+        @renderer.trigger e
+        @gui.trigger e
+      end
+
       @input.on :press, :left_bracket do
         @scheduler.p_job_table
       end
@@ -49,15 +65,15 @@ module States
     end
 
     def update(delta)
-      super delta
+      @renderer.update delta
+      @gui.update delta
       update_transitions delta
-    end
-
-    def cvar
-      @@__cvar__
+      super delta
     end
 
     def render
+      @renderer.render
+      @gui.render
       @debug_shell.render if @debug_shell
       super
     end
