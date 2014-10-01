@@ -14,9 +14,14 @@ module States
       @gui = Moon::RenderContainer.new
 
       register_default_events
+      register_input
     end
 
-    def register_default_events
+    private def register_default_events
+      register_default_input_events
+    end
+
+    private def register_default_input_events
       @input.on :any do |e|
         @renderer.trigger e
         @gui.trigger e
@@ -53,6 +58,10 @@ module States
       @input.on :press, :down do
         @debug_shell.history_next if @debug_shell
       end
+    end
+
+    private def register_input
+      #
     end
 
     def launch_debug_shell
