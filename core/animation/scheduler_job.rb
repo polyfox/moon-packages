@@ -30,8 +30,6 @@ module Moon
 
     ###
     # @param [Float] delta
-    # @return [Void]
-    ###
     def update(delta)
       return unless @active
       @time -= delta
@@ -42,11 +40,9 @@ module Moon
 
     ###
     # Forces the Timeout to finish prematurely
-    # @return [Void]
-    ###
     def finish
       @time = 0.0
-      @trigger.()
+      on_timeout
     end
 
     private :trigger
