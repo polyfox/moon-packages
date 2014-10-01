@@ -16,7 +16,7 @@ module Moon
 
     def initialize(*args)
       clear
-      set(*args)
+      set(*args) unless args.empty?
     end
 
     def to_a
