@@ -254,21 +254,6 @@ class MapEditorView < State::ViewBase
     @map_renderer.layer_opacity = @model.layer_opacity
   end
 
-  ###
-  # @param [Vector3] screen_pos
-  ###
-  def screen_pos_to_map_pos(screen_pos)
-    (screen_pos + @model.camera.view.floor) / 32
-  end
-
-  def map_pos_to_screen_pos(map_pos)
-    map_pos * 32 - @model.camera.view.floor
-  end
-
-  def screen_pos_map_reduce(screen_pos)
-    screen_pos_to_map_pos(screen_pos).floor * 32 - @model.camera.view.floor
-  end
-
   def tileset=(tileset)
     @tileset = tileset
     @tile_preview.tileset = @tileset

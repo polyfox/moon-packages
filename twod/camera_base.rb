@@ -26,4 +26,16 @@ class CameraBase < Moon::DataModel::Metal
     end
     @ticks += 1
   end
+
+  def screen_to_world(screen_pos)
+    (screen_pos + view.floor) / @tilesize
+  end
+
+  def screen_to_world_reduce(screen_pos)
+    screen_to_world(screen_pos).floor * @tilesize - view.floor
+  end
+
+  def world_to_screen(world_pos)
+    map_pos * @tilesize - view.floor
+  end
 end

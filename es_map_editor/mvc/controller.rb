@@ -302,7 +302,7 @@ class MapEditorController < State::ControllerBase
 
   def update_cursor_position(delta)
     unless @model.keyboard_only_mode
-      @model.map_cursor.position = @view.screen_pos_to_map_pos(Moon::Input::Mouse.position.xyz).floor
+      @model.map_cursor.position = @model.camera.screen_to_map(Moon::Input::Mouse.position.xyz).floor
     end
     @view.tile_info.tile_data = get_tile_data(@model.map_cursor.position.xy)
   end
