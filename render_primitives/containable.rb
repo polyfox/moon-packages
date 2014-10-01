@@ -3,6 +3,10 @@ module Moon
     module Containable
       attr_accessor :parent
 
+      def disown
+        self.parent = nil
+      end
+
       def containerize
         container = RenderContainer.new
         container.add(self)

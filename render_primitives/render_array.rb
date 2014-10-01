@@ -19,12 +19,14 @@ module Moon
     end
 
     def select!(&block)
-      @elements.select!(&block)
+      rejected = @elements.select!(&block)
+      rejected.each(&:disown)
       self
     end
 
     def reject!(&block)
-      @elements.reject!(&block)
+      rejected = @elements.reject!(&block)
+      rejected.each(&:disown)
       self
     end
 
@@ -47,9 +49,7 @@ module Moon
     end
 
     def clear
-      @elements.each do |element|
-        element.parent = nil
-      end
+      @elements.each(&:disown)
       @elements.clear
     end
 
@@ -61,13 +61,13 @@ module Moon
 
     def shift
       element = @elements.shift
-      element.parent = nil
+      element.disown
       element
     end
 
     def pop
       element = @elements.pop
-      element.parent = nil
+      element.disown
       element
     end
 
