@@ -52,12 +52,36 @@ class ChunkRenderer < Moon::RenderContext
   end
 end
 
+class BorderRenderer < Moon::RenderContext
+  attr_accessor :border_rect
+
+  def init
+    super
+    @texture = TextureCache.ui("chunk_outline_3x3.png")
+    @chunk_borders = Moon::Spritesheet.new(@texture, 32, 32)
+    @border_rect = Moon::Rect.new(0, 0, 0, 0)
+  end
+
+  def render_content(x, y, z, options)
+    unless @border_rect.empty?
+      w = @border_rect.width-32
+      h = @border_rect.height-32
+      @chunk_borders.render(x, y, z, 0)
+      @chunk_borders.render(x+w, y, z, 2)
+      @chunk_borders.render(x, y+h, z, 6)
+      @chunk_borders.render(x+w, y+h, z, 8)
+    end
+    super
+  end
+end
+
 class EditorChunkRenderer < ChunkRenderer
   def init
     super
     @grid_underlay = Moon::Sprite.new("resources/ui/grid_32x32_ff777777.png")
     @grid_overlay  = Moon::Sprite.new("resources/ui/grid_32x32_ffffffff.png")
-    @chunk_borders = Moon::Spritesheet.new("resources/ui/chunk_outline_3x3.png", 32, 32)
+
+    @border_renderer = BorderRenderer.new
 
     @label_color = Moon::Vector4.new(1, 1, 1, 1)
     @label_font = FontCache.font "uni0553", 16
@@ -66,20 +90,18 @@ class EditorChunkRenderer < ChunkRenderer
   def render_content(x, y, z, options)
     return unless @chunk
 
+    bound_rect = Moon::Rect.new(0, 0, *(@chunk.bounds.wh*32))
+
     if options[:show_underlay]
-      @grid_underlay.clip_rect = Moon::Rect.new(0, 0, *(@chunk.bounds.wh*32))
+      @grid_underlay.clip_rect = bound_rect
       @grid_underlay.render(x, y, z-0.5)
     end
 
     super
 
     if options[:show_borders]
-      x2 = @grid_underlay.clip_rect.width-32
-      y2 = @grid_underlay.clip_rect.height-32
-      @chunk_borders.render(x, y, z, 0)
-      @chunk_borders.render(x+x2, y, z, 2)
-      @chunk_borders.render(x, y+y2, z, 6)
-      @chunk_borders.render(x+x2, y+y2, z, 8)
+      @border_renderer.border_rect = bound_rect
+      @border_renderer.render(x, y, z, options)
     end
 
     if options[:show_overlay]
