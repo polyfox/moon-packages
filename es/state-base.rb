@@ -19,24 +19,28 @@ module States
       end
 
       @input.typing do |e|
-        @debug_shell.string += e.char if @debug_shell
+        @debug_shell.insert e.char if @debug_shell
       end
 
-      @input.on :press, :backspace do
-        @debug_shell.string = @debug_shell.string.chop if @debug_shell
-      end
-
-      @input.on :repeat, :backspace do
-        @debug_shell.string = @debug_shell.string.chop if @debug_shell
+      @input.on [:press, :repeat], :backspace do
+        @debug_shell.erase if @debug_shell
       end
 
       @input.on :press, :enter do
         @debug_shell.exec if @debug_shell
       end
+
+      @input.on :press, :up do
+        @debug_shell.history_prev if @debug_shell
+      end
+
+      @input.on :press, :down do
+        @debug_shell.history_next if @debug_shell
+      end
     end
 
     def launch_debug_shell
-      @debug_shell = DebugShell.new(ES.font_cache.font("uni0553", 16))
+      @debug_shell = DebugShell.new(FontCache.font("uni0553", 16))
       @debug_shell.position.set(0, 0, 0)
     end
 
