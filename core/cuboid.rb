@@ -54,6 +54,16 @@ module Moon
       self
     end
 
+    ##
+    # @overload resize(vec3: Vector3)
+    #   @param [Vector3] vec3
+    # @overload resize(width: Integer, height: Integer, depth: Integer)
+    #   @param [Integer] width
+    #   @param [Integer] height
+    #   @param [Integer] depth
+    # @overload resize(hash: Hash<Symbol, Integer>)
+    #   @param [Hash<Symbol, Integer>]
+    # @return [self]
     def resize(*args)
       @width, @height, @depth = *Vector3.extract(args.size > 1 ? args : args.first)
       self
@@ -70,48 +80,73 @@ module Moon
     def empty?
       return width == 0 && height == 0 && depth == 0
     end
+
+    ##
+    # @return [Vector2]
     def xy
       Vector2.new @x, @y
     end
 
-    def xy=(other)
-      @x, @y = *Vector2.extract(other)
+    ##
+    # @param [Vector2] vec2
+    def xy=(vec2)
+      @x, @y = *Vector2.extract(vec2)
     end
 
+    ##
+    # @return [Vector3]
     def xyz
       Vector3.new @x, @y, @z
     end
 
-    def xyz=(other)
-      @x, @y, @z = *Vector3.extract(other)
+    ##
+    # @param [Vector3] vec3
+    def xyz=(vec3)
+      @x, @y, @z = *Vector3.extract(vec3)
     end
 
+    ##
+    # @return [Vector2]
     def wh
       Vector2.new @width, @height
     end
 
-    def wh=(other)
-      @width, @height = *Vector2.extract(other)
+    ##
+    # @param [Vector2] vec2
+    def wh=(vec2)
+      @width, @height = *Vector2.extract(vec2)
     end
 
+    ##
+    # @return [Vector3]
     def whd
       Vector3.new @width, @height, @depth
     end
 
-    ###
-    #
-    ###
-    def whd=(other)
-      @width, @height, @depth = *Vector3.extract(other)
+    ##
+    # @param [Vector3] vec3
+    def whd=(vec3)
+      @width, @height, @depth = *Vector3.extract(vec3)
     end
 
     ###
     # Converts a given Object to Cuboid array
     # @param [Object] obj
     # @return [Array<Numeric>] (x, y, z, w, h, d)
-    ###
     def self.extract(obj)
       case obj
+      when Array
+        case obj.size
+        when 2
+          pos, size = *obj
+          x, y, z = *Vector3.extract(pos)
+          w, h, d = *Vector3.extract(size)
+          return x, y, z, w, h, d
+        when 6
+          return *obj
+        else
+          raise ArgumentError, "expected Array of size 2 or 6" if obj.size != 6
+        end
       when Moon::Cuboid
         return *obj
       when Hash
@@ -124,25 +159,13 @@ module Moon
         else
           return obj.fetch_multi(:x, :y, :z, :width, :height, :depth)
         end
-      when Array
-        case obj.size
-        when 2
-          pos, size = *obj
-          x, y, z = Vector3.extract(pos)
-          w, h, d = Vector3.extract(size)
-          return x, y, z, w, h, d
-        when 6
-          return *obj
-        else
-          raise ArgumentError, "expected Array of size 2 or 6" if obj.size != 6
-        end
       when Numeric
         return 0, 0, 0, obj, obj, obj
       when Moon::Vector3
         return 0, 0, 0, *obj
       else
         raise TypeError,
-              "wrong argument type #{obj.class} (expected Array or Numeric)"
+              "wrong argument type #{obj.class} (expected Array, Cuboid, Hash, Numeric, Vector3)"
       end
     end
 
