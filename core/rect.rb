@@ -5,8 +5,17 @@ module Moon
     alias :h :height
     alias :h= :height=
 
-    def empty
-      set(0, 0, 0, 0)
+    def inside?(obj)
+      x, y = *Vector2.extract(obj)
+      x.between?(self.x, self.x2-1) && y.between?(self.y, self.y2-1)
+    end
+
+    def clear
+      self.x = 0
+      self.y = 0
+      self.w = 0
+      self.h = 0
+      self
     end
 
     def empty?
