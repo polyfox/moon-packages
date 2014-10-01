@@ -25,6 +25,14 @@ module ES
       Moon::Rect.new(l.x, t.y, r.x - l.x, b.y - t.y)
     end
 
+    def width
+      bounds.width
+    end
+
+    def height
+      bounds.height
+    end
+
     def to_map
       map = Map.new
       map.set(self.to_h.exclude(:chunks))
