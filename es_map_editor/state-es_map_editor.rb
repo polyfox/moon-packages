@@ -20,7 +20,7 @@ module States
       create_map
       create_autosave_interval
 
-      tileset = Database.find(:tileset, uri: "/tilesets/common")
+      tileset = ES::Tileset.find_by(uri: "/tilesets/common")
       @model.tile_palette.tileset = tileset
       texture = TextureCache.tileset(tileset.filename)
       @view.tileset = Moon::Spritesheet.new(texture, tileset.cell_width, tileset.cell_height)
@@ -36,13 +36,13 @@ module States
     end
 
     def create_map
-      map = Database.find(:map, uri: "/maps/school/f1")
+      map = ES::Map.find_by(uri: "/maps/school/f1")
       @model.map = map.to_editor_map
       @model.map.chunks = map.chunks.map do |chunk_head|
-        chunk = Database.find(:chunk, uri: chunk_head.uri)
+        chunk = ES::Chunk.find_by(uri: chunk_head.uri)
         editor_chunk = chunk.to_editor_chunk
         editor_chunk.position = chunk_head.position
-        editor_chunk.tileset = Database.find(:tileset, uri: chunk.tileset.uri)
+        editor_chunk.tileset = ES::Tileset.find_by(uri: chunk.tileset.uri)
         editor_chunk
       end
     end
