@@ -7,7 +7,7 @@ class NilClass
     true
   end
 
-  def try(meth=nil, *args, &block)
+  def try(meth = nil, *args, &block)
     #
   end
 end

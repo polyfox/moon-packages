@@ -1,18 +1,20 @@
 # http://studiofreya.com/3d-math-and-physics/simple-aabb-vs-aabb-collision-detection/
 module Moon
   class AABB
-    attr_reader :cpos # Vector2  center position
-    attr_reader :rad  # Vector2  radii
+    # center position
+    # @return [Moon::Vector2]
+    attr_reader :cpos
+    # radii
+    # @return [Moon::Vector2]
+    attr_reader :rad
 
-    ##
-    # @param [Vector2] rad
-    # @param [Vector2] cpos
+    # @param [Moon::Vector2] rad
+    # @param [Moon::Vector2] cpos
     def initialize(cpos, rad)
       @cpos = Vector2[cpos]
       @rad = Vector2[rad]
     end
 
-    ##
     # @param [Moon::AABB] other
     # @return [Boolean]
     def intersect?(other)
@@ -21,7 +23,6 @@ module Moon
       true
     end
 
-    ##
     # @param [Moon::AABB] other
     # @return [Moon::AABB]
     def &(other)

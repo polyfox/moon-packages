@@ -1,15 +1,18 @@
 class Object
+  # @return [self]
   def presence
-    self || nil
+    self
   end
 
+  # @return [Boolean]
   def blank?
     !!presence
   end
 
-  def try(meth=nil, *args, &block)
-    if meth
-      self.send(meth, *args, &block)
+  # @param [Symbol, String] method_name
+  def try(method_name = nil, *args, &block)
+    if method_name
+      __send__(method_name, *args, &block)
     else
       yield self
     end

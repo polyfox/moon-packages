@@ -14,43 +14,78 @@ module Moon
     alias :d :depth
     alias :d= :depth=
 
+    ##
+    # @overload initialize(cuboid)
+    #   @param [Cuboid] cuboid
+    # @overload initialize(num)
+    #   @param [Integer] num
+    # @overload initialize(options)
+    #   @param [Hash] options
+    # @overload initialize(position, size)
+    #   @param [Vector3] position
+    #   @param [Vector3] size
+    # @overload initialize(x, y, z, width, height, depth)
+    #   @param [Integer] x
+    #   @param [Integer] y
+    #   @param [Integer] z
+    #   @param [Integer] width
+    #   @param [Integer] height
+    #   @param [Integer] depth
     def initialize(*args)
       clear
       set(*args) unless args.empty?
     end
 
+    ##
+    # @return [Integer]
     def x2
       @x + @width
     end
 
+    ##
+    # @return [Integer]
     def y2
       @y + @height
     end
 
+    ##
+    # @return [Integer]
     def z2
       @z + @depth
     end
 
+    ##
+    # @return [Array<Integer>[6]]
     def to_a
       return @x, @y, @z, @width, @height, @depth
     end
 
+    ##
+    # @return [Hash<Symbol, Integer>]
     def to_h
       { x: @x, y: @y, z: @z, width: @width, height: @height, depth: @depth }
     end
 
+    ##
+    # @return [Rect]
     def to_rect_xy
       Moon::Rect.new(@x, @y, @width, @height)
     end
 
+    ##
+    # @return [Rect]
     def to_rect_xz
       Moon::Rect.new(@x, @z, @width, @depth)
     end
 
+    ##
+    # @return [Rect]
     def to_rect_yz
       Moon::Rect.new(@y, @z, @height, @depth)
     end
 
+    ##
+    # @return [self]
     def clear
       @x, @y, @z, @width, @height, @depth = 0, 0, 0, 0, 0, 0
       self
@@ -67,13 +102,13 @@ module Moon
     end
 
     ##
-    # @overload resize(vec3: Vector3)
+    # @overload resize(vec3)
     #   @param [Vector3] vec3
-    # @overload resize(width: Integer, height: Integer, depth: Integer)
+    # @overload resize(width, height, depth)
     #   @param [Integer] width
     #   @param [Integer] height
     #   @param [Integer] depth
-    # @overload resize(hash: Hash<Symbol, Integer>)
+    # @overload resize(hash)
     #   @param [Hash<Symbol, Integer>]
     # @return [self]
     def resize(*args)
@@ -82,9 +117,9 @@ module Moon
     end
 
     ##
-    # @overload inside?(vec3: Vector3)
+    # @overload inside?(vec3)
     #   @param [Vector3] vec3
-    # @overload inside?(x: Integer, y: Integer, z: Integer)
+    # @overload inside?(x, y, z)
     #   @param [Integer] x
     #   @param [Integer] y
     #   @param [Integer] z
@@ -94,18 +129,6 @@ module Moon
       x.between?(self.x, self.x2-1) &&
       y.between?(self.y, self.y2-1) &&
       z.between?(self.z, self.z2-1)
-    end
-
-    ##
-    # @return [self]
-    def clear
-      self.x = 0
-      self.y = 0
-      self.z = 0
-      self.width = 0
-      self.height = 0
-      self.depth = 0
-      self
     end
 
     ##
@@ -162,7 +185,7 @@ module Moon
       @width, @height, @depth = *Vector3.extract(vec3)
     end
 
-    ###
+    ##
     # Converts a given Object to Cuboid array
     # @param [Object] obj
     # @return [Array<Numeric>] (x, y, z, w, h, d)
