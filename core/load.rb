@@ -1,6 +1,7 @@
 #
 # core/load.rb
 #   Entry script for Moon's mrb
+require 'core/err/abstract_method_error'
 require 'core/core_ext'
 require 'core/mixins'
 require 'core/event'
