@@ -1,14 +1,17 @@
 module MicroJSON
+  ##
+  # @param [Object] o
+  # @return [String]
   def self.dump(o)
     dump_obj = lambda do |obj|
-      result = ""
+      result = ''
       case obj
       when Hash
-        result << "{"
+        result << '{'
         result << (obj.map do |(key, value)|
-          key.to_s.dump << ":" << dump_obj.(value)
-        end.join(","))
-        result << "}"
+          key.to_s.dump << ':' << dump_obj.call(value)
+        end.join(','))
+        result << '}'
       when String
         result << obj.dump
       when Symbol
@@ -16,11 +19,11 @@ module MicroJSON
       when Numeric
         result << obj.to_s
       when Array
-        result << "["
+        result << '['
         result << (obj.map do |value|
-          dump_obj.(value)
-        end.join(","))
-        result << "]"
+          dump_obj.call(value)
+        end.join(','))
+        result << ']'
       when true
         result << 'true'
       when false
@@ -32,9 +35,12 @@ module MicroJSON
       end
       result
     end
-    dump_obj.(o)
+    dump_obj.call(o)
   end
 
+  ##
+  # @param [String] str
+  # @return [Object]
   def self.load(str)
     index = 0
 
@@ -50,12 +56,12 @@ module MicroJSON
 
     read_str = lambda do
       old_index = index
-      s = ""
+      s = ''
       while index < str.size
-        case c=current_char.()
+        case c=current_char.call
         when '\\'
           index += 1
-          s << current_char.()
+          s << current_char.call
           index += 1
         when '"'
           index += 1
@@ -70,10 +76,10 @@ module MicroJSON
 
     read_str_find_first = lambda do
       while index < str.size
-        case current_char.()
+        case current_char.call
         when '"'
           index += 1
-          return read_str.()
+          return read_str.call
         else
           index += 1
         end
@@ -81,9 +87,9 @@ module MicroJSON
     end
 
     read_key_str = lambda do
-      s = read_str_find_first.()
+      s = read_str_find_first.call
       while index < str.size
-        case current_char.()
+        case current_char.call
         when ':'
           index += 1
           break
@@ -99,7 +105,7 @@ module MicroJSON
       base = 10
       n = ''
       while index < str.size
-        case c = current_char.()
+        case c = current_char.call
         when '-', '+', '0'..'9', 'A'..'F', 'a'..'f'
           n << c
         when 'x', 'X'
@@ -121,33 +127,33 @@ module MicroJSON
 
     read_obj = lambda do
       while index < str.size
-        case current_char.()
+        case current_char.call
         when 't'
-          if current_char.(4) == 'true'
+          if current_char.call(4) == 'true'
             index += 4
             return true
           end
         when 'f'
-          if current_char.(5) == 'false'
+          if current_char.call(5) == 'false'
             index += 5
             return false
           end
         when 'n'
-          if current_char.(4) == 'null'
+          if current_char.call(4) == 'null'
             index += 4
             return nil
           end
         when '-', '+', '0'..'9'
-          return read_numeric.()
+          return read_numeric.call
         when '['
           index += 1
-          return read_array.()
+          return read_array.call
         when '"'
           index += 1
-          return read_str.()
-        when "{"
+          return read_str.call
+        when '{'
           index += 1
-          return read_hash.()
+          return read_hash.call
         else
           index += 1
         end
@@ -156,7 +162,7 @@ module MicroJSON
 
     read_array_continue_or_end = lambda do
       while index < str.size
-        case current_char.()
+        case current_char.call
         when ']'
           break
         when ','
@@ -170,13 +176,13 @@ module MicroJSON
     read_array = lambda do
       a = []
       while index < str.size
-        case current_char.()
+        case current_char.call
         when ']'
           index += 1
           break
         else
-          a << read_obj.()
-          read_array_continue_or_end.()
+          a << read_obj.call
+          read_array_continue_or_end.call
         end
       end
       a
@@ -184,7 +190,7 @@ module MicroJSON
 
     read_hash_continue_or_end = lambda do
       while index < str.size
-        case current_char.()
+        case current_char.call
         when '}'
           break
         when ','
@@ -198,20 +204,20 @@ module MicroJSON
     read_hash = lambda do
       h = {}
       while index < str.size
-        case current_char.()
-        when "}"
+        case current_char.call
+        when '}'
           index += 1
           break
         else
-          key = read_key_str.()
-          value = read_obj.()
+          key = read_key_str.call
+          value = read_obj.call
           h[key] = value
-          read_hash_continue_or_end.()
+          read_hash_continue_or_end.call
         end
       end
       h
     end
 
-    read_obj.()
+    read_obj.call
   end
 end
