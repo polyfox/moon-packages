@@ -1,0 +1,7 @@
+---
+name: TwoD
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: Utility objects for handling 2d scenes.
+require: _require.rb
+deps:
+  - core
