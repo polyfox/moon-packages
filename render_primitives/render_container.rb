@@ -105,37 +105,51 @@ module Moon
       end
     end
 
-    def width
-      @width ||= begin
-        x = 0
-        x2 = 0
-        @elements.each do |e|
-          ex = e.x
-          ex2 = ex + e.width
-          x = ex if ex < x
-          x2 = ex2 if ex2 > x2
-        end
-        x2 - x
+    ##
+    # @return [Integer]
+    private def compute_width
+      x = 0
+      x2 = 0
+      @elements.each do |e|
+        ex = e.x
+        ex2 = ex + e.width
+        x = ex if ex < x
+        x2 = ex2 if ex2 > x2
       end
+      x2 - x
     end
 
+    ##
+    # @return [Integer]
+    def width
+      @width ||= compute_width
+    end
+
+    ##
+    # @param [Integer] width
     def width=(width)
       @width = width
       trigger :resize
     end
 
-    def height
-      @height ||= begin
-        y = 0
-        y2 = 0
-        @elements.each do |e|
-          ey = e.y
-          ey2 = ey + e.height
-          y = ey if ey < y
-          y2 = ey2 if ey2 > y2
-        end
-        y2 - y
+    ##
+    # @return [Integer]
+    private def compute_height
+      y = 0
+      y2 = 0
+      @elements.each do |e|
+        ey = e.y
+        ey2 = ey + e.height
+        y = ey if ey < y
+        y2 = ey2 if ey2 > y2
       end
+      y2 - y
+    end
+
+    ##
+    # @return [Integer]
+    def height
+      @height ||= compute_height
     end
 
     def height=(height)
