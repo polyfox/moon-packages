@@ -9,30 +9,33 @@ module Moon
       @aliases = {}
     end
 
-    ###
+    # @param [Moon::Event] event
     # @return [Boolean]
-    ###
     def allow_event?(event)
       true
     end
 
-    ###
     # Adds a new event listener.
     # @param [Symbol] keys The keys to listen for..
     # @param [Proc] block The block we want to execute when we catch the type.
-    ###
-    def on(action, *keys, &block)
+    def on(event, *keys, &block)
       keys = keys.flatten.map! { |k| Input.convert_key(k) }
       listener = { block: block }
       listener[:keys] = keys unless keys.empty?
-      if action.is_a?(Enumerable)
-        action.each do |a|
-          (@event_listeners[a] ||= []).push(listener)
+      if event.is_a?(Enumerable)
+        event.each do |a|
+          add_event_listener(a, listener)
         end
       else
-        (@event_listeners[action] ||= []).push(listener)
+        add_event_listener(event, listener)
       end
       listener
+    end
+
+    # @return [Symbol] event
+    # @return [Hash] listener
+    def add_event_listener(event, listener)
+      (@event_listeners[event] ||= []).push(listener)
     end
 
     def typing(&block)
@@ -63,9 +66,7 @@ module Moon
       trigger_event(:any, event)
     end
 
-    ###
     # @param [Event] event
-    ###
     def trigger(event)
       event = Event.new(event) unless event.is_a?(Event)
 

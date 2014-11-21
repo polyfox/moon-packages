@@ -104,7 +104,7 @@ module Moon
     private def register_event(klass, options, &block)
       event_filter = klass.make_filter(options)
       listener = Listener.new(klass, event_filter, block)
-      (@event_listeners[klass] ||= []).push(listener)
+      add_event_listener(klass, listener)
     end
 
     def on(klass, options={}, &block)
