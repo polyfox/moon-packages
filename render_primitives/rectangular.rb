@@ -111,28 +111,35 @@ module Moon
       end
 
       ##
+      # @param [String] command
+      # @param [Moon::RenderPrimitive::Rectangular] rect
+      private def align_command!(command, rect)
+        case command
+        when 'center'
+          self.cx = rect.cx
+          self.cy = rect.cy
+        when 'middle-horz'
+          self.cx = rect.cx
+        when 'middle-vert'
+          self.cy = rect.cy
+        when 'left'
+          self.x  = rect.x
+        when 'right'
+          self.x2 = rect.x2
+        when 'top'
+          self.y  = rect.y
+        when 'bottom'
+          self.y2 = rect.y2
+        end
+      end
+
+      ##
       # @param [String] str  alignment commands, space seperated words
-      # @param [Moon::Rect] rect  Rect to align the object against
+      # @param [Moon::RenderPrimitive::Rectangular] rect  Object to align against
       # @return [self]
       def align!(str, rect)
         str.split(' ').each do |command|
-          case command
-          when 'center'
-            self.cx = rect.cx
-            self.cy = rect.cy
-          when 'middle-horz'
-            self.cx = rect.cx
-          when 'middle-vert'
-            self.cy = rect.cy
-          when 'left'
-            self.x  = rect.x
-          when 'right'
-            self.x2 = rect.x2
-          when 'top'
-            self.y  = rect.y
-          when 'bottom'
-            self.y2 = rect.y2
-          end
+          align_command!(command, rect)
         end
         self
       end
