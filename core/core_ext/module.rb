@@ -42,5 +42,17 @@ class Module
     method_name
   end
 
+  ##
+  # @param [Symbol] args
+  def enum_const(*args)
+    if args.first.is_a?(Hash)
+      args.first.each do |key, i|
+        const_set(key, i)
+      end
+    else
+      args.each_with_index do |s, i|
+        const_set(s, i)
+      end
+    end
   end
 end
