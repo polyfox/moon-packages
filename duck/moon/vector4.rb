@@ -80,20 +80,23 @@ module Moon
             when Vector3
               params.concat(obj.to_a)
             else
-              raise TypeError, "expected Numeric, Vector2 or Vector3"
+              raise TypeError,
+                    'expected Numeric, Vector2 or Vector3'
             end
           end
           x, y, z, w = *params
         when 4
           x, y, z, w = *obj
         else
-          raise ArgumentError, "expected Array of size 1, 2, 3, or 4"
+          raise ArgumentError,
+                'expected Array of size 1, 2, 3, or 4'
         end
         return x, y, z, w
       when Hash
         return obj.fetch(:x), obj.fetch(:y), obj.fetch(:z)
       else
-        raise TypeError, "wrong argument type (expected Array, Hash, Numeric or Vector3)"
+        raise TypeError,
+              'wrong argument type (expected Array, Hash, Numeric or Vector3)'
       end
     end
 

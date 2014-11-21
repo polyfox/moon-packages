@@ -8,16 +8,17 @@ module Moon
       @cell_height = ch
       if o.is_a?(String)
         @filename = o
-        raise unless File.exists?(@filename)
+        raise unless File.exist?(@filename)
         @texture = Texture.new(@filename)
       elsif o.is_a?(Texture)
         @texture = o
       else
-        raise TypeError, "wrong argument type #{o.class} (expected Texture or String)"
+        raise TypeError,
+              "wrong argument type #{o.class} (expected Texture or String)"
       end
     end
 
-    def render(x, y, z, index, options={})
+    def render(x, y, z, index, options = {})
       puts "#{self}#render(#{x}, #{y}, #{z}, #{index}, #{options})"
     end
   end

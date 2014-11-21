@@ -7,7 +7,7 @@ module Moon
       @size = size
     end
 
-    def render(x, y, z, str, color=nil, options={})
+    def render(x, y, z, str, color = nil, options = {})
       color ||= Vector4.new(1, 1, 1, 1)
       puts "#{self}#render(#{x}, #{y}, #{z}, #{str.dump}, #{color}, #{options})"
     end
@@ -19,7 +19,7 @@ module Moon
         x = sz if x < sz
         y += @size
       end
-      return x, y
+      [x, y]
     end
   end
 end

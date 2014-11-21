@@ -62,13 +62,14 @@ module Moon
         when 2
           x, y = *obj
         else
-          raise ArgumentError, "expected Array of size 1 or 2"
+          raise ArgumentError, 'expected Array of size 1 or 2'
         end
         return x, y
       when Hash
         return obj.fetch(:x), obj.fetch(:y)
       else
-        raise TypeError, "wrong argument type (expected Array, Hash, Numeric or Vector2)"
+        raise TypeError,
+              'wrong argument type (expected Array, Hash, Numeric or Vector2)'
       end
     end
 

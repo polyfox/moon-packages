@@ -6,7 +6,7 @@ module Moon
     def initialize(o)
       if o.is_a?(String)
         @filename = o
-        raise unless File.exists?(@filename)
+        raise unless File.exist?(@filename)
         @texture = Texture.new(@filename)
       else
         raise TypeError, "wrong argument type #{o.class} (expected String)"
@@ -15,7 +15,7 @@ module Moon
       @clip_rect = Rect.new(0, 0, 0, 0)
     end
 
-    def render(x, y, z, options={})
+    def render(x, y, z, options = {})
       puts "#{self}#render(#{x}, #{y}, #{z}, #{options})"
     end
 

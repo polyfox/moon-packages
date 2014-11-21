@@ -75,7 +75,7 @@ module Moon
             when Vector2
               params.concat(obj.to_a)
             else
-              raise ArgumentError, "expected Array of size 1, 2, or 3"
+              raise ArgumentError, 'expected Array of size 1, 2, or 3'
             end
           end
           x, y, z = *params
@@ -88,7 +88,8 @@ module Moon
       when Hash
         return obj.fetch(:x), obj.fetch(:y), obj.fetch(:z)
       else
-        raise TypeError, "wrong argument type (expected Array, Hash, Numeric or Vector3)"
+        raise TypeError,
+              'wrong argument type (expected Array, Hash, Numeric or Vector3)'
       end
     end
 

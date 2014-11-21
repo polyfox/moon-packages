@@ -2,7 +2,9 @@ module Moon
   class Texture
     def initialize(filename)
       @filename = filename
-      raise unless File.exists?(@filename)
+      unless File.exist?(@filename)
+        raise ScriptError, "file #{filename} does not exist"
+      end
     end
 
     def width
