@@ -1,4 +1,6 @@
 # Mixins
+require 'render_primitives/activatable'       # Interface
+require 'render_primitives/indexable'         # Interface
 require 'render_primitives/renderable'        # Interface
 require 'render_primitives/containable'       # Interface
 require 'render_primitives/visibility'        # Interface
