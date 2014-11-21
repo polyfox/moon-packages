@@ -1,37 +1,30 @@
 module Moon
   module DataModel
-    module Validators
+    module TypeValidators
       module Verbose
-        def check_array_content(type, key, value, options={})
+        include Moon::DataModel::TypeValidators::Base
+
+        def check_array_content(type, key, value, options = {})
           value.each_with_index do |obj, i|
-            begin
-              unless type.any? { |t| check_type(t, key, obj, quiet: true, allow_nil: false) }
-                str = type.map { |s| s.inspect }.join(", ")
-                if options[:quiet]
-                  return false
-                else
-                  raise TypeError,
-                        "[#{key}[#{i}]] wrong content type #{obj.class.inspect} (expected #{str})"
-                end
+            unless type.any? { |t| check_type(t, key, obj, quiet: true, allow_nil: false) }
+              str = type.map { |s| s.inspect }.join(", ")
+              if options[:quiet]
+                return false
+              else
+                raise TypeError,
+                      "[#{key}[#{i}]] wrong content type #{obj.class.inspect} (expected #{str})"
               end
             end
           end
           true
         end
 
-        def check_array_type(type, key, value, options={})
-          unless value.is_a?(Array)
-            if options[:quiet]
-              return false
-            else
-              raise TypeError,
-                    "[#{key}] wrong type #{value.class.inspect} (expected Array)"
-            end
-          end
+        def check_array_type(type, key, value, options = {})
+          check_object_class(key, Array, value, options)
           check_array_content(type, key, value, options)
         end
 
-        def check_hash_content(type, key, value, options={})
+        def check_hash_content(type, key, value, options = {})
           key_types = type.keys
           key_str = type.map { |s| s.inspect }.join(", ")
           value.each do |k, v|
@@ -47,27 +40,13 @@ module Moon
           end
         end
 
-        def check_hash_type(type, key, value, options={})
-          unless value.is_a?(Hash)
-            if options[:quiet]
-              return false
-            else
-              raise TypeError,
-                    "[#{key}] wrong type #{value.class.inspect} (expected Hash)"
-            end
-          end
+        def check_hash_type(type, key, value, options = {})
+          check_object_class(key, Hash, value, options)
           check_hash_content(type, key, value, options)
         end
 
-        def check_normal_type(type, key, value, options={})
-          unless value.is_a?(type)
-            if options[:quiet]
-              return false
-            else
-              raise TypeError,
-                    "[#{key}] wrong type #{value.class.inspect} (expected #{type.inspect})"
-            end
-          end
+        def check_normal_type(type, key, value, options = {})
+          check_object_class(key, type, value, options)
           true
         end
 

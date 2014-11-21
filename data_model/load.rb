@@ -1,3 +1,4 @@
+require 'data_model/type_validators'
 require 'data_model/validators'
 require 'data_model/field'
 require 'data_model/fields'

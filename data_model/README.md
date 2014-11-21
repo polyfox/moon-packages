@@ -1,14 +1,14 @@
 Data Model
 ==========
 
-Be sure to set a validator before using DataModel using:
-```
+Be sure to set a Type Validator before using DataModel:
+```ruby
 # soft validator
-Moon::DataModel::Field.validator = Moon::DataModel::Validators::Soft
+Moon::DataModel::Field.type_validator = Moon::DataModel::TypeValidators::Soft
 
 # verbose validator
-Moon::DataModel::Field.validator = Moon::DataModel::Validators::Verbose
+Moon::DataModel::Field.type_validator = Moon::DataModel::TypeValidators::Verbose
 
 # null validator
-Moon::DataModel::Field.validator = Moon::DataModel::Validators::Null
+Moon::DataModel::Field.type_validator = Moon::DataModel::TypeValidators::Null
 ```
