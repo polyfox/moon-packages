@@ -1,23 +1,33 @@
+##
+# :nodoc:
 module Moon
+  ##
+  #
   class Scheduler
-    ### instance attribute
-    attr_accessor :tasks
-    attr_accessor :intervals
+    ##
+    # @return [Array<Scheduler::Job::Base*>]
+    attr_accessor :jobs
+    ##
+    # @return [Float] uptime  in seconds
+    attr_reader :uptime
+    ##
+    # @return [Integer] ticks  in frames
+    attr_reader :ticks
 
     ##
-    # @type [Hash<String, Float>]
+    # @return [Hash<String, Float>]
     DURATION_SUFFIX = {
-      ""  => 0.001,
-      "s" => 1.0,
-      "m" => 60.0,
-      "h" => 3600.0,
-      "d" => 86400.0,
-      "w" => 604800.0,
-      "M" => 2592000.0,
-      "y" => 31536000.0,
+      ''  => 0.001,
+      's' => 1.0,
+      'm' => 60.0,
+      'h' => 3_600.0,
+      'd' => 86_400.0,
+      'w' => 604_800.0,
+      'M' => 2_592_000.0,
+      'y' => 31_536_000.0
     }
 
-    ###
+    ##
     # @param [String] str
     # @return [Float] duration  in seconds
     def self.parse_duration(str)
@@ -40,37 +50,31 @@ module Moon
       value
     end
 
+    ##
+    # :nodoc:
     def initialize
       @jobs = []
       @paused = false
-      @tick = 0.0
+      @ticks = 0
+      @uptime = 0.0
     end
 
-    ###
-    # @return [Float] uptime  in seconds
-    ###
-    def uptime
-      @tick
-    end
-
-    ###
+    ##
     # Pauses the Scheduler
-    ###
     def pause
       @paused = true
     end
 
-    ###
+    ##
     # Unpauses the Scheduler
-    ###
     def resume
       @paused = false
     end
 
     ##
-    # @param [SchedulerJob class] klass
-    # @param [Numeric|String] duration
-    # @return [SchedulerJob] instance
+    # @param [Class<Scheduler::Job::Base>] klass
+    # @param [Numeric, String] duration
+    # @return [Scheduler::Job::Base<>] instance
     private def new_job(klass, duration, &block)
       duration = self.class.parse_duration(duration) if duration.is_a?(String)
       job = klass.new(duration, &block)
@@ -78,56 +82,52 @@ module Moon
       job
     end
 
-    ###
+    ##
     # every(duration) { execute_every_duration }
     # @param [Integer] duration
     # @return [Interval]
     def every(duration, &block)
-      new_job(Interval, duration, &block)
+      new_job(Jobs::Interval, duration, &block)
     end
 
-    ###
+    ##
     # in(duration) { to_execute_on_timeout }
     # @param [Integer] duration
     # @return [Timeout]
     def in(duration, &block)
-      new_job(Timeout, duration, &block)
+      new_job(Jobs::Timeout, duration, &block)
     end
 
-    ###
+    ##
     # Clears all jobs
-    ###
     def clear
       @jobs.clear
+      self
     end
 
-    ###
+    ##
     # Removes a job
     # @overload remove(obj)
-    ###
-    def remove(obj=nil)
+    def remove(obj = nil)
       @jobs.delete(obj)
     end
 
-    ###
+    ##
     # Removes a job by id
-    ###
     def remove_by_id(id)
       @jobs.delete { |job| job.id == id }
     end
 
-    ###
+    ##
     # Force all jobs to finish.
     # @return [Void]
-    ###
     def finish
       return unless @jobs
       @jobs.each(&:finish)
     end
 
-    ###
+    ##
     # Frame update
-    ###
     def update(delta)
       return if @paused
       dead = []
@@ -136,7 +136,8 @@ module Moon
         dead << task if task.done?
       end
       @jobs -= dead unless dead.empty?
-      @tick += delta
+      @uptime += delta
+      @ticks += 1
     end
   end
 end
