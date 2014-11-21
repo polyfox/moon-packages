@@ -1,36 +1,60 @@
-class Indexer
-  include Indexable
-  include Moon::Eventable
+module Lunar
+  ##
+  # Object for wrapping Array like objects and achieving an Indexable effect
+  # without touching the underlaying object.
+  class Indexer
+    include Moon::Indexable
+    include Moon::Eventable
 
-  attr_accessor :obj
+    ##
+    # @return [Object]
+    attr_accessor :obj
 
-  def initialize(obj)
-    @obj = obj
-    init_eventable
-    init_index
-  end
+    ##
+    # @param [Object] obj
+    #   An Object that responds to #[] and #size
+    def initialize(obj)
+      @obj = obj
+      init_eventable
+      init_index
+    end
 
-  def size
-    obj.size
-  end
+    ##
+    # Size of the internal object
+    # @return [Integer]
+    def size
+      obj.size
+    end
 
-  def treat_index(new_index)
-    new_index % [size, 1].max
-  end
+    ##
+    # @see Indexable#treat_index
+    private def treat_index(new_index)
+      new_index % [size, 1].max
+    end
 
-  def next
-    change_index(index + 1)
-  end
+    ##
+    # Increment index
+    def next
+      change_index(index + 1)
+    end
 
-  def prev
-    change_index(index - 1)
-  end
+    ##
+    # Decrement index
+    def prev
+      change_index(index - 1)
+    end
 
-  def refresh
-    change_index(index)
-  end
+    ##
+    # :nodoc:
+    def refresh
+      change_index(index)
+    end
 
-  def current_element
-    @obj[@index]
+    ##
+    # Returns the current element in the @obj at @index
+    # @return [Object]
+    def current_element
+      @obj[@index]
+    end
   end
 end
