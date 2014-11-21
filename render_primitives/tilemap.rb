@@ -1,8 +1,5 @@
-#
-# moon/core/tilemap.rb
-#
-# This may need to be rewritten in C/++
 module Moon
+  # This may need to be rewritten in C/++
   class Tilemap < RenderContext
     module DataFlag
       NONE            = 0        # 0000 0000 # no flag
@@ -18,19 +15,32 @@ module Moon
       FULL_OFF_TILE   = 1|2|4|8  # 0000 1111 # enable full offset
     end
 
-    attr_accessor :tileset       # Spritesheet
-    attr_accessor :data          # DataMatrix
-    attr_accessor :flags         # DataMatrix
-    attr_accessor :data_zmap     # DataMatrix
-    attr_accessor :layer_opacity # Array
-    attr_accessor :repeat_map    # Boolean
-    attr_accessor :view          # Rect     # restricts rendering inside view
-    attr_accessor :selection     # Cuboid   # selects a section of the map_data to render
-    attr_accessor :position      # Vector3
+    # @return [Moon::Spritesheet]
+    attr_accessor :tileset
+    # @return [Moon::DataMatrix]
+    attr_accessor :data
+    # @return [Moon::DataMatrix]
+    attr_accessor :flags
+    # @return [Moon::DataMatrix]
+    attr_accessor :data_zmap
+    # @return [Array<Float>]
+    attr_accessor :layer_opacity
+    # @return [Boolean]
+    attr_accessor :repeat_map
+    # restricts rendering inside view
+    # @return [Moon::Rect]
+    attr_accessor :view
+    # selects a section of the map_data to render
+    # @return [Moon::Cuboid]
+    attr_accessor :selection
+    # @return [Vector2]
+    attr_reader :tilesize
+    # @return [Vector2]
+    attr_reader :datasize
 
     ##
-    # initialize
-    def init
+    #
+    private def init
       super
       @tileset       = nil
       @data          = nil
@@ -40,7 +50,43 @@ module Moon
       @repeat_map    = false
       @view          = nil
       @selection     = nil
-      @position      = Vector3.new(0, 0, 0)
+      @tilesize      = Vector2.new(0, 0)
+      @datasize      = Vector2.new(0, 0)
+    end
+
+    def refresh_size
+      self.width  = @datasize.x * @tilesize.x
+      self.height = @datasize.y * @tilesize.y
+    end
+
+    def refresh_data
+      if @data
+        @datasize = Vector2.new(@data.xsize, @data.ysize)
+      else
+        @datasize = Vector2.new
+      end
+      refresh_size
+    end
+
+    def refresh_tileset
+      if @tileset
+        @tilesize = Vector2.new(@tileset.cell_width, @tileset.cell_height)
+      else
+        @tilesize = Vector2.new
+      end
+      refresh_size
+    end
+
+    # @param [Moon::DataMatrix] data
+    def data=(data)
+      @data = data
+      refresh_data
+    end
+
+    # @param [Moon::Spritesheet] tileset
+    def tileset=(tileset)
+      @tileset = tileset
+      refresh_tileset
     end
 
     ##
@@ -52,8 +98,8 @@ module Moon
       return unless @data
       return unless @tileset
 
-      cell_width  = @tileset.cell_width
-      cell_height = @tileset.cell_height
+      cell_width  = @tilesize.x
+      cell_height = @tilesize.y
 
       dox = 0
       doy = 0
@@ -130,24 +176,24 @@ module Moon
               rx, ry, rz = 0, 0, 0
               vx, vy = 0, 0
 
-              if (flag.masked?(DataFlag::FULL_OFF_TILE))
+              if flag.masked?(DataFlag::FULL_OFF_TILE)
                 vx, vy = cell_width, cell_height
-              elsif (flag.masked?(DataFlag::TQUART_OFF_TILE))
+              elsif flag.masked?(DataFlag::TQUART_OFF_TILE)
                 vx, vy = (cell_width / 4) * 3, (cell_height / 4) * 3
-              elsif (flag.masked?(DataFlag::HALF_OFF_TILE))
+              elsif flag.masked?(DataFlag::HALF_OFF_TILE)
                 vx, vy = cell_width / 2, cell_height / 2
-              elsif (flag.masked?(DataFlag::QUART_OFF_TILE))
+              elsif flag.masked?(DataFlag::QUART_OFF_TILE)
                 vx, vy = cell_width / 4, cell_height / 4
               end
 
-              if (flag.masked?(DataFlag::OFF_LEFT))
+              if flag.masked?(DataFlag::OFF_LEFT)
                 rx -= vx
-              elsif (flag.masked?(DataFlag::OFF_RIGHT))
+              elsif flag.masked?(DataFlag::OFF_RIGHT)
                 rx += vx
               end
-              if (flag.masked?(DataFlag::OFF_DOWN))
+              if flag.masked?(DataFlag::OFF_DOWN)
                 ry += vy
-              elsif (flag.masked?(DataFlag::OFF_UP))
+              elsif flag.masked?(DataFlag::OFF_UP)
                 ry -= vy
               end
               @tileset.render rnx + rx,

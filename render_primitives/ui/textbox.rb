@@ -1,14 +1,20 @@
+# :nodoc:
 module Moon
   class Textbox < Widget
+    # @param [Moon::Text]
     attr_reader :text
 
-    def init_elements
+    ##
+    #
+    private def init_elements
       super
       @text = Text.new
       add(@text)
     end
 
-    def init_events
+    ##
+    #
+    private def init_events
       super
       on :typing do |e|
         @text.string += e.char

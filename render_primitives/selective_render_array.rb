@@ -1,12 +1,20 @@
+# :nodoc:
 module Moon
   class SelectiveRenderArray < RenderArray
-    attr_accessor :index
+    include Indexable
 
-    def init_elements
-      @index = 0
+    ##
+    #
+    private def init
       super
+      init_index
     end
 
+    ##
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] z
+    # @param [Hash<Symbol, Object>] options
     private def render_elements(x, y, z, options)
       if element = @elements[@index]
         element.render(x, y, z, options)

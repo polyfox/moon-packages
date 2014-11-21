@@ -1,33 +1,38 @@
+# :nodoc:
 module Moon
+  ##
+  # Renderer object, for rendering bitmap font Spritesheets
   class BitmapFont < Moon::RenderContext
+    # @return [String]
     attr_reader :string
+    # @return [Boolean]
     attr_accessor :bold
+    # @return [Moon::Vector4]
     attr_accessor :color
 
     ##
-    # Current font cell size is fixed at 8x8
-    # @param [String] filename font file name
+    # @param [Moon::Spritesheet] spritesheet
     # @param [String] string initial ASCII string value
-    def initialize(filename, string="", options={})
+    # @param [Hash<Symbol, Object>] options
+    def initialize(spritesheet, string = '', options = {})
       super(options)
-      @color = Vector4.new 1.0, 1.0, 1.0, 1.0
-      @cell_size = [8, 8]
-      @spritesheet = Cache.bmpfont filename, *@cell_size
+      @color = Vector4.new(1.0, 1.0, 1.0, 1.0)
+      @spritesheet = spritesheet
       self.string = string
     end
 
     ##
-    # @param [String] n
-    def string=(n)
-      @string = (n && n.to_s) || nil
+    # @param [String] string
+    def string=(string)
+      @string = (string && string.to_s) || nil
       refresh_size
     end
 
     ##
     # Recalculate size
-    def refresh_size
-      @cached_width = @string.size * @cell_size[0]
-      @cached_height = (@string.count("\n") + 1) * @cell_size[1]
+    private def refresh_size
+      @cached_width = @string.size * @spritesheet.width
+      @cached_height = (@string.count("\n") + 1) * @spritesheet.height
 
       self.width = @cached_width
       self.height = @cached_height
@@ -37,13 +42,14 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    def render_content(x, y, z, options)
+    # @param [Hash<Symbol, Object>] options
+    private def render_content(x, y, z, options)
       if @string
         offset = @bold ? 256 : 0
         row = 0
         col = 0
 
-        @string.bytes.each_with_index do |byte, i|
+        @string.each_byte do |byte|
           if byte.chr == "\n"
             col = 0
             row += 1

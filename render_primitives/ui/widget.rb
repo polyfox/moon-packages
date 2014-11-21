@@ -1,19 +1,30 @@
+# :nodoc:
 module Moon
+  ##
+  # Widget base class
   class Widget < RenderContainer
+    # @return [Boolean]
     attr_accessor :focused
+    # @return [Moon::SkinSlice9]
     attr_reader :background
 
-    def initialize
+    ##
+    #
+    def init
       @focused = false
       super
     end
 
-    def init_elements
+    ##
+    #
+    private def init_elements
       super
       create_background
     end
 
-    def init_events
+    ##
+    #
+    private def init_events
       super
       on :resize do
         @background.width = width
@@ -21,19 +32,23 @@ module Moon
       end
     end
 
-    def create_background
+    ##
+    #
+    private def create_background
       @background = SkinSlice9.new
       add(@background)
     end
 
+    ##
+    #
     def focus
       @focused = true
     end
 
+    ##
+    #
     def unfocus
       @focused = false
     end
-
-    private :create_background
   end
 end

@@ -1,8 +1,11 @@
 module Moon
   module RenderPrimitive
     module Rectangular
+      # @return [Moon::Vector3]
       attr_accessor :position
+      # @return [Integer]
       attr_accessor :width
+      # @return [Integer]
       attr_accessor :height
 
       ##
@@ -95,7 +98,7 @@ module Moon
       # @param [Integer] z
       #   @optional
       # @return [self]
-      def move(x, y, z=self.z)
+      def move(x, y, z = self.z)
         @position.set(x, y, z)
         self
       end
@@ -145,13 +148,13 @@ module Moon
       end
 
       ##
-      # @return [Rect] bounds
+      # @return [Moon::Rect] bounds
       def bounds
         Moon::Rect.new(x, y, width, height)
       end
 
       ##
-      # @return [Rect] rect
+      # @return [Moon::Rect] rect
       def to_rect
         Moon::Rect.new(x, y, width, height)
       end

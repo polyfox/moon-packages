@@ -1,29 +1,40 @@
-# Inspired by
-# http://dev.chromium.org/developers/design-documents/aura
-##
-# RenderContainers are as there name says, Render Containers, they can contain
-# other RenderContainers or RenderContext objects, they serve the purpose
-# of constructing Render Trees
+# :nodoc:
 module Moon
+  ##
+  # Inspired by
+  # http://dev.chromium.org/developers/design-documents/aura
+  #
+  # RenderContainers are as there name says, Render Containers, they can contain
+  # other RenderContainers or RenderContext objects, they serve the purpose
+  # of constructing Render Trees
   class RenderContainer < RenderContext
     include Enumerable
 
+    # @return [Array<Moon::RenderContext>]
     attr_reader :elements
 
+    ##
+    # @param [Hash<Symbol, Object>] options
     private def init_from_options(options)
       super
       @elements = options.fetch(:elements) { [] }
     end
 
+    ##
+    #
     private def init_content
       super
       init_elements
     end
 
+    ##
+    # @abstract
     private def init_elements
       #
     end
 
+    ##
+    #
     private def init_events
       super
       # generic event passing callback
@@ -152,20 +163,28 @@ module Moon
       @height ||= compute_height
     end
 
+    ##
+    # @param [Integer] height
     def height=(height)
       @height = height
       trigger :resize
     end
 
-    def refresh_size
+    ##
+    #
+    private def refresh_size
       self.width = nil
       self.height = nil
     end
 
+    ##
+    # @yield
     def each(&block)
       @elements.each(&block)
     end
 
+    ##
+    # @param [Moon::RenderContext] element
     def add(element)
       @elements.push(element)
       element.parent = self
@@ -175,6 +194,8 @@ module Moon
       element
     end
 
+    ##
+    # @param [Moon::RenderContext] element
     def remove(element)
       @elements.delete(element)
       element.parent = nil
@@ -184,25 +205,42 @@ module Moon
       element
     end
 
+    ##
+    #
     def clear_elements
       @elements.clear
       refresh_size
     end
 
+    ##
+    # @param [Float] delta
     private def update_elements(delta)
       @elements.each { |element| element.update(delta) }
     end
 
+    ##
+    # @param [Float] delta
     private def update_content(delta)
       update_elements(delta)
+      super
     end
 
+    ##
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] z
+    # @param [Hash<Symbol, Object>] options
     private def render_elements(x, y, z, options)
       @elements.each do |e|
         e.render x, y, z, options
       end
     end
 
+    ##
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] z
+    # @param [Hash<Symbol, Object>] options
     private def render_content(x, y, z, options)
       render_elements(x, y, z, options)
       super
