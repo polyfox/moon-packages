@@ -1,8 +1,8 @@
-# moon/core/data_matrix.rb
-#   aka. 3d table
+#   aka. Table3
 module Moon
   class DataMatrix
     include Enumerable
+    include Serializable
 
     attr_reader :xsize
     attr_reader :ysize
@@ -10,7 +10,7 @@ module Moon
     attr_reader :data
     attr_accessor :default
 
-    def initialize(xsize, ysize, zsize, options={})
+    def initialize(xsize, ysize, zsize, options = {})
       @xsize = xsize.to_i
       @ysize = ysize.to_i
       @zsize = zsize.to_i
@@ -135,10 +135,10 @@ module Moon
     end
 
     def to_s
-      result = ""
+      result = ''
       @zsize.times do |z|
         @ysize.times do |y|
-          result.concat(@data[y * @xsize + z * @xsize * @ysize, @xsize].join(", "))
+          result.concat(@data[y * @xsize + z * @xsize * @ysize, @xsize].join(', '))
           result.concat("\n")
         end
         result.concat("\n")
@@ -156,23 +156,24 @@ module Moon
       }
     end
 
-    def export
-      to_h.merge("&class" => self.class.to_s).stringify_keys
+    def set_property(key, value)
+      case key.to_s
+      when 'xsize' then @xsize = value
+      when 'ysize' then @ysize = value
+      when 'zsize' then @zsize = value
+      when 'default' then @default = value
+      when 'data' then @data = value
+      end
     end
 
-    def import(data)
-      @default = data["default"]
-      @xsize = data["xsize"]
-      @ysize = data["ysize"]
-      @zsize = data["zsize"]
-      @data = data["data"]
-      self
+    def serialization_properties(&block)
+      to_h.each(&block)
     end
 
-    def self.load(data)
-      instance = new data["xsize"], data["ysize"], data["zsize"],
-                     default: data["default"]
-      instance.import data
+    def self.load(data, depth = 0)
+      instance = new data['xsize'], data['ysize'], data['zsize'],
+                     default: data['default']
+      instance.import data, depth
       instance
     end
   end

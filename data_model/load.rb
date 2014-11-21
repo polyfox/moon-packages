@@ -1,10 +1,8 @@
-require 'data_model/validator/verbose'
-require 'data_model/validator/soft'
-require 'data_model/validator/null'
+require 'data_model/validators'
 require 'data_model/field'
 require 'data_model/fields'
-require 'data_model/serialization/eson'
-#require 'data_model/serialization/bindump'
+require 'data_model/access/square_bracket'
 require 'data_model/model'
 require 'data_model/metal'
 require 'data_model/base'
+Moon::DataModel::Field.type_validator = Moon::DataModel::TypeValidators::Soft

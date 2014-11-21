@@ -1,19 +1,24 @@
-##
-# DataModel serves as the base class for all other Data objects in ES
-# This was copied from the original Earthen source and updated to with moon.
+# :nodoc
 module Moon
+  ##
+  # Moon::DataModel serves as the base for most structured data types in Moon
   module DataModel
+    ##
+    # Metal is a generic implementation of Moon::DataModel::Model
     class Metal
       include Model
 
+      ##
+      # @return [Integer] DataModel id counter
       @@dmid = 0
 
-      attr_reader :dmid          # DataModel ID
+      # @return [Integer] Generic DataModel id
+      attr_reader :dmid
 
       ##
       # @param [Hash<Symbol, Object>] opts
       #   Values to initialize the model with
-      def initialize(opts={})
+      def initialize(opts = {})
         @dmid = @@dmid += 1
 
         # Some subclasses may overload the set method, so an internal
@@ -26,49 +31,55 @@ module Moon
         post_init
       end
 
-      def post_init
+      ##
+      # Final initialization method
+      private def post_init
         #
       end
 
       ##
       # @param [Array<Symbol>] dont_init
       #   A list of keys not to initialize
-      def initialize_fields(dont_init=[])
+      private def initialize_fields(dont_init = [])
         each_field_name do |k|
-          next if dont_init.include?(k)
+          next if dont_init.any? { |s| s.to_s == k.to_s }
           init_field(k)
         end
       end
 
       ##
-      # @param [Hash<Symbol, Object>] opts
       # Set internal attributes using the hash key~value pairs.
       # These attributes are subject to validation, use #set! instead if
       # validation needs to be bypassed.
+      #
+      # @param [Hash<Symbol, Object>] opts
       def set(opts)
         opts.each { |k, v| self.send("#{k}=", v) }
         self
       end
 
       ##
-      # @param [Hash<Symbol, Object>] opts
       # Sets internal attributes using the Hash key~value pairs.
       # These attributes bypass validation, use #set instead if validation is
       # needed
+      #
+      # @param [Hash<Symbol, Object>] opts
       def set!(opts)
         opts.each { |k, v| send("_#{k}_set", v) }
         self
       end
 
       ##
-      # A recursive version of to_h
+      # Converts to a Hash
+      #
       # @return [Hash<Symbol, Object>]
       def to_h
         fields_hash
       end
 
       ##
-      # A recursive version of to_h
+      # A recursive method of #to_h
+      #
       # @return [Hash<Symbol, Object>]
       def to_h_r
         hsh = {}
@@ -92,6 +103,9 @@ module Moon
       end
 
       ##
+      # Force the type conversion of each field, if a particular type
+      # cannot be converted immediately, #custom_type_cast is called
+      #
       # @return [self]
       def force_types
         each_field do |k, field|
@@ -116,7 +130,7 @@ module Moon
       # @param [Symbol] key
       # @param [Object] value
       # @return [Object]
-      def custom_type_cast(key, value)
+      private def custom_type_cast(key, value)
         raise "#{key}, #{value}"
       end
 
@@ -125,10 +139,6 @@ module Moon
 
       private :_dm_set_
       private :_dm_set_!
-
-      private :custom_type_cast
-      private :initialize_fields
-      private :post_init
     end
   end
 end

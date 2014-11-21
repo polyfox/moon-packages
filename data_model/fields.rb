@@ -4,6 +4,7 @@ module Moon
       module ClassMethods
         ##
         # Returns all fields pretaining to this class only
+        #
         # @return [Hash<Symbol, Field>]
         def fields
           (@fields ||= {})
@@ -12,6 +13,7 @@ module Moon
         ##
         # Traverses all parent classes and returns every field every defined
         # in the object chain
+        #
         # @return [Array<Symbol>]
         def all_fields
           ancestors.reverse.each_with_object({}) do |klass, hash|
@@ -21,6 +23,7 @@ module Moon
 
         ##
         # Define a new field with option adjustments
+        #
         # @param [Symbol] name
         # @param [Hash] options
         # @return [Symbol]
@@ -41,6 +44,7 @@ module Moon
 
         ##
         # Define a new field, without option adjustments
+        #
         # @param [Symbol] name
         # @param [Hash] options
         private def add_field(name, options)
@@ -67,6 +71,7 @@ module Moon
 
         ##
         # Defines a new Array field, is a shorthand for field type: [Type]
+        #
         # @return [Symbol]
         def array(sym, options)
           size = options.delete(:size) || 0
@@ -77,6 +82,7 @@ module Moon
 
         ##
         # Defines a new Hash field, is a shorthand for field type: {Type=>Type}
+        #
         # @return [Symbol]
         def dict(sym, options)
           default = (options[:default] || proc{Hash.new})
@@ -86,7 +92,7 @@ module Moon
       end
 
       module InstanceMethods
-        # this allows Models to behave like hashes :)
+        # this allows Models to behave like Hashes :)
         include Enumerable
 
         ##
@@ -105,7 +111,7 @@ module Moon
         end
 
         ##
-        # @eg
+        # @example
         #   each do |key, value|
         #   end
         def each
@@ -115,7 +121,7 @@ module Moon
         end
 
         ##
-        # @eg
+        # @example
         #   each_field do |key, field|
         #   end
         def each_field
@@ -125,7 +131,7 @@ module Moon
         end
 
         ##
-        # @eg
+        # @example
         #   each_field_name do |key|
         #   end
         def each_field_name
@@ -136,7 +142,7 @@ module Moon
         alias :each_key :each_field_name
 
         ##
-        # @eg
+        # @example
         #   each_field_with_value do |key, field, value|
         #   end
         def each_field_with_value
@@ -166,6 +172,12 @@ module Moon
             field.check_type(key, send(key))
           end
           self
+        end
+
+        def serialization_properties
+          fields_hash.each do |key, value|
+            yield key, value
+          end
         end
       end
 
