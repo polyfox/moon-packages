@@ -1,7 +1,5 @@
-##
-#
-module Lunar
-  class SelectableList < Moon::RenderContainer
+module Lunar #:nodoc:
+  class SelectableList < Widget
     include Moon::Indexable
 
     ##

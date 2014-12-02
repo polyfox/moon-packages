@@ -1,9 +1,5 @@
-##
-# :nodoc:
-module Moon
-  ##
-  # :nodoc:
-  class Screen
+module Moon #:nodoc:
+  class Screen #:nodoc:
     ##
     # @return [Moon::Rect]
     def self.rect

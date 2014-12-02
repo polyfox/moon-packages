@@ -1,4 +1,4 @@
-module Lunar
+module Lunar #:nodoc:
   class MenuContainer < SelectableList
     class MenuEvent < Moon::Event
       attr_accessor :state
