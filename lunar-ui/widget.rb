@@ -1,8 +1,7 @@
-# :nodoc:
-module Moon
+module Lunar #:nodoc:
   ##
   # Widget base class
-  class Widget < RenderContainer
+  class Widget < Moon::RenderContainer
     # @return [Boolean]
     attr_accessor :focused
     # @return [Moon::SkinSlice9]
@@ -26,6 +25,11 @@ module Moon
     #
     private def init_events
       super
+      init_widget_events
+    end
+
+    private def init_widget_events
+      super
       on :resize do
         @background.width = width
         @background.height = height
@@ -35,7 +39,7 @@ module Moon
     ##
     #
     private def create_background
-      @background = SkinSlice9.new
+      @background = Moon::SkinSlice9.new
       add(@background)
     end
 

@@ -1,5 +1,6 @@
-# :nodoc:
-module Moon
+module Lunar #:nodoc:
+  ##
+  #
   class Textbox < Widget
     # @param [Moon::Text]
     attr_reader :text

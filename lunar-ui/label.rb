@@ -1,6 +1,5 @@
-# :nodoc:
-module Moon
-  class Button < Widget
+module Lunar #:nodoc:
+  class Label < Widget
     # @return [Moon::Text]
     attr_reader :text
 

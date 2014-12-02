@@ -1,5 +1,4 @@
-# :nodoc:
-module Moon
+module Lunar #:nodoc:
   ##
   # Window Widget
   class Window < Widget
