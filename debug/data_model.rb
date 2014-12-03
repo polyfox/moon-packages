@@ -1,90 +1,185 @@
-module Debug
+module Debug #:nodoc:
+  # Debugging Module for Moon::DataModel(s)
   module DataModel
-    include Debug
-
-    def self.pretty_value(value, depth=0)
-      return "..." if depth > 99
-      case value
-      when Array, Hash, Moon::DataModel::Model
-        value_stream = ""
-        pretty_obj_stream(value_stream, value, depth)
-        return value_stream
-      else
-        value.inspect
-      end
-    end
-
-    def self.pretty_type(type)
-      case type
-      when Array
-        if type.size == 0
-          "#{type.class}"
-        elsif type.size == 1
-          "#{type.class}<#{type.first}>"
+    module PrettyFormat
+      def self.array_type(array)
+        case array.size
+        when 0
+          "#{array.class}"
+        when 1
+          "#{array.class}<#{array.first}>"
         else
-          "#{type.class}#{type.inspect}"
+          "#{array.class}#{array.inspect}"
         end
-      when Hash
-        if type.size == 0
-          "#{type.class}"
-        elsif type.size == 1
-          pair = type.first
-          "#{type.class}<#{pair[0]}, #{pair[1]}>"
+      end
+
+      def self.hash_type(hash)
+        case hash.size
+        when 0
+          "#{hash.class}"
+        when 1
+          pair = hash.first
+          "#{hash.class}<#{pair[0]}, #{pair[1]}>"
         else
-          "#{type.class}#{type.inspect}"
+          "#{hash.class}#{hash.inspect}"
         end
-      else
-        type.inspect
+      end
+
+      def self.object_type(type)
+        case type
+        when Array
+          array_type(type)
+        when Hash
+          hash_type(type)
+        else
+          type.inspect
+        end
       end
     end
 
-    def self.pretty_depth(str, depth)
-      "#{"  "*depth}#{str}"
-    end
+    # Streamer object
+    class PrettyPrintStreamer
+      attr_accessor :indent_level
+      attr_accessor :comment_delimiter
+      attr_accessor :indent_delimiter
+      attr_accessor :list_delimiter
 
-    def self.pretty_model(stream, model, depth=0)
-      stream << pretty_depth("struct #{model.class.inspect} {\n", depth)
-      model.each_field_with_value do |key, field, value|
-        stream << pretty_depth("  #{key}: #{pretty_type(field.type)} = #{pretty_value(value, depth+1)},\n", depth)
-      end
-      stream << pretty_depth("}", depth)
-      stream
-    end
-
-    def self.pretty_obj_stream(stream, obj, depth=0)
-      if obj.is_a?(Moon::DataModel::Model)
-        pretty_model(stream, obj, depth)
-      elsif obj.is_a?(Hash)
-        stream << pretty_depth("{ # size: #{obj.size}\n", depth)
-        obj.each do |k, v|
-          stream << pretty_depth("#{pretty_value(k)}", depth+1)
-          pretty_obj_stream(stream, value, depth+2)
-          stream << ",\n"
+      def initialize(stream, from = nil)
+        @stream = stream
+        @indent_level = 0
+        @comment_delimiter = '#'
+        @indent_delimiter = "\s\s"
+        @list_delimiter = ','
+        if from
+          @comment_delimiter = from.comment_delimiter
+          @indent_delimiter = from.indent_delimiter
+          @list_delimiter = from.list_delimiter
         end
-        stream << pretty_depth("}", depth)
-      elsif obj.is_a?(Array)
-        stream << pretty_depth("[ # size: #{obj.size}\n", depth)
-        obj.each do |o|
-          pretty_obj_stream(stream, o, depth+1)
-          stream << ",\n"
-        end
-        stream << pretty_depth("]", depth)
-      else
-        stream << pretty_depth(pretty_value(obj) << "\n", depth)
       end
-      stream
+
+      def new(s = stream)
+        self.class.new(s, self)
+      end
+
+      def endl
+        "\n"
+      end
+
+      def unindent
+        @indent_level = [@indent_level - 1, 0].max
+      end
+
+      def indent
+        @indent_level += 1
+        if block_given?
+          yield
+          unindent
+        end
+      end
+
+      private def indent_str
+        @indent_delimiter * @indent_level
+      end
+
+      def write(str)
+        @stream.write str
+      end
+
+      def write_indent(depth = 0)
+        write indent_str
+      end
+
+      def write_indented(str, depth = 0)
+        write_indent depth
+        write str
+      end
+
+      def write_endl(depth = 0)
+        write endl
+      end
+
+      def write_line(str, depth = 0)
+        write str
+        write_endl depth
+      end
+
+      def write_comment_line(str, depth = 0)
+        write @comment_delimiter
+        write_line ' ' << str
+      end
+
+      def write_field(field, key, value, depth = 0)
+        write_indented '' << key.to_s << ': ' <<
+          PrettyFormat.object_type(field.type) << ' = '
+        write_object(value)
+      end
+
+      def write_model(model, depth = 0)
+        write_indented 'model ' << model.class.inspect << ' {' << endl
+        indent do
+          model.each_field_with_value do |key, field, value|
+            write_field(field, key, value)
+            write @list_delimiter
+            write_endl
+          end
+        end
+        write_indented '}'
+      end
+
+      def write_array(array, depth = 0)
+        write_indented '[ '
+        write_comment_line 'size: ' << array.size.to_s
+        indent do
+          array.each do |obj|
+            write_object obj, depth.succ
+            write @list_delimiter
+            write_endl depth.succ
+          end
+        end
+        write_indented ']'
+      end
+
+      def write_hash(hash, depth = 0)
+        write_indented '{ '
+        write_comment_line 'size: ' << hash.size.to_s
+        indent do
+          hash.each do |key, value|
+            write_object key, depth.succ
+            write ' => '
+            write_object obj, depth.succ
+            write @list_delimiter
+            write_endl depth.succ
+          end
+        end
+        write_indented '}'
+      end
+
+      def write_object(obj, depth = 0)
+        case obj
+        when Array
+          write_array obj, depth.succ
+        when Hash
+          write_hash obj, depth.succ
+        when Moon::DataModel::Model
+          write_model obj, depth.succ
+        else
+          write obj.inspect
+        end
+      end
     end
 
-    def self.pretty_print(obj, depth=0)
-      puts pretty_obj_stream("", obj, depth)
+    def self.pretty_print(obj, depth = 0)
+      streamer = PrettyPrintStreamer.new(STDOUT)
+      streamer.write_object(obj, depth)
+      streamer.write_endl
     end
   end
 end
 
 module Moon
   module DataModel
-    class Metal
-      def ppd_dm(depth=0)
+    module Model
+      def pretty_print_model(depth = 0)
         Debug::DataModel.pretty_print(self, depth)
         self
       end
