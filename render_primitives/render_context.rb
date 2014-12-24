@@ -10,6 +10,7 @@ module Moon
     include RenderPrimitive::Visibility                  # RenderPrimitive Core
     include RenderPrimitive::Containable                 # RenderPrimitive Core
     include RenderPrimitive::Rectangular                 # RenderPrimitive Core
+    include RenderPrimitive::DataAttributes              # RenderPrimitive Core
 
     # @return [Integer] id counter
     @@context_id = 0
@@ -21,6 +22,8 @@ module Moon
     # @param [Hash<Symbol, Object>] options
     #   @optional
     def initialize(options = {})
+      init_data_attrs
+
       init_members
 
       init_from_options(options)
