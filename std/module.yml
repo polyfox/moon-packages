@@ -1,0 +1,6 @@
+---
+name: Standard Library
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: Moon standard library
+require: _basalt.rb
+deps: []

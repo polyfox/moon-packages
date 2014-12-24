@@ -1,5 +1,5 @@
-# http://studiofreya.com/3d-math-and-physics/simple-aabb-vs-aabb-collision-detection/
-module Moon
+module Moon #:nodoc
+  # http://studiofreya.com/3d-math-and-physics/simple-aabb-vs-aabb-collision-detection/
   class AABB
     # center position
     # @return [Moon::Vector2]

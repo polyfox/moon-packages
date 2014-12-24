@@ -3,6 +3,7 @@ module Moon
     include Comparable
     include Serializable
 
+    # @return [String]
     def inspect
       "<Moon::Vector2: x=#{x} y=#{y}>"
     end
@@ -132,6 +133,8 @@ module Moon
       end
     end
 
+    # @param [Moon::Vector2] other
+    # @param [Float] dist
     def near?(other, dist)
       length = (self - other).length
       length < (dist * dist)

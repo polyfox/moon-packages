@@ -1,4 +1,4 @@
-module Moon
+module Moon #:nodoc
   module ArgsHelper
     class Result
       attr_accessor :valid

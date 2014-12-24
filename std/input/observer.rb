@@ -7,6 +7,10 @@ module Moon
         init_eventable
       end
 
+      def clear
+        clear_events
+      end
+
       # Debugging
       #def trigger(event)
       #  p event

@@ -1,5 +1,5 @@
-# http://studiofreya.com/3d-math-and-physics/simple-aabb-vs-aabb-collision-detection/
-module Moon
+module Moon #:nodoc
+  # http://studiofreya.com/3d-math-and-physics/simple-aabb-vs-aabb-collision-detection/
   class AABBCC
     attr_reader :cpos # Vector3  center position
     attr_reader :rad  # Vector3  radii

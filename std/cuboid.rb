@@ -1,10 +1,16 @@
-module Moon
+module Moon #:nodoc:
   class Cuboid
+    # @return [Integer]
     attr_accessor :x
+    # @return [Integer]
     attr_accessor :y
+    # @return [Integer]
     attr_accessor :z
+    # @return [Integer]
     attr_accessor :width
+    # @return [Integer]
     attr_accessor :height
+    # @return [Integer]
     attr_accessor :depth
 
     alias :w :width
@@ -14,7 +20,6 @@ module Moon
     alias :d :depth
     alias :d= :depth=
 
-    ##
     # @overload initialize(cuboid)
     #   @param [Cuboid] cuboid
     # @overload initialize(num)
