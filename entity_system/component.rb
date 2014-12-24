@@ -27,7 +27,7 @@ module Moon
     end
 
     module InstanceMethods
-      def initialize(options={})
+      def initialize(options = {})
         setup(options)
       end
 
@@ -35,7 +35,7 @@ module Moon
         self.class.registered
       end
 
-      def setup(options={})
+      private def setup(options = {})
         each_field do |key, field|
           if options.key?(key)
             send("#{key}=", options[key]) if options.key?(key)
@@ -61,8 +61,6 @@ module Moon
       def as_inheritance
         { symbol => to_h }
       end
-
-      private :setup
     end
 
     def self.included(mod)
@@ -73,7 +71,7 @@ module Moon
     end
 
     def self.load(data)
-      self[data["component_type"].to_sym].new(data.symbolize_keys)
+      self[data['component_type'].to_sym].new(data.symbolize_keys)
     end
   end
 end

@@ -1,4 +1,6 @@
 class Array
+  ##
+  # @return [LinkNode]
   def to_linked_list
     node = nil
     each do |e|
@@ -13,6 +15,8 @@ class Array
 end
 
 class Object
+  ##
+  # @return [LinkNode]
   def to_link_node
     LinkNode.new(self)
   end

@@ -1,5 +1,5 @@
 module States
-  class Base < State
+  class Base < ::State
     include Moon::TransitionHost
 
     @@__cvar__ = {}
@@ -10,8 +10,15 @@ module States
 
     def init
       super
+      @updatables = []
+      @renderables = []
       @renderer = Moon::RenderContainer.new
       @gui = Moon::RenderContainer.new
+
+      @updatables << @renderer
+      @updatables << @gui
+      @renderables << @renderer
+      @renderables << @gui
 
       register_default_events
       register_input
@@ -65,7 +72,7 @@ module States
     end
 
     def launch_debug_shell
-      @debug_shell = DebugShell.new(FontCache.font("uni0553", 16))
+      @debug_shell = DebugShell.new(FontCache.font('uni0553', 16))
       @debug_shell.position.set(0, 0, 0)
     end
 
@@ -74,15 +81,17 @@ module States
     end
 
     def update(delta)
-      @renderer.update delta
-      @gui.update delta
+      @updatables.each do |element|
+        element.update delta
+      end
       update_transitions delta
       super delta
     end
 
     def render
-      @renderer.render
-      @gui.render
+      @renderables.each do |element|
+        element.render
+      end
       @debug_shell.render if @debug_shell
       super
     end

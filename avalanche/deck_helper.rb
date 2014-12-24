@@ -1,5 +1,5 @@
 module DeckHelper
-  def self.generate_tier(tier, num=80)
+  def self.generate_tier(tier, num = 80)
     cards = DataCache.cards
 
     deck = []
@@ -15,15 +15,15 @@ module DeckHelper
     end
 
     sup_cards = tier_cards.select do |card|
-      card.type == "support"
+      card.type == 'support'
     end
 
     off_cards = tier_cards.select do |card|
-      card.type == "offense"
+      card.type == 'offense'
     end
 
     dff_cards = tier_cards.select do |card|
-      card.type == "chain"
+      card.type == 'chain'
     end
 
     oth_cards = tier_cards
@@ -49,17 +49,17 @@ module DeckHelper
 
   # Generates a simple Tier 1 deck, the default number of cards in the deck is
   # 40
-  def self.generate_tier1(num=80)
+  def self.generate_tier1(num = 80)
     generate_tier(1, num)
   end
 
-  def self.generate_tier2(num=80)
+  def self.generate_tier2(num = 80)
     t1 = 0.60
     cards = generate_tier(1, (num * t1).to_i)
     cards.concat(generate_tier(2, num - cards.size))
   end
 
-  def self.generate_tier3(num=80)
+  def self.generate_tier3(num = 80)
     t1 = 0.45
     t2 = 0.35
     cards = generate_tier(1, (num * t1).to_i)

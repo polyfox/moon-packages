@@ -107,7 +107,7 @@ module Moon
       add_event_listener(klass, listener)
     end
 
-    def on(klass, options={}, &block)
+    def on(klass, options = {}, &block)
       if klass.is_a?(Class)
         register_event(klass, options, &block)
       elsif klass.is_a?(Array)

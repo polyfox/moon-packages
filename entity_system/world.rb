@@ -116,11 +116,6 @@ module Moon
       for system in @systems
         system.update(delta)
       end
-      #for entity in @entities
-      #  for system in @systems
-      #    system.process(delta, entity)
-      #  end
-      #end
     end
 
     def to_h
