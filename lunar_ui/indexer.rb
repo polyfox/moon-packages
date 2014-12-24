@@ -1,4 +1,4 @@
-module Lunar
+module Lunar #:nodoc:
   ##
   # Object for wrapping Array like objects and achieving an Indexable effect
   # without touching the underlaying object.

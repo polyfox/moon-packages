@@ -1,0 +1,8 @@
+---
+name: Lunar UI Framework
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: UI toolkit for Moon
+require: _basalt.rb
+deps:
+  - std
+  - render_primitives
