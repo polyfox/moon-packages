@@ -1,8 +1,7 @@
 ---
-name: TwoD
+name: Entity System
 author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Utility objects for handling 2d scenes.
+description: Moon standard entity system.
 require: _basalt.rb
 deps:
   - std
-  - data_model

@@ -1,8 +1,7 @@
 ---
-name: TwoD
+name: Avalanche
 author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Utility objects for handling 2d scenes.
+description: Avalanche common modules
 require: _basalt.rb
 deps:
   - std
-  - data_model

@@ -1,8 +1,7 @@
 ---
-name: TwoD
+name: Linked Lists
 author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Utility objects for handling 2d scenes.
+description: Utility library for creating Linked Lists
 require: _basalt.rb
 deps:
   - std
-  - data_model

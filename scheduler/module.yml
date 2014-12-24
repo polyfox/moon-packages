@@ -2,6 +2,6 @@
 name: Scheduler
 author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
 description: Job Scheduling
-require: _require.rb
+require: _basalt.rb
 deps:
-  - core
+  - std

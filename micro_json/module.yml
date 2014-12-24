@@ -1,8 +1,7 @@
 ---
-name: TwoD
+name: MicroJSON
 author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Utility objects for handling 2d scenes.
+description: Minimalistic JSON parser for moon
 require: _basalt.rb
 deps:
   - std
-  - data_model

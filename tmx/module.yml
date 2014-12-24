@@ -1,7 +1,7 @@
 ---
-name: TwoD
+name: TMX
 author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Utility objects for handling 2d scenes.
+description: Helper module for loading .tmx data
 require: _basalt.rb
 deps:
   - std

@@ -1,0 +1,1 @@
+require 'avalanche/load'

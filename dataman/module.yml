@@ -1,8 +1,7 @@
 ---
-name: TwoD
+name: Data Manager
 author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Utility objects for handling 2d scenes.
+description: Utility module for managing game data.
 require: _basalt.rb
 deps:
   - std
-  - data_model

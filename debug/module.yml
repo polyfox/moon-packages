@@ -1,8 +1,9 @@
 ---
-name: TwoD
+name: Debug
 author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Utility objects for handling 2d scenes.
+description: Debug utility library.
 require: _basalt.rb
 deps:
   - std
   - data_model
+  - render_primitives

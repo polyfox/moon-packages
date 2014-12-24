@@ -1,8 +1,7 @@
 ---
-name: TwoD
+name: Lunar Framework
 author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Utility objects for handling 2d scenes.
+description: Common modules for Lunar Metal
 require: _basalt.rb
 deps:
   - std
-  - data_model
