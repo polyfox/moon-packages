@@ -13,6 +13,11 @@ module Moon
 
       def initialize(world)
         @world = world
+        init
+      end
+
+      def init
+        #
       end
 
       def update(delta)
