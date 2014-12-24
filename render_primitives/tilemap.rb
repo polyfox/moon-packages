@@ -169,44 +169,9 @@ module Moon
             next if rnx < vx || rnx > vx2 if vx && vx2
 
             zm = @data_zmap ? @data_zmap[dx, dy, dz] : 0
-            flag = @flags ? @flags[dx, dy, dz] : 0
-
-
-            if flag > 0
-              rx, ry, rz = 0, 0, 0
-              vx, vy = 0, 0
-
-              if flag.masked?(DataFlag::FULL_OFF_TILE)
-                vx, vy = cell_width, cell_height
-              elsif flag.masked?(DataFlag::TQUART_OFF_TILE)
-                vx, vy = (cell_width / 4) * 3, (cell_height / 4) * 3
-              elsif flag.masked?(DataFlag::HALF_OFF_TILE)
-                vx, vy = cell_width / 2, cell_height / 2
-              elsif flag.masked?(DataFlag::QUART_OFF_TILE)
-                vx, vy = cell_width / 4, cell_height / 4
-              end
-
-              if flag.masked?(DataFlag::OFF_LEFT)
-                rx -= vx
-              elsif flag.masked?(DataFlag::OFF_RIGHT)
-                rx += vx
-              end
-              if flag.masked?(DataFlag::OFF_DOWN)
-                ry += vy
-              elsif flag.masked?(DataFlag::OFF_UP)
-                ry -= vy
-              end
-              @tileset.render rnx + rx,
-                              rny + ry,
-                              rnz + rz + zm,
-                              tile_id, render_ops
-            else
-              @tileset.render rnx,
-                              rny,
-                              rnz + zm,
-                              tile_id, render_ops
-            end
-
+            ## flags are not used anymore
+            # flag = @flags ? @flags[dx, dy, dz] : 0
+            @tileset.render rnx, rny, rnz + zm, tile_id, render_ops
           end
         end
       end
