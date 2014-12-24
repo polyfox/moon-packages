@@ -1,1 +1,1 @@
-require 'core/mixins/activatable'
+require 'std/mixins/activatable'

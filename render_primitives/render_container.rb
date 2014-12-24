@@ -1,5 +1,4 @@
-# :nodoc:
-module Moon
+module Moon #:nodoc:
   ##
   # Inspired by
   # http://dev.chromium.org/developers/design-documents/aura

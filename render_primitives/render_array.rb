@@ -1,6 +1,6 @@
 module Moon
   class RenderArray < Moon::RenderContainer
-    def initialize(size=nil)
+    def initialize(size = nil)
       super()
       if size && block_given?
         size.times do |i|
