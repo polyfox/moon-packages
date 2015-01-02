@@ -57,9 +57,9 @@ module Moon
     end
 
     def in_bounds?(x, y, z)
-      return ((x >= 0) || (x < @xsize)) ||
-             ((y >= 0) || (y < @ysize)) ||
-             ((z >= 0) || (z < @zsize))
+      return ((x >= 0) && (x < @xsize)) &&
+             ((y >= 0) && (y < @ysize)) &&
+             ((z >= 0) && (z < @zsize))
     end
 
     def [](x, y, z)
