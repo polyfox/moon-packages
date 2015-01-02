@@ -1,19 +1,19 @@
 module Moon
   module Input
     def self.on_key(key, _, action, mods)
-      State.current.estack << KeyboardEvent.new(key, action, mods)
+      trigger KeyboardEvent.new(key, action, mods)
     end
 
     def self.on_button(button, action, mods)
-      State.current.estack << MouseEvent.new(button, action, mods, Mouse.position)
+      trigger MouseEvent.new(button, action, mods, Mouse.position)
     end
 
     def self.on_type(char)
-      State.current.estack << KeyboardTypingEvent.new(char)
+      trigger KeyboardTypingEvent.new(char)
     end
 
     def self.on_mousemove(x, y)
-      State.current.estack << MouseMove.new(x, y)
+      trigger MouseMove.new(x, y)
     end
 
     def self.convert_key(key)
