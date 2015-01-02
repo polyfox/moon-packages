@@ -18,13 +18,12 @@ module Moon
 
     def self.convert_key(key)
       raise if key.is_a?(Integer)
-      #(key.is_a?(Symbol)||key.is_a?(String)) ? STRING_TO_KEY.fetch(key.to_s) : key
       key.to_sym
     end
 
     module Mouse
       def self.in_area?(x, y, width, height)
-        self.x.between?(x, x+width) && self.y.between?(y, y+height)
+        self.x.between?(x, x + width) && self.y.between?(y, y + height)
       end
 
       def self.in_rect?(rect)

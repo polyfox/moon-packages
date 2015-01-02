@@ -50,7 +50,7 @@ module Moon
           true
         end
 
-        def check_type(type, key, value, options={})
+        def check_type(type, key, value, options = {})
           if options[:allow_nil] && value.nil?
             return true
           elsif !options[:allow_nil] && value.nil?
