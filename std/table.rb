@@ -236,6 +236,11 @@ module Moon
       return result
     end
 
+    # @return [String]
+    def inspect
+      "<#{self.class}: xsize=#{xsize} ysize=#{ysize} default=#{default} data=[...]>"
+    end
+
     # @return [Hash<Symbol, Integer>]
     def to_h
       {
