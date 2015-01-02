@@ -26,7 +26,7 @@ module Moon
             if options[:quiet]
               return false
             else
-              raise TypeError, ":#{key} shall not be nil"
+              raise TypeError, ":#{key} shall not be nil (expects #{type})"
             end
           end
           # validate that obj is an Array and contains correct types
