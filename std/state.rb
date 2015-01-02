@@ -10,12 +10,6 @@ class State
   # @type [Integer]
   attr_reader :ticks
   ##
-  # @type [Moon::Input::Observer]
-  attr_reader :input
-  ##
-  # @type [Array<Moon::Event>]
-  attr_reader :estack # Event stack
-  ##
   # @type [???]
   attr_reader :engine
 
@@ -27,14 +21,12 @@ class State
   end
 
   ##
-  #
+  # @return [self]
   def reset
-    @estack = []
     @ticks = 0
-    @input = Moon::Input::Observer.new
-    @scheduler = Moon::Scheduler.new
-    init
     @started = false
+    init
+    self
   end
 
   ##
@@ -45,19 +37,27 @@ class State
       @started = true
     end
     # game logic
-    process_events
+    update_step delta
+    # rendering
+    render_step
+    #
+    @ticks += 1
+  end
+
+  ##
+  # @param [Float] delta
+  def update_step(delta)
     pre_update delta
     update delta
-    process_jobs delta
     post_update delta
-    # rendering
+  end
+
+  ##
+  #
+  def render_step
     pre_render
     render
     post_render
-    render_gizmos
-    render_gui
-    #
-    @ticks += 1
   end
 
   ##
@@ -91,22 +91,6 @@ class State
   # Gets called when the state resumes
   def resume
     #
-  end
-
-  ##
-  # Due threading issues with events from GLFW, they are placed into
-  # an array and then processed during the State.update
-  def process_events
-    until @estack.empty?
-      ev = @estack.shift
-      @input.trigger(ev)
-    end
-  end
-
-  ##
-  # @param [Float] delta
-  def process_jobs(delta)
-    @scheduler.update(delta)
   end
 
   ##
@@ -146,18 +130,6 @@ class State
   ##
   # @return [Void]
   def post_render
-    #
-  end
-
-  ##
-  # @return [Void]
-  def render_gizmos
-    #
-  end
-
-  ##
-  # @return [Void]
-  def render_gui
     #
   end
 
