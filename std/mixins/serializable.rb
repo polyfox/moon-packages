@@ -102,7 +102,7 @@ module Moon
       # @param [Integer] depth
       def export(data = nil, depth = 0)
         data = Exporter.export(data || {}, self, depth)
-        data.merge!(serialization_export_header)
+        data.merge!(serialization_export_header).stringify_keys
       end
     end
 
