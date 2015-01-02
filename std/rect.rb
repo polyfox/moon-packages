@@ -1,9 +1,20 @@
 module Moon
   class Rect
+    include Serializable
+
     alias :w :width
     alias :w= :width=
     alias :h :height
     alias :h= :height=
+
+    alias :initialize_xywh :initialize
+    def initialize(*args)
+      if args.empty?
+        initialize_xywh(0, 0, 0, 0)
+      else
+        initialize_xywh(*args)
+      end
+    end
 
     def inside?(obj)
       x, y = *Vector2.extract(obj)
@@ -30,20 +41,16 @@ module Moon
       Rect.new nx, ny, nx2 - nx, ny2 - ny
     end
 
-    def export
-      to_h.merge("&class" => self.class.to_s).stringify_keys
-    end
-
-    def import(data)
-      self.x = data["x"]
-      self.y = data["y"]
-      self.width = data["width"]
-      self.height = data["height"]
-      self
-    end
-
     def set(*args)
       self.x, self.y, self.w, self.h = *Rect.extract(args.size > 1 ? args : args.first)
+    end
+
+    def to_s
+      "#{x},#{y},#{w},#{h}"
+    end
+
+    def inspect
+      "<#{self.class}: x=#{x} y=#{y} w=#{w} h=#{h}>"
     end
 
     def to_a
@@ -52,6 +59,24 @@ module Moon
 
     def to_h
       { x: x, y: y, width: width, height: height }
+    end
+
+    def serialization_properties(&block)
+      to_h.each(&block)
+    end
+
+    ##
+    # @param [String] key
+    # @value [Integer] value
+    def set_property(key, value)
+      case key.to_s
+      when 'x'           then self.x = value
+      when 'y'           then self.y = value
+      when 'w', 'width'  then self.w = value
+      when 'h', 'height' then self.h = value
+      else
+        raise KeyError, "no property named #{key}"
+      end
     end
 
     def x2
@@ -135,10 +160,6 @@ module Moon
     def self.[](*objs)
       obj = objs.size == 1 ? objs.first : objs
       new(*extract(obj))
-    end
-
-    def self.import(data)
-      new(0,0,0,0).import(data)
     end
 
     alias :position :xy
