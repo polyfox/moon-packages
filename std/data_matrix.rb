@@ -146,6 +146,11 @@ module Moon
       return result
     end
 
+    # @return [String]
+    def inspect
+      "<#{self.class}: xsize=#{xsize} ysize=#{ysize} zsize=#{zsize} default=#{default} data=[...]>"
+    end
+
     def to_h
       {
         xsize: @xsize,
