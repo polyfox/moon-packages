@@ -9,7 +9,7 @@ module Moon
       # @param [Hash<String, Object>] value
       # @param [Integer] depth
       private def import_class(klass_path, key, value, depth = 0)
-        Object.const_get(klass_path).load(value, depth)
+        Object.const_get(klass_path).load(value, depth + 1)
       end
 
       # @param [String, Symbol] key
