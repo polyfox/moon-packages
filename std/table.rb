@@ -42,46 +42,27 @@ module Moon
       @data  = data_p
     end
 
-    # @return [Moon::Vector2]
-    def size
-      Moon::Vector2.new @xsize, @ysize
-    end
-
-    # @return [Moon::Rect]
-    def rect
-      Moon::Rect.new 0, 0, @xsize, @ysize
-    end
-
-    # @return [Moon::Cuboid]
-    def cuboid
-      Moon::Cuboid.new 0, 0, 0, @xsize, @ysize, 1
-    end
-
-    # @overload subsample(rect)
-    #   @param [Moon::Rect, Array<Integer>] rect
-    # @overload subsample(x, y, w, h)
-    #   @param [Integer] x
-    #   @param [Integer] y
-    #   @param [Integer] w
-    #   @param [Integer] h
-    # @return [Moon::Table]
-    def subsample(*args)
-      rx, ry, rw, rh = *Rect.extract(args.size > 1 ? args : args.first)
-      result = self.class.new(rw, rh, default: @default)
-      result.ysize.times do |y|
-        dy = y + ry
-        result.xsize.times do |x|
-          result[x, y] = self[x + rx, dy]
+    # @param [Integer] xsize
+    # @param [Integer] ysize
+    def resize(xsize, ysize)
+      oxsize, oysize = *size
+      @xsize, @ysize = xsize, ysize
+      old_data = @data
+      create_data
+      map_with_xy do |n, x, y|
+        if x < oxsize && y < oysize
+          old_data[x + y * oxsize]
+        else
+          @default
         end
       end
-      result
     end
 
     # @param [Integer] x
     # @param [Integer] y
     def in_bounds?(x, y)
-      return ((x >= 0) || (x < @xsize)) ||
-             ((y >= 0) || (y < @ysize))
+      return ((x >= 0) && (x < xsize)) &&
+             ((y >= 0) && (y < ysize))
     end
 
     # @param [Integer] x
@@ -119,15 +100,15 @@ module Moon
 
     #
     def each_row
-      @xsize.times do |x|
+      xsize.times do |x|
         yield @data[x * @xsize, @xsize]
       end
     end
 
     #
     def each_with_xy
-      @ysize.times do |y|
-        @xsize.times do |x|
+      ysize.times do |y|
+        xsize.times do |x|
           yield @data[x + y * @xsize], x, y
         end
       end
@@ -139,6 +120,41 @@ module Moon
         index = x + y * @xsize
         @data[index] = yield @data[index], x, y
       end
+    end
+
+    # @return [Moon::Vector2]
+    def size
+      Moon::Vector2.new xsize, ysize
+    end
+
+    # @return [Moon::Rect]
+    def rect
+      Moon::Rect.new 0, 0, xsize, ysize
+    end
+
+    # @return [Moon::Cuboid]
+    def cuboid
+      Moon::Cuboid.new 0, 0, 0, xsize, ysize, 1
+    end
+
+    # @overload subsample(rect)
+    #   @param [Moon::Rect, Array<Integer>] rect
+    # @overload subsample(x, y, w, h)
+    #   @param [Integer] x
+    #   @param [Integer] y
+    #   @param [Integer] w
+    #   @param [Integer] h
+    # @return [Moon::Table]
+    def subsample(*args)
+      rx, ry, rw, rh = *Rect.extract(args.size > 1 ? args : args.first)
+      result = self.class.new(rw, rh, default: default)
+      result.ysize.times do |y|
+        dy = y + ry
+        result.xsize.times do |x|
+          result[x, y] = self[x + rx, dy]
+        end
+      end
+      result
     end
 
     # @param [Integer] n
@@ -185,13 +201,16 @@ module Moon
     #   @param [Integer] value
     # @return [self]
     def fill_rect(*args)
-      args.get_args('Oi', Rect) do |rect, value|
-        return fill_rect_xywh(rect.x, rect.y, rect.width, rect.height, value)
-      end.valid? ||
-      args.get_args('iiiii') do |x, y, w, h, value|
-        return fill_rect_xywh(x, y, w, h, value)
-      end.valid? ||
-      raise(ArgumentError, 'expected (rect, value) or (x, y, w, h, value)')
+      case args.size
+      when 2
+        r, n = *args
+        fill_rect_xywh(r.x, r.y, r.w, r.h, n)
+      when 5
+        fill_rect_xywh(*args)
+      else
+        raise ArgumentError,
+              "wrong argument count #{args.size} (expected 2:(rect, value) or 5:(x, y, w, h, value))"
+      end
     end
 
     # @param [Integer] n
@@ -207,23 +226,7 @@ module Moon
 
     # @return [Integer]
     def row_count
-      @ysize
-    end
-
-    # @param [Integer] xsize
-    # @param [Integer] ysize
-    def resize(xsize, ysize)
-      oxsize, oysize = *size
-      @xsize, @ysize = xsize, ysize
-      old_data = @data
-      create_data
-      map_with_xy do |n, x, y|
-        if x < oxsize && y < oysize
-          old_data[x + y * oxsize]
-        else
-          @default
-        end
-      end
+      ysize
     end
 
     # @return [String]
@@ -253,10 +256,10 @@ module Moon
 
     def set_property(key, value)
       case key.to_s
-      when 'xsize' then @xsize = value
-      when 'ysize' then @ysize = value
+      when 'xsize'   then @xsize = value
+      when 'ysize'   then @ysize = value
       when 'default' then @default = value
-      when 'data' then @data = value
+      when 'data'    then @data = value
       end
     end
 
