@@ -1,0 +1,7 @@
+---
+name: Data Bags
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: Various data holding classes
+require: _basalt.rb
+deps:
+  - std
