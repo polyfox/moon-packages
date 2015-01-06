@@ -4,18 +4,26 @@ module Moon #:nodoc:
     include Serializable
     include Serializable::PropertyHelper
 
-    # @return [Integer]
+    # @!group Properties
+    # @attribute [r] xsize
+    #   @return [Integer]
     attr_reader property(:xsize)
-    # @return [Integer]
+    # @attribute [r] ysize
+    #   @return [Integer]
     attr_reader property(:ysize)
-    # @return [Integer]
+    # @attribute [r] zsize
+    #   @return [Integer]
     attr_reader property(:zsize)
-    # @return [Integer]
+    # @attribute [r] size
+    #   @return [Integer]
     attr_reader property(:size)
-    # @return [Array<Integer>]
+    # @attribute [r] data
+    #   @return [Array<Integer>]
     attr_reader property(:data)
-    # @return [Integer]
+    # @attribute default
+    #   @return [Integer]
     attr_accessor property(:default)
+    # @!endgroup
 
     # @param [Integer] xsize
     # @param [Integer] ysize
@@ -148,7 +156,7 @@ module Moon #:nodoc:
 
     # @return [String]
     def inspect
-      "<#{self.class}: xsize=#{xsize} ysize=#{ysize} zsize=#{zsize} default=#{default} data=[...]>"
+      "<#{self.class}: xsize=#{xsize} ysize=#{ysize} zsize=#{zsize} size=#{size} default=#{default} data=[...]>"
     end
 
     def self.load(data, depth = 0)
