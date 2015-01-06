@@ -1,12 +1,22 @@
 module States
   class Base < ::State
     include StateMiddlewarable
+    middleware SchedulerMiddleware
+    middleware InputMiddleware
     include Moon::TransitionHost
 
     @@__cvar__ = {}
 
     def cvar
       @@__cvar__
+    end
+
+    def input
+      middleware(InputMiddleware).handle
+    end
+
+    def scheduler
+      middleware(SchedulerMiddleware).scheduler
     end
 
     def init
@@ -30,16 +40,16 @@ module States
     end
 
     private def register_default_input_events
-      @input.on :any do |e|
+      input.on :any do |e|
         @renderer.trigger e
         @gui.trigger e
       end
 
-      @input.on :press, :left_bracket do
+      input.on :press, :left_bracket do
         @scheduler.p_job_table
       end
 
-      @input.on :press, :backslash do
+      input.on :press, :backslash do
         if @debug_shell
           stop_debug_shell
         else
@@ -47,23 +57,23 @@ module States
         end
       end
 
-      @input.typing do |e|
+      input.typing do |e|
         @debug_shell.insert e.char if @debug_shell
       end
 
-      @input.on [:press, :repeat], :backspace do
+      input.on [:press, :repeat], :backspace do
         @debug_shell.erase if @debug_shell
       end
 
-      @input.on :press, :enter do
+      input.on :press, :enter do
         @debug_shell.exec if @debug_shell
       end
 
-      @input.on :press, :up do
+      input.on :press, :up do
         @debug_shell.history_prev if @debug_shell
       end
 
-      @input.on :press, :down do
+      input.on :press, :down do
         @debug_shell.history_next if @debug_shell
       end
     end
