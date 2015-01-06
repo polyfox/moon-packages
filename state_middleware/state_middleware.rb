@@ -43,15 +43,7 @@ end
 
 module Middlewarable
   module ClassMethods
-    def all_middlewares
-      family_call(:middlewares).each_with_object([]) do |m, ary|
-        ary.concat(m)
-      end
-    end
-
-    def middlewares
-      @middlewares ||= []
-    end
+    family_attr :middlewares
 
     def middleware(klass)
       middlewares << klass
