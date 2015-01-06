@@ -1,5 +1,41 @@
 module Moon
   module Serializable
+    # The PropertyHelper, as it names implies, helps with stating properties
+    # for use with Serializable or Standalone, use this module after including
+    # Serializable, else bad things will happen!
+    module PropertyHelper
+      module ClassMethods
+        family_attr :properties
+
+        def property(name)
+          name = name.to_sym
+          properties << name
+          name
+        end
+      end
+
+      module InstanceMethods
+        def set_property(key, value)
+          instance_variable_set("@#{key}", value)
+        end
+
+        def to_h
+          self.class.all_properties.each_with_object({}) do |key, hash|
+            hash[key.to_sym] = send(key)
+          end
+        end
+
+        def serialization_properties(&block)
+          to_h.each(&block)
+        end
+      end
+
+      def self.included(mod)
+        mod.extend         ClassMethods
+        mod.send :include, InstanceMethods
+      end
+    end
+
     class Serializer
     end
 
