@@ -1,36 +1,40 @@
 # https://github.com/sole/Tween.js
 module Moon
   module Interpolation
-    def self.factorial(n)
-      a = [1]
-      s = 1
-      if a[n]
-        a[n]
-      else
-        n.times do |i|
-          s *= (n - i)
+    module Helper
+      def factorial(n)
+        a = [1]
+        s = 1
+        if a[n]
+          a[n]
+        else
+          n.times do |i|
+            s *= (n - i)
+          end
+          a[n] = s
         end
-        a[n] = s
+      end
+
+      def linear(p0, p1, t)
+        (p1 - p0) * t + p0
+      end
+
+      def bernstein(n, i)
+        factorial(n) / factorial(i) / factorial(n - i)
+      end
+
+      def catmull_rom(p0, p1, p2, p3, t)
+        v0 = (p2 - p0) * 0.5
+        v1 = (p3 - p1) * 0.5
+        t2 = t * t
+        t3 = t * t2
+        (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1
       end
     end
 
-    def self.linear(p0, p1, t)
-      (p1 - p0) * t + p0
-    end
-
-    def self.bernstein(n, i)
-      factorial(n) / factorial(i) / factorial(n - i)
-    end
-
-    def self.catmull_rom(p0, p1, p2, p3, t)
-      v0 = (p2 - p0) * 0.5
-      v1 = (p3 - p1) * 0.5
-      t2 = t * t
-      t3 = t * t2
-      (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1
-    end
-
     module Linear
+      extend Helper
+
       def self.call(v, k)
         m = v.length - 1
         f = m * k
@@ -46,6 +50,8 @@ module Moon
     end
 
     module Bezier
+      extend Helper
+
       def self.call(v, k)
         b = 0
         n = v.length - 1
@@ -57,6 +63,8 @@ module Moon
     end
 
     module CatmullRom
+      extend Helper
+
       def self.call(v, k)
         m = v.length - 1
         f = m * k
