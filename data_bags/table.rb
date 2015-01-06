@@ -1,172 +1,277 @@
 module Moon
   class Table
-    private def blit_xywh_with_block(table, x, y, sx, sy, sw, sh)
-      sh.times do |fy|
-        sw.times do |fx|
-          n = table[sx + fx, sy + fy]
-          self[x + fx, y + fy] = table[sx + fx, sy + fy] if yield n
+    include Enumerable
+    include Serializable
+
+    # @return [Integer]
+    attr_reader :xsize
+    # @return [Integer]
+    attr_reader :ysize
+    # @return [Integer]
+    attr_accessor :default
+
+    # @param [Integer] xsize
+    # @param [Integer] ysize
+    # @param [Hash<Symbol, Object>] options
+    def initialize(xsize, ysize, options = {})
+      @xsize = xsize.to_i
+      @ysize = ysize.to_i
+      @default = options.fetch(:default, 0)
+      create_data
+      yield self if block_given?
+    end
+
+    # @param [Void]
+    private def create_data
+      @data = Array.new(@xsize * @ysize, @default)
+    end
+
+    # @param [Moon::Table] org
+    def initialize_copy(org)
+      super org
+      create_data
+      map_with_xy { |_, x, y| org.data[x + y * @xsize] }
+    end
+
+    # @param [Array<Integer>] data_p
+    # @param [Integer] xsize
+    # @param [Integer] ysize
+    def change_data(data_p, xsize, ysize)
+      @xsize = xsize
+      @ysize = ysize
+      @data  = data_p
+    end
+
+    # @param [Integer] xsize
+    # @param [Integer] ysize
+    def resize(xsize, ysize)
+      oxsize, oysize = *size
+      @xsize, @ysize = xsize, ysize
+      old_data = @data
+      create_data
+      map_with_xy do |n, x, y|
+        if x < oxsize && y < oysize
+          old_data[x + y * oxsize]
+        else
+          @default
+        end
+      end
+    end
+
+    # @param [Integer] x
+    # @param [Integer] y
+    def in_bounds?(x, y)
+      return ((x >= 0) && (x < xsize)) &&
+             ((y >= 0) && (y < ysize))
+    end
+
+    # @param [Integer] x
+    # @param [Integer] y
+    def [](x, y)
+      x = x.to_i; y = y.to_i
+      return @default unless in_bounds?(x, y)
+      @data[x + y * @xsize]
+    end
+
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] n
+    def []=(x, y, n)
+      x = x.to_i; y = y.to_i; n = n.to_i
+      return unless in_bounds?(x, y)
+      @data[x + y * @xsize] = n
+    end
+
+    # Because sometimes its too damn troublesome to convert an index to the
+    # proper coords
+    #
+    # @param [Integer] i
+    # @param [Integer] value
+    def set_by_index(i, value)
+      self[i % xsize, i / xsize] = value
+    end
+
+    #
+    def each
+      @data.each do |x|
+        yield x
+      end
+    end
+
+    #
+    def each_row
+      xsize.times do |x|
+        yield @data[x * @xsize, @xsize]
+      end
+    end
+
+    #
+    def each_with_xy
+      ysize.times do |y|
+        xsize.times do |x|
+          yield @data[x + y * @xsize], x, y
+        end
+      end
+    end
+
+    #
+    def map_with_xy
+      each_with_xy do |n, x, y|
+        index = x + y * @xsize
+        @data[index] = yield @data[index], x, y
+      end
+    end
+
+    # @return [Moon::Vector2]
+    def size
+      Moon::Vector2.new xsize, ysize
+    end
+
+    # @return [Moon::Rect]
+    def rect
+      Moon::Rect.new 0, 0, xsize, ysize
+    end
+
+    # @return [Moon::Cuboid]
+    def cuboid
+      Moon::Cuboid.new 0, 0, 0, xsize, ysize, 1
+    end
+
+    # @overload subsample(rect)
+    #   @param [Moon::Rect, Array<Integer>] rect
+    # @overload subsample(x, y, w, h)
+    #   @param [Integer] x
+    #   @param [Integer] y
+    #   @param [Integer] w
+    #   @param [Integer] h
+    # @return [Moon::Table]
+    def subsample(*args)
+      rx, ry, rw, rh = *Rect.extract(args.size > 1 ? args : args.first)
+      result = self.class.new(rw, rh, default: default)
+      result.ysize.times do |y|
+        dy = y + ry
+        result.xsize.times do |x|
+          result[x, y] = self[x + rx, dy]
+        end
+      end
+      result
+    end
+
+    # @param [Integer] n
+    def fill(n)
+      map_with_xy { |old_n, x, y| n }
+    end
+
+    # @overload map_rect(rect)
+    #   @param [Moon::Rect, Array<Integer>] rect
+    # @overload map_rect(x, y, width, height)
+    #   @param [Integer] x
+    #   @param [Integer] y
+    #   @param [Integer] width
+    #   @param [Integer] height
+    # @return [self]
+    def map_rect(*args)
+      x, y, w, h = *Rect.extract(args.size > 1 ? args : args.first)
+      h.times do |j|
+        w.times do |i|
+          self[x + i, y + j] = yield x, y
         end
       end
       self
     end
 
-    ##
+    # @param [Integer] x  x-coord
+    # @param [Integer] y  y-coord
+    # @param [Integer] w  width
+    # @param [Integer] h  height
+    # @param [Integer] v  value
     # @return [self]
-    private def blit_xywh_without_block(table, x, y, sx, sy, sw, sh)
-      sh.times do |fy|
-        sw.times do |fx|
-          self[x + fx, y + fy] = table[sx + fx, sy + fy]
-        end
-      end
-      self
-    end
-    ##
-    #
-    # @param [Moon::Table] table
-    # @param [Integer] x
-    # @param [Integer] y
-    # @param [Integer] sx
-    # @param [Integer] sy
-    # @param [Integer] sw
-    # @param [Integer] sh
-    # @return [self]
-    def blit_xywh(*args, &block)
-      if block_given?
-        blit_xywh_with_block(*args, &block)
-      else
-        blit_xywh_without_block(*args)
-      end
+    def fill_rect_xywh(x, y, w, h, v)
+      map_rect(x, y, w, h) { v }
     end
 
-    ##
-    #
-    # @param [Moon::Table] table
-    # @param [Integer] x
-    # @param [Integer] y
-    # @param [Moon::Rect] rect
+    # @overload fill_rect(rect, value)
+    #   @param [Moon::Rect, Array<Integer>] rect
+    #   @param [Integer] value
+    # @overload fill_rect(x, y, width, height, value)
+    #   @param [Integer] x
+    #   @param [Integer] y
+    #   @param [Integer] width
+    #   @param [Integer] height
+    #   @param [Integer] value
     # @return [self]
-    def blit_rect(table, x, y, rect, &block)
-      blit_xywh(table, x, y, rect.x, rect.y, rect.w, rect.h, &block)
-    end
-
-    ##
-    # @overload blit(table, x, y, rect)
-    # @overload blit(table, x, y, sx, sy, sw, sh)
-    # @return [self]
-    def blit(*args, &block)
+    def fill_rect(*args)
       case args.size
-      when 4
-        blit_rect(*args, &block)
-      when 7
-        blit_xywh(*args, &block)
+      when 2
+        r, n = *args
+        fill_rect_xywh(r.x, r.y, r.w, r.h, n)
+      when 5
+        fill_rect_xywh(*args)
       else
         raise ArgumentError,
-              "wrong argument count #{args.size} (expected 4:(table, x, y, rect) or 7:(table, x, y, sx, sy, sw, sh))"
+              "wrong argument count #{args.size} (expected 2:(rect, value) or 5:(x, y, w, h, value))"
       end
     end
 
-    ##
-    # Set a Table's data from a String and a dictionary
-    #
-    # @param [String] str
-    # @param [Hash<String, Integer>] strmap
-    def set_from_strmap(str, strmap)
-      str.split("\n").each do |row|
-        row.bytes.each_with_index do |c, i|
-          set_by_index(i, strmap[c.chr])
-        end
+    # @param [Integer] n
+    def clear(n = 0)
+      fill(n)
+    end
+
+    # @param [Integer] n
+    # @return [Array<Integer>] row
+    def row(y)
+      @data[y * @xsize, @xsize]
+    end
+
+    # @return [Integer]
+    def row_count
+      ysize
+    end
+
+    # @return [String]
+    def to_s
+      result = ''
+      @ysize.times do |y|
+        result.concat(@data[y * @xsize, @xsize].join(', '))
+        result.concat("\n")
       end
-      self
+      return result
     end
 
-    ##
-    # Determines if position is inside the Table
-    #
-    # @overload pos_inside?(x, y)
-    # @overload pos_inside?(vec2)
-    # @return [Boolean]
-    def pos_inside?(*args)
-      px, py = *Moon::Vector2.extract(args.size > 1 ? args : args.first)
-      px.between?(0, xsize) && py.between?(0, ysize)
+    # @return [String]
+    def inspect
+      "<#{self.class}: xsize=#{xsize} ysize=#{ysize} default=#{default} data=[...]>"
     end
 
-    ##
-    # Replaces all ocurrences of (rmap.key) with (rmap.value)
-    #
-    # @param [Hash<Integer, Integer>] rmap
-    # @return [self]
-    def replace_map(rmap)
-      map_with_xy do |n, x, y|
-        rmap[n] || n
+    # @return [Hash<Symbol, Integer>]
+    def to_h
+      {
+        xsize: @xsize,
+        ysize: @ysize,
+        default: @default,
+        data: @data
+      }
+    end
+
+    def set_property(key, value)
+      case key.to_s
+      when 'xsize'   then @xsize = value
+      when 'ysize'   then @ysize = value
+      when 'default' then @default = value
+      when 'data'    then @data = value
       end
-      self
     end
 
-    ##
-    # Replaces all ocurrences of (a) with (b)
-    #
-    # @param [Integer] a
-    # @param [Integer] b
-    # @return [self]
-    def replace(a, b)
-      replace_map({ a => b })
+    def serialization_properties(&block)
+      to_h.each(&block)
     end
 
-    ##
-    # Replaces all ocurrences that appear in (selection) with the result
-    # from the block
-    #
-    # @yield [Integer]
-    # @return [self]
-    def replace_select(selection)
-      map_with_xy do |n, x, y|
-        n = yield n if selection.include?(n)
-        n
-      end
-      self
-    end
-
-    private def rotate_cw
-      result = self.class.new(ysize, xsize, default: default)
-      ys = ysize - 1
-      each_with_xy do |n, x, y|
-        result[ys - y, x] = n
-      end
-      result
-    end
-
-    private def rotate_ccw
-      result = self.class.new(ysize, xsize, default: default)
-      xs = xsize - 1
-      each_with_xy do |n, x, y|
-        result[y, xs - x] = n
-      end
-      result
-    end
-
-    private def rotate_flip
-      result = self.class.new(xsize, ysize, default: default)
-      xs, ys = xsize - 1, ysize - 1
-      each_with_xy do |n, x, y|
-        result[xs - x, ys - y] = n
-      end
-      result
-    end
-
-    ##
-    # Rotate the Table data, returns a new Table with the rotated data
-    #
-    # @param [Integer] angle
-    # @return [Table]
-    def rotate(angle)
-      case (angle % 360)
-      when 0   then dup
-      when 90  then rotate_cw
-      when 180 then rotate_flip
-      when 270 then rotate_ccw
-      else
-        raise RuntimeError, "unsupported rotation angle #{angle}"
-      end
+    # @return [Moon::Table]
+    def self.load(data, depth = 0)
+      instance = new data['xsize'], data['ysize'], default: data['default']
+      instance.import data, depth
+      instance
     end
   end
 end

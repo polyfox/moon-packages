@@ -7,8 +7,6 @@ require 'std/input/observer'
 require 'std/cache_base'
 require 'std/cuboid'
 require 'std/rect'
-require 'std/data_matrix' # 3d Table
-require 'std/table'       # 2d Table
 require 'std/sprite'
 require 'std/aabb'
 require 'std/aabbcc'
