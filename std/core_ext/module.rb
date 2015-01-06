@@ -1,6 +1,24 @@
 class Module
   alias :__const_get__ :const_get
 
+  def family_attr(name)
+    variable_name = "@#{name}"
+    define_method(name) do
+      var = instance_variable_get(variable_name)
+      if var.nil?
+        var = []
+        instance_variable_set(variable_name, var)
+      end
+      var
+    end
+
+    define_method("all_#{name}") do
+      family_call(name).each_with_object([]) do |attrs, ary|
+        ary.concat(attrs)
+      end
+    end
+  end
+
   def family_call(method)
     if block_given?
       ancestors.reverse.each do |klass|
