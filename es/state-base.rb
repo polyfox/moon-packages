@@ -1,5 +1,6 @@
 module States
   class Base < ::State
+    include StateMiddlewarable
     include Moon::TransitionHost
 
     @@__cvar__ = {}
