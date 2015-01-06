@@ -1,0 +1,7 @@
+---
+name: Data Painter
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: Various utility classes for modfying and sampling data from structures
+require: _basalt.rb
+deps:
+  - std
