@@ -43,6 +43,12 @@ end
 
 module Middlewarable
   module ClassMethods
+    def all_middlewares
+      family_call(:middlewares).each_with_object([]) do |m, ary|
+        ary.concat(m)
+      end
+    end
+
     def middlewares
       @middlewares ||= []
     end
@@ -61,7 +67,7 @@ module Middlewarable
 
   private def init_middleware
     @middleware_manager = MiddlewareManager.new(self)
-    @middleware_manager.setup(self.class.middlewares)
+    @middleware_manager.setup(self.class.all_middlewares)
   end
 
   def middleware(klass)
