@@ -1,0 +1,7 @@
+---
+name: State Middleware
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: Middleware for Moon's default State class
+require: _basalt.rb
+deps:
+  - std
