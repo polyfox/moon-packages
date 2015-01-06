@@ -28,7 +28,7 @@ module Moon #:nodoc:
       x, y, w, h = *Rect.extract(args.size > 1 ? args : args.first)
       h.times do |j|
         w.times do |i|
-          target[x + i, y + j] = yield target[x + i, y + j], x, y
+          target[x + i, y + j] = yield target[x + i, y + j], i, j
         end
       end
       self
@@ -65,6 +65,101 @@ module Moon #:nodoc:
         raise ArgumentError,
               "wrong argument count #{args.size} (expected 2:(rect, value) or 5:(x, y, w, h, value))"
       end
+    end
+
+    private def blit_xywh_with_block(table, x, y, sx, sy, sw, sh)
+      map_rect(x, y, sw, sh) do |o, i, j|
+        yield(n) ? table[sx + i, sy + j] : o
+      end
+    end
+
+    ##
+    # @return [self]
+    private def blit_xywh_without_block(table, x, y, sx, sy, sw, sh)
+      map_rect(x, y, sw, sh) do |o, i, j|
+        table[sx + i, sy + j]
+      end
+    end
+
+    ##
+    #
+    # @param [Moon::Table] table
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] sx
+    # @param [Integer] sy
+    # @param [Integer] sw
+    # @param [Integer] sh
+    # @return [self]
+    def blit_xywh(*args, &block)
+      if block_given?
+        blit_xywh_with_block(*args, &block)
+      else
+        blit_xywh_without_block(*args)
+      end
+    end
+
+    ##
+    #
+    # @param [Moon::Table] table
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Moon::Rect] rect
+    # @return [self]
+    def blit_rect(table, x, y, rect, &block)
+      blit_xywh(table, x, y, rect.x, rect.y, rect.w, rect.h, &block)
+    end
+
+    ##
+    # @overload blit(table, x, y, rect)
+    # @overload blit(table, x, y, sx, sy, sw, sh)
+    # @return [self]
+    def blit(*args, &block)
+      case args.size
+      when 4
+        blit_rect(*args, &block)
+      when 7
+        blit_xywh(*args, &block)
+      else
+        raise ArgumentError,
+              "wrong argument count #{args.size} (expected 4:(table, x, y, rect) or 7:(table, x, y, sx, sy, sw, sh))"
+      end
+    end
+
+    ##
+    # Replaces all ocurrences of (rmap.key) with (rmap.value)
+    #
+    # @param [Hash<Integer, Integer>] rmap
+    # @return [self]
+    def replace_map(rmap)
+      map_with_xy do |n, x, y|
+        rmap[n] || n
+      end
+      self
+    end
+
+    ##
+    # Replaces all ocurrences of (a) with (b)
+    #
+    # @param [Integer] a
+    # @param [Integer] b
+    # @return [self]
+    def replace(a, b)
+      replace_map({ a => b })
+    end
+
+    ##
+    # Replaces all ocurrences that appear in (selection) with the result
+    # from the block
+    #
+    # @yield [Integer]
+    # @return [self]
+    def replace_select(selection)
+      map_with_xy do |n, x, y|
+        n = yield n if selection.include?(n)
+        n
+      end
+      self
     end
   end
 end

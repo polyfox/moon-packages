@@ -14,6 +14,7 @@ module Moon #:nodoc:
 
     # @param [*Data2]
     # @param [Hash<Symbol, Object>] options
+    #   @option options [#new] factory2
     def initialize(src, options = {})
       @src = src
       @factory2 = options.fetch(:factory2) { TableFactory.new }
@@ -47,7 +48,7 @@ module Moon #:nodoc:
     end
 
     # @param [Integer] x
-    # @return [Array<Integer>] row
+    # @return [Array<Integer>] column
     def column(x)
       src.ysize.times.map { |y| src[x, y] }
     end
@@ -56,6 +57,52 @@ module Moon #:nodoc:
     # @return [Array<Integer>] row
     def row(y)
       src.xsize.times.map { |x| src[x, y] }
+    end
+
+    # @return [*Data2]
+    private def rotate_cw
+      result = self.class.new(ysize, xsize, default: default)
+      ys = ysize - 1
+      each_with_xy do |n, x, y|
+        result[ys - y, x] = n
+      end
+      result
+    end
+
+    # @return [*Data2]
+    private def rotate_ccw
+      result = self.class.new(ysize, xsize, default: default)
+      xs = xsize - 1
+      each_with_xy do |n, x, y|
+        result[y, xs - x] = n
+      end
+      result
+    end
+
+    # @return [*Data2]
+    private def rotate_flip
+      result = self.class.new(xsize, ysize, default: default)
+      xs, ys = xsize - 1, ysize - 1
+      each_with_xy do |n, x, y|
+        result[xs - x, ys - y] = n
+      end
+      result
+    end
+
+    ##
+    # Rotate the Table data, returns a new Table with the rotated data
+    #
+    # @param [Integer] angle
+    # @return [*Data2]
+    def rotate(angle)
+      case (angle % 360)
+      when 0   then dup
+      when 90  then rotate_cw
+      when 180 then rotate_flip
+      when 270 then rotate_ccw
+      else
+        raise RuntimeError, "unsupported rotation angle #{angle}"
+      end
     end
   end
 end
