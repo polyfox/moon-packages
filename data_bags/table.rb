@@ -1,13 +1,18 @@
-module Moon
+module Moon #:nodoc:
   class Table
     include Serializable
+    include Serializable::PropertyHelper
 
     # @return [Integer]
-    attr_reader :xsize
+    attr_reader property(:xsize)
     # @return [Integer]
-    attr_reader :ysize
+    attr_reader property(:ysize)
     # @return [Integer]
-    attr_accessor :default
+    attr_reader property(:size)
+    # @return [Array<Integer>]
+    attr_reader property(:data)
+    # @return [Integer]
+    attr_accessor property(:default)
 
     # @param [Integer] xsize
     # @param [Integer] ysize
@@ -16,13 +21,23 @@ module Moon
       @xsize = xsize.to_i
       @ysize = ysize.to_i
       @default = options.fetch(:default, 0)
-      create_data
+      if options.key?(:data)
+        @data = options.fetch(:data)
+      else
+        create_data
+      end
       yield self if block_given?
     end
 
-    # @param [Void]
+    #
+    private def recalculate_size
+      @size = @xsize * @ysize
+    end
+
+    #
     private def create_data
-      @data = Array.new(@xsize * @ysize, @default)
+      recalculate_size
+      @data = Array.new(@size, @default)
     end
 
     # @param [Moon::Table] org
@@ -39,6 +54,19 @@ module Moon
       @xsize = xsize
       @ysize = ysize
       @data  = data_p
+    end
+
+    # write_data is a variation of change_data, it validates the size of the
+    # data set and then replaces the current data with the given
+    #
+    # @param [Array<Integer>] data_p
+    def write_data(data_p)
+      if data_p.size > size
+        raise Moon::OverflowError, 'given dataset is larger than internal'
+      elsif data_p.size < @size
+        raise Moon::UnderflowError, 'given dataset is smaller than internal'
+      end
+      @data.replace(data_p)
     end
 
     # @param [Integer] xsize
@@ -134,98 +162,6 @@ module Moon
     # @return [Moon::Cuboid]
     def cuboid
       Moon::Cuboid.new 0, 0, 0, xsize, ysize, 1
-    end
-
-    # @overload subsample(rect)
-    #   @param [Moon::Rect, Array<Integer>] rect
-    # @overload subsample(x, y, w, h)
-    #   @param [Integer] x
-    #   @param [Integer] y
-    #   @param [Integer] w
-    #   @param [Integer] h
-    # @return [Moon::Table]
-    def subsample(*args)
-      rx, ry, rw, rh = *Rect.extract(args.size > 1 ? args : args.first)
-      result = self.class.new(rw, rh, default: default)
-      result.ysize.times do |y|
-        dy = y + ry
-        result.xsize.times do |x|
-          result[x, y] = self[x + rx, dy]
-        end
-      end
-      result
-    end
-
-    # @param [Integer] n
-    def fill(n)
-      map_with_xy { |old_n, x, y| n }
-    end
-
-    # @overload map_rect(rect)
-    #   @param [Moon::Rect, Array<Integer>] rect
-    # @overload map_rect(x, y, width, height)
-    #   @param [Integer] x
-    #   @param [Integer] y
-    #   @param [Integer] width
-    #   @param [Integer] height
-    # @return [self]
-    def map_rect(*args)
-      x, y, w, h = *Rect.extract(args.size > 1 ? args : args.first)
-      h.times do |j|
-        w.times do |i|
-          self[x + i, y + j] = yield x, y
-        end
-      end
-      self
-    end
-
-    # @param [Integer] x  x-coord
-    # @param [Integer] y  y-coord
-    # @param [Integer] w  width
-    # @param [Integer] h  height
-    # @param [Integer] v  value
-    # @return [self]
-    def fill_rect_xywh(x, y, w, h, v)
-      map_rect(x, y, w, h) { v }
-    end
-
-    # @overload fill_rect(rect, value)
-    #   @param [Moon::Rect, Array<Integer>] rect
-    #   @param [Integer] value
-    # @overload fill_rect(x, y, width, height, value)
-    #   @param [Integer] x
-    #   @param [Integer] y
-    #   @param [Integer] width
-    #   @param [Integer] height
-    #   @param [Integer] value
-    # @return [self]
-    def fill_rect(*args)
-      case args.size
-      when 2
-        r, n = *args
-        fill_rect_xywh(r.x, r.y, r.w, r.h, n)
-      when 5
-        fill_rect_xywh(*args)
-      else
-        raise ArgumentError,
-              "wrong argument count #{args.size} (expected 2:(rect, value) or 5:(x, y, w, h, value))"
-      end
-    end
-
-    # @param [Integer] n
-    def clear(n = 0)
-      fill(n)
-    end
-
-    # @param [Integer] n
-    # @return [Array<Integer>] row
-    def row(y)
-      @data[y * @xsize, @xsize]
-    end
-
-    # @return [Integer]
-    def row_count
-      ysize
     end
 
     # @return [String]

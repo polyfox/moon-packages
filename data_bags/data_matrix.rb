@@ -1,14 +1,25 @@
-#   aka. Table3
-module Moon
+module Moon #:nodoc:
+  #   aka. Table3
   class DataMatrix
     include Serializable
+    include Serializable::PropertyHelper
 
-    attr_reader :xsize
-    attr_reader :ysize
-    attr_reader :zsize
-    attr_reader :data
-    attr_accessor :default
+    # @return [Integer]
+    attr_reader property(:xsize)
+    # @return [Integer]
+    attr_reader property(:ysize)
+    # @return [Integer]
+    attr_reader property(:zsize)
+    # @return [Integer]
+    attr_reader property(:size)
+    # @return [Array<Integer>]
+    attr_reader property(:data)
+    # @return [Integer]
+    attr_accessor property(:default)
 
+    # @param [Integer] xsize
+    # @param [Integer] ysize
+    # @param [Integer] zsize
     def initialize(xsize, ysize, zsize, options = {})
       @xsize = xsize.to_i
       @ysize = ysize.to_i
@@ -18,41 +29,64 @@ module Moon
       yield self if block_given?
     end
 
-    private def create_data
-      @data = Array.new(@xsize * @ysize * @zsize, @default)
+    #
+    private def recalculate_size
+      @size = @xsize * @ysize * @zsize
     end
 
+    #
+    private def create_data
+      recalculate_size
+      @data = Array.new(@size, @default)
+    end
+
+    # @param [DataMatrix] org
     def initialize_copy(org)
       super org
       create_data
       map_with_xyz { |_, x, y, z| org.data[x + y * @xsize + z * @xsize * @ysize] }
     end
 
+    # write_data is a variation of change_data, it validates the size of the
+    # data set and then replaces the current data with the given
+    #
+    # @param [Array<Integer>] data_p
+    def write_data(data_p)
+      if data_p.size > size
+        raise Moon::OverflowError, 'given dataset is larger than internal'
+      elsif data_p.size < @size
+        raise Moon::UnderflowError, 'given dataset is smaller than internal'
+      end
+      @data.replace(data_p)
+    end
+
+    # @param [Integer] xsize
+    # @param [Integer] ysize
+    # @param [Integer] zsize
+    def resize(xsize, ysize, zsize)
+      oxsize, oysize, ozsize = *size
+      @xsize, @ysize, @zsize = xsize, ysize, zsize
+      old_data = @data
+      create_data
+      map_with_xyz do |n, x, y, z|
+        if x < oxsize && y < oysize && z < ozsize
+          old_data[x + y * oxsize + z * oxsize * oysize]
+        else
+          @default
+        end
+      end
+    end
+
     def size
-      Vector3.new @xsize, @ysize, @zsize
+      Vector3.new xsize, ysize, zsize
     end
 
     def rect
-      Rect.new 0, 0, @xsize, @ysize
+      Rect.new 0, 0, xsize, ysize
     end
 
     def cuboid
-      Cuboid.new 0, 0, 0, @xsize, @ysize, @zsize
-    end
-
-    def subsample(*args)
-      cx, cy, cz, cw, ch, cd = *Cuboid.extract(args.size > 1 ? args : args.first)
-      result = self.class.new(cw, ch, cd, default: @default)
-      result.zsize.times do |z|
-        dz = cz + z
-        result.ysize.times do |y|
-          dy = cy + y
-          result.xsize.times do |x|
-            result[x, y, z] = self[x + cx, dy, dz]
-          end
-        end
-      end
-      result
+      Cuboid.new 0, 0, 0, xsize, ysize, zsize
     end
 
     def in_bounds?(x, y, z)
@@ -100,39 +134,6 @@ module Moon
       end
     end
 
-    def fill(n)
-      map_with_xyz { |old_n, x, y, z| n }
-    end
-
-    def clear(n=0)
-      fill(n)
-    end
-
-    def pillar_a(x, y)
-      @zsize.times.map { |z| self[x, y, z] }
-    end
-
-    def layer(z)
-      layer_data = @data[z * @xsize * @ysize, @xsize * @ysize]
-      table = Table.new(0, 0)
-      table.change_data(layer_data, @xsize, @ysize)
-      table
-    end
-
-    def resize(xsize, ysize, zsize)
-      oxsize, oysize, ozsize = *size
-      @xsize, @ysize, @zsize = xsize, ysize, zsize
-      old_data = @data
-      create_data
-      map_with_xyz do |n, x, y, z|
-        if x < oxsize && y < oysize && z < ozsize
-          old_data[x + y * oxsize + z * oxsize * oysize]
-        else
-          @default
-        end
-      end
-    end
-
     def to_s
       result = ''
       @zsize.times do |z|
@@ -148,30 +149,6 @@ module Moon
     # @return [String]
     def inspect
       "<#{self.class}: xsize=#{xsize} ysize=#{ysize} zsize=#{zsize} default=#{default} data=[...]>"
-    end
-
-    def to_h
-      {
-        xsize: @xsize,
-        ysize: @ysize,
-        zsize: @zsize,
-        default: @default,
-        data: @data
-      }
-    end
-
-    def set_property(key, value)
-      case key.to_s
-      when 'xsize' then @xsize = value
-      when 'ysize' then @ysize = value
-      when 'zsize' then @zsize = value
-      when 'default' then @default = value
-      when 'data' then @data = value
-      end
-    end
-
-    def serialization_properties(&block)
-      to_h.each(&block)
     end
 
     def self.load(data, depth = 0)
