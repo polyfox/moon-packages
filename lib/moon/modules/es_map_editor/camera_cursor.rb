@@ -1,5 +1,4 @@
-class CameraCursor < Moon::DataModel::Metal
-  field :position, type: Moon::Vector3, default: proc{|t|t.new}
+class CameraCursor < Cursor3
   field :velocity, type: Moon::Vector3, default: proc{|t|t.new}
 
   def update(delta)

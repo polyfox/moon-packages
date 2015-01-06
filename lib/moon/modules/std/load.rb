@@ -1,4 +1,5 @@
 require 'std/err/abstract_method_error'
+require 'std/args_helper'
 require 'std/core_ext'
 require 'std/mixins'
 require 'std/event'

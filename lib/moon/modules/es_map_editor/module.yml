@@ -10,3 +10,4 @@ deps:
   - es
   - state_mvc
   - twod
+  - data_bags

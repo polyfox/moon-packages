@@ -15,7 +15,9 @@ class MiddlewareManager
   end
 
   def refresh
+    puts "Refreshing Middlewares"
     @middlewares.each do |middleware_klass|
+      puts "Refreshing: #{middleware_klass}"
       middleware = middleware_klass.new(state)
       @middleware_registry[middleware_klass] = middleware
       middleware.hooks.each do |hook|

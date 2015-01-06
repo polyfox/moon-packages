@@ -9,18 +9,10 @@ module ES
         r ||= chunk.position
         t ||= chunk.position
         b ||= chunk.position
-        if l.x > chunk.position.x
-          l = chunk.position
-        end
-        if r.x < chunk.bounds.x2
-          r = Moon::Vector3.new(chunk.bounds.x2, 0)
-        end
-        if t.y > chunk.position.y
-          t = chunk.position
-        end
-        if b.y < chunk.bounds.y2
-          b = Moon::Vector3.new(0, chunk.bounds.y2)
-        end
+        l = chunk.position if l.x > chunk.position.x
+        r = Moon::Vector3.new(chunk.bounds.x2, 0) if r.x < chunk.bounds.x2
+        t = chunk.position if t.y > chunk.position.y
+        b = Moon::Vector3.new(0, chunk.bounds.y2) if b.y < chunk.bounds.y2
       end
       Moon::Rect.new(l.x, t.y, r.x - l.x, b.y - t.y)
     end
@@ -35,10 +27,8 @@ module ES
 
     def to_map
       map = Map.new
-      map.set(self.to_h.exclude(:chunks))
-      map.chunks = chunks.map do |chunk|
-        chunk.to_chunk_head
-      end
+      map.set(to_h.exclude(:chunks))
+      map.chunks = chunks.map(&:to_chunk_head)
       map
     end
   end

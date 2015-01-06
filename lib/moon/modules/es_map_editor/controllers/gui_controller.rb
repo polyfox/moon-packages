@@ -1,4 +1,4 @@
-class MapEditorController < State::ControllerBase
+class MapEditorGuiController < State::ControllerBase
   def center_on_map
     bounds = @model.map.bounds
     @model.cam_cursor.position.set(bounds.cx, bounds.cy, 0)
@@ -30,8 +30,8 @@ class MapEditorController < State::ControllerBase
 
   def new_map
     @view.dashboard.enable 1
-    @view.notifications.notify string: "New Map"
-    @model.map = create_map(name: "New Map")
+    @view.notifications.notify string: 'New Map'
+    @model.map = create_map(name: 'New Map')
     @model.map.uri = "/maps/new/map-#{@model.map.id}"
     create_chunk(Moon::Rect.new(0, 0, 4, 4), name: "New Chunk #{@model.map.chunks.size}")
   end
@@ -45,7 +45,7 @@ class MapEditorController < State::ControllerBase
     @view.dashboard.ok 4
     @model.map.to_map.save_file
     save_chunks
-    @view.notifications.notify string: "Saved"
+    @view.notifications.notify string: 'Saved'
   end
 
   def on_save_map_release
@@ -55,13 +55,13 @@ class MapEditorController < State::ControllerBase
 
   def new_chunk
     @view.dashboard.enable 2
-    @view.notifications.notify string: "New Chunk"
+    @view.notifications.notify string: 'New Chunk'
     @model.selection_stage = 1
   end
 
   def new_chunk_stage_finish
     id = @model.map.chunks.size+1
-    chunk = create_chunk @view.tileselection_rect.tile_rect,
+    chunk = create_chunk @model.selection_rect,
                          name: "New Chunk #{id}"
     chunk.uri = "/chunks/new/chunk-#{chunk.id}"
 
@@ -72,19 +72,21 @@ class MapEditorController < State::ControllerBase
   end
 
   def new_chunk_stage
-    if @model.selection_stage == 1
+    case @model.selection_stage
+    when 1
       @model.selection_stage += 1
-    elsif @model.selection_stage == 2
+    when 2
       new_chunk_stage_finish
     end
   end
 
   def new_chunk_revert
-    if @model.selection_stage == 1
+    case @mode.selection_stage
+    when 1
       @model.selection_stage = 0
       @view.dashboard.disable 2
       @view.notifications.clear
-    elsif @model.selection_stage == 2
+    when 2
       @model.selection_rect.clear
       @model.selection_stage -= 1
     end
@@ -96,7 +98,7 @@ class MapEditorController < State::ControllerBase
     chunk.data     = Moon::DataMatrix.new(bounds.w, bounds.h, 2, default: -1)
     chunk.passages = Moon::Table.new(bounds.w, bounds.h)
     chunk.flags    = Moon::DataMatrix.new(bounds.w, bounds.h, 2)
-    chunk.tileset  = Database.find(:tileset, uri: "/tilesets/common")
+    chunk.tileset  = ES::Tileset.find_by(uri: "/tilesets/common")
     @model.map.chunks << chunk
     @view.refresh_tilemaps
     chunk
@@ -323,7 +325,6 @@ class MapEditorController < State::ControllerBase
       @model.selection_rect.whd = @model.map_cursor.position -
                                   @model.selection_rect.xyz
     end
-    @view.tileselection_rect.tile_rect = @model.selection_rect
     super
   end
 end
