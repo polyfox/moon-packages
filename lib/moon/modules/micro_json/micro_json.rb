@@ -1,47 +1,111 @@
 module MicroJSON
+  class Writer
+    attr_reader :stream
+    attr_reader :options
+
+    def initialize(stream, options = {})
+      @options = options
+      @stream = stream
+    end
+
+    def write(str, depth = 0)
+      stream << str
+    end
+
+    def write_string(str, depth = 0)
+      write(str.dump, depth + 1)
+    end
+
+    def write_symbol(sym, depth = 0)
+      if options[:symbols]
+        write_string(":#{sym}", depth = 0)
+      else
+        write_string(sym.to_s, depth = 0)
+      end
+    end
+
+    def write_number(num, depth = 0)
+      write(num.to_s, depth + 1)
+    end
+
+    def write_integer(int, depth = 0)
+      write_number(int, depth + 1)
+    end
+
+    def write_float(flt, depth = 0)
+      write_number(flt, depth + 1)
+    end
+
+    def write_boolean(bool, depth = 0)
+      write(bool ? 'true' : 'false')
+    end
+
+    def write_null(null, depth = 0)
+      write('null')
+    end
+
+    def write_array(array, depth = 0)
+      write('[')
+      end_ = array.size - 1
+      array.each_with_index do |value, i|
+        write_value(value, depth + 1)
+        write(',') unless i == end_
+      end
+      write(']')
+    end
+
+    def write_object(object, depth = 0)
+      write('{')
+      end_ = object.size - 1
+      object.each_with_index do |pair, i|
+        k, v = *pair
+        write("\"#{k}\":")
+        write_value(v)
+        write(',') unless i == end_
+      end
+      write('}')
+    end
+
+    def write_value(value, depth = 0)
+      case value
+      when String      then write_string(value, depth + 1)
+      when Symbol      then write_symbol(value, depth + 1)
+      when Integer     then write_integer(value, depth + 1)
+      when Float       then write_float(value, depth + 1)
+      when Array       then write_array(value, depth + 1)
+      when Hash        then write_object(value, depth + 1)
+      when true, false then write_boolean(value, depth + 1)
+      when nil         then write_null(value, depth + 1)
+      else
+        if value.respond_to?(:to_json)
+          write(value.to_json, depth + 1)
+        else
+          raise TypeError,
+                "unexpected type #{value.class} (expected Integer, Float, Array, Hash or #to_json)"
+        end
+      end
+    end
+  end
+
+  class Reader
+  end
+
   ##
   # @param [Object] o
+  # @param [Hash] options
+  #   @option options [Boolean] :symbols  should symbols be dumped appended with ':' ?
   # @return [String]
-  def self.dump(o)
-    dump_obj = lambda do |obj|
-      result = ''
-      case obj
-      when Hash
-        result << '{'
-        result << (obj.map do |(key, value)|
-          key.to_s.dump << ':' << dump_obj.call(value)
-        end.join(','))
-        result << '}'
-      when String
-        result << obj.dump
-      when Symbol
-        result << obj.to_s.dump
-      when Numeric
-        result << obj.to_s
-      when Array
-        result << '['
-        result << (obj.map do |value|
-          dump_obj.call(value)
-        end.join(','))
-        result << ']'
-      when true
-        result << 'true'
-      when false
-        result << 'false'
-      when nil
-        result << 'null'
-      else
-        result << obj.to_json
-      end
-      result
-    end
-    dump_obj.call(o)
+  def self.dump(o, options = {})
+    result = ''
+    w = Writer.new(result, options)
+    w.write_value(o)
+    result
   end
 
   ##
   # @param [String] str
   # @return [Object]
-  def self.load(str)
+  def self.load(str, options = {})
     index = 0
 
     read_array = nil
