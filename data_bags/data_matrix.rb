@@ -1,7 +1,6 @@
 #   aka. Table3
 module Moon
   class DataMatrix
-    include Enumerable
     include Serializable
 
     attr_reader :xsize

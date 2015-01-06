@@ -1,6 +1,5 @@
 module Moon
   class Table
-    include Enumerable
     include Serializable
 
     # @return [Integer]
