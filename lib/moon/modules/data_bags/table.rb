@@ -3,16 +3,23 @@ module Moon #:nodoc:
     include Serializable
     include Serializable::PropertyHelper
 
-    # @return [Integer]
+    # @!group Properties
+    # @attribute [r] xsize
+    #   @return [Integer]
     attr_reader property(:xsize)
-    # @return [Integer]
+    # @attribute [r] ysize
+    #   @return [Integer]
     attr_reader property(:ysize)
-    # @return [Integer]
+    # @attribute [r] size
+    #   @return [Integer]
     attr_reader property(:size)
-    # @return [Array<Integer>]
+    # @attribute [r] data
+    #   @return [Array<Integer>]
     attr_reader property(:data)
-    # @return [Integer]
+    # @attribute default
+    #   @return [Integer]
     attr_accessor property(:default)
+    # @!endgroup
 
     # @param [Integer] xsize
     # @param [Integer] ysize
@@ -176,30 +183,7 @@ module Moon #:nodoc:
 
     # @return [String]
     def inspect
-      "<#{self.class}: xsize=#{xsize} ysize=#{ysize} default=#{default} data=[...]>"
-    end
-
-    # @return [Hash<Symbol, Integer>]
-    def to_h
-      {
-        xsize: @xsize,
-        ysize: @ysize,
-        default: @default,
-        data: @data
-      }
-    end
-
-    def set_property(key, value)
-      case key.to_s
-      when 'xsize'   then @xsize = value
-      when 'ysize'   then @ysize = value
-      when 'default' then @default = value
-      when 'data'    then @data = value
-      end
-    end
-
-    def serialization_properties(&block)
-      to_h.each(&block)
+      "<#{self.class}: xsize=#{xsize} ysize=#{ysize} size=#{size} default=#{default} data=[...]>"
     end
 
     # @return [Moon::Table]
