@@ -1,6 +1,20 @@
 class Module
   alias :__const_get__ :const_get
 
+  def family_call(method)
+    if block_given?
+      ancestors.reverse.each do |klass|
+        yield klass.send(method) if klass.respond_to?(method)
+      end
+    else
+      Enumerator.new do |yielder|
+        ancestors.reverse.each do |klass|
+          yielder.yield klass.send(method) if klass.respond_to?(method)
+        end
+      end
+    end
+  end
+
   ##
   # const_get resolves namespaces and top level constants!
   # @param [String] path
