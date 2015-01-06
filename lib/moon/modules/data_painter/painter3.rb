@@ -29,7 +29,7 @@ module Moon #:nodoc:
       d.times do |k|
         h.times do |j|
           w.times do |i|
-            target[x + i, y + j, z + k] = yield target[x + i, y + j, z + k], x, y, z
+            target[x + i, y + j, z + k] = yield target[x + i, y + j, z + k], i, j, k
           end
         end
       end
