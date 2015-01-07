@@ -60,6 +60,7 @@ module Middlewarable
   end
 
   private def init_middleware
+    raise if @middleware_manager # re-initialization!
     @middleware_manager = MiddlewareManager.new(self)
     @middleware_manager.setup(self.class.all_middlewares)
   end
@@ -185,11 +186,11 @@ class InputMiddleware < BaseMiddleware
   end
 
   hook def pause
-    register
+    unregister
   end
 
   hook def unpause
-    unregister
+    register
   end
 
   hook def pre_update(delta)
