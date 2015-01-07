@@ -70,7 +70,10 @@ module Moon
         progress = []
         @tests.each do |a|
           test_name, block = *a
-          print format('%-0113s ', test_name)
+          print test_name
+          if (n = 120 - test_name.size - 7) > 0
+            print '.' * n
+          end
           begin
             block.call
             #print '.' if realtime
