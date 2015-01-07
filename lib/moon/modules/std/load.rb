@@ -18,4 +18,7 @@ require 'std/vector4'
 require 'std/transform'
 require 'std/animation'
 require 'std/palette_parser'
+# timing
+require 'std/clock'
+# state
 require 'std/state'
