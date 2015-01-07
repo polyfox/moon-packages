@@ -199,6 +199,15 @@ module Moon #:nodoc:
       @data[x + y * @xsize]
     end
 
+    # Retrieve a value from the internal data at (index)
+    #
+    # @param [Integer] index
+    # @return [Integer] value Value at index
+    def get_by_index(index)
+      return @default if index < 0 || index >= size
+      @data[index]
+    end
+
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] n
