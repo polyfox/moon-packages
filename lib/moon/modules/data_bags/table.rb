@@ -1,5 +1,44 @@
 module Moon #:nodoc:
   class Table
+    # Iterators do not modify the underlying data
+    class Iterator
+      attr_reader :src
+
+      def initialize(src)
+        @src = src
+      end
+
+      def each(&block)
+        src.data.each(&block)
+      end
+
+      def each_row
+        xs = src.xsize
+        ys.times do |y|
+          yield src.data.slice(y * xs, xs), y
+        end
+      end
+
+      # Iterates and yields each columns data
+      # @yield
+      def each_column
+        xs, ys = src.xsize, src.ysize
+        xs.times do |x|
+          yield ys.times.map { |i| src.data[x + i * xs] }, x
+        end
+      end
+
+      def each_with_xy
+        xs, ys = src.xsize, src.ysize
+        ys.times do |y|
+          row = y * xs
+          xs.times do |x|
+            yield src.data[x + row], x, y
+          end
+        end
+      end
+    end
+
     include Serializable
     include Serializable::PropertyHelper
 
@@ -122,35 +161,36 @@ module Moon #:nodoc:
     # @param [Integer] i
     # @param [Integer] value
     def set_by_index(i, value)
-      self[i % xsize, i / xsize] = value
+      return if index < 0 || index >= size
+      @data[i] = value
     end
 
+    # Set a Table's data from a String and a Dictionary
     #
-    def each
-      @data.each do |x|
-        yield x
-      end
-    end
-
-    #
-    def each_row
-      xsize.times do |x|
-        yield @data[x * @xsize, @xsize]
-      end
-    end
-
-    #
-    def each_with_xy
-      ysize.times do |y|
-        xsize.times do |x|
-          yield @data[x + y * @xsize], x, y
+    # @param [String] str  String to transcode
+    # @param [Hash<String, Integer>] dict  Lookup table to transcoding characters
+    # @return [self]
+    def set_by_dict(str, dict)
+      str.split("\n").each do |row|
+        row.bytes.each_with_index do |c, i|
+          set_by_index(i, dict[c.chr])
         end
       end
+      self
     end
 
+    # Initializes and returns an Iterator
     #
+    # @return [Interator]
+    def iter
+      @iter ||= Iterator.new(self)
+    end
+
+    # @yieldparam [Integer] value  Value at the current position
+    # @yieldparam [Integer] x  x-coord
+    # @yieldparam [Integer] y  y-coord
     def map_with_xy
-      each_with_xy do |n, x, y|
+      iter.each_with_xy do |n, x, y|
         index = x + y * @xsize
         @data[index] = yield @data[index], x, y
       end
