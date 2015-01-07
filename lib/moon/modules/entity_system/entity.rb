@@ -41,7 +41,7 @@ module Moon
 
     def initialize(world)
       @world = world
-      @id = @world.random.base64 16 # right within ruby's optimal string length
+      @id = @world.random.base64(16) # right within ruby's optimal string length
     end
 
     def ==(obj)
@@ -52,14 +52,14 @@ module Moon
       @world.get_components(self)
     end
 
-    def add(component, options={})
+    def add(component, options = {})
       case component
       when Hash
         component.map do |k, v|
-          @world.add_component(self, Component.fetch(k).new(v))
+          @world.add_component(self, Component.manager.fetch(k).new(v))
         end
       when Symbol
-        @world.add_component(self, Component.fetch(component).new(options))
+        @world.add_component(self, Component.manager.fetch(component).new(options))
       else
         @world.add_component(self, component)
       end
@@ -68,7 +68,6 @@ module Moon
     def get_component(key)
       @world.get_component(self, key)
     end
-
     alias :[] :get_component
 
     def []=(key, component)

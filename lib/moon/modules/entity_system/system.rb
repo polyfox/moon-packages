@@ -1,10 +1,19 @@
 module Moon
   module System
+    @@manager = EntitySystem::Manager.new
+
+    def self.manager
+      @@manager
+    end
+
     module ClassMethods
+      attr_reader :registered
+
       def register(sym)
-        System.list.delete(@registered) if @registered
+        # of course we'd like something prettier... -,-
+        System.manager.remove(@registered) if @registered
         @registered = sym
-        System.list[sym] = self
+        System.manager.set(@registered, self)
       end
     end
 
@@ -41,16 +50,6 @@ module Moon
       def import(data)
         self
       end
-    end
-
-    @@system_list = {}
-
-    def self.[](key)
-      @@system_list[key]
-    end
-
-    def self.list
-      @@system_list
     end
 
     def self.included(mod)

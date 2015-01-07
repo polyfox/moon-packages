@@ -1,18 +1,10 @@
 # Component as mixin
 module Moon
   module Component
-    @@component_list = {}
+    @@manager = EntitySystem::Manager.new
 
-    def self.[](key)
-      @@component_list[key]
-    end
-
-    def self.fetch(key)
-      @@component_list.fetch(key)
-    end
-
-    def self.list
-      @@component_list
+    def self.manager
+      @@manager
     end
 
     module ClassMethods
@@ -20,9 +12,9 @@ module Moon
 
       def register(sym)
         # of course we'd like something prettier... -,-
-        Component.list.delete(@registered) if @registered
+        Component.manager.remove(@registered) if @registered
         @registered = sym
-        Component.list[sym] = self
+        Component.manager.set(@registered, self)
       end
     end
 

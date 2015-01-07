@@ -24,12 +24,12 @@ module Moon
     end
 
     ##
-    # @param [Entity] template
+    # @param [Prefab] prefab
     #   @optional
     # @return [Entity]
-    def spawn(template=nil)
+    def spawn(prefab = nil)
       entity = Entity.new(self)
-      entity.inherit template if template
+      entity.inherit prefab if prefab
 
       @entities << entity
 
@@ -103,7 +103,7 @@ module Moon
 
     def register(system_klass)
       if system_klass.is_a?(Symbol)
-        system = System[system_klass].new(self)
+        system = System.manager.fetch(system_klass).new(self)
       else
         system = system_klass.new(self)
       end
