@@ -61,9 +61,9 @@ module Moon #:nodoc:
 
     # @return [*Data2]
     private def rotate_cw
-      result = self.class.new(ysize, xsize, default: default)
+      result = factory2.new(ysize, xsize, default: default)
       ys = ysize - 1
-      each_with_xy do |n, x, y|
+      src.iter.each_with_xy do |n, x, y|
         result[ys - y, x] = n
       end
       result
@@ -71,9 +71,9 @@ module Moon #:nodoc:
 
     # @return [*Data2]
     private def rotate_ccw
-      result = self.class.new(ysize, xsize, default: default)
+      result = factory2.new(ysize, xsize, default: default)
       xs = xsize - 1
-      each_with_xy do |n, x, y|
+      src.iter.each_with_xy do |n, x, y|
         result[y, xs - x] = n
       end
       result
@@ -81,9 +81,9 @@ module Moon #:nodoc:
 
     # @return [*Data2]
     private def rotate_flip
-      result = self.class.new(xsize, ysize, default: default)
+      result = factory2.new(xsize, ysize, default: default)
       xs, ys = xsize - 1, ysize - 1
-      each_with_xy do |n, x, y|
+      src.iter.each_with_xy do |n, x, y|
         result[xs - x, ys - y] = n
       end
       result
