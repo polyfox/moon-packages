@@ -1,6 +1,6 @@
 module Moon
   module Input
-    @channels = []
+    @channels = Set.new
 
     def self.register(channel)
       @channels.push channel
