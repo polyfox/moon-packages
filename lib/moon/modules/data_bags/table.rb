@@ -198,9 +198,10 @@ module Moon #:nodoc:
       "<#{self.class}: xsize=#{xsize} ysize=#{ysize} size=#{size} default=#{default} data=[...]>"
     end
 
+    # Serialization
     # @return [Moon::Table]
     def self.load(data, depth = 0)
-      instance = new data['xsize'], data['ysize'], default: data['default']
+      instance = new nil, nil, uninitialized: true
       instance.import data, depth
       instance
     end
