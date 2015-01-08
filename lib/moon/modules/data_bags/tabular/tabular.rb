@@ -1,4 +1,4 @@
-module Moon
+module Moon #:nodoc:
   # Tabular objects are expected to respond to:
   #   xsize
   #   ysize
@@ -40,6 +40,7 @@ module Moon
         end
       end
     end
+
     # Determines if given position is within the table bounds.
     #
     # @param [Integer] x
@@ -52,18 +53,13 @@ module Moon
     end
 
     # @return [Moon::Vector2]
-    def size
+    def sizes
       Moon::Vector2.new xsize, ysize
     end
 
     # @return [Moon::Rect]
     def rect
       Moon::Rect.new 0, 0, xsize, ysize
-    end
-
-    # @return [Moon::Cuboid]
-    def cuboid
-      Moon::Cuboid.new 0, 0, 0, xsize, ysize, 1
     end
 
     # Initializes and returns an Iterator

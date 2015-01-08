@@ -1,5 +1,5 @@
-module Moon
-  class Table
+module Moon #:nodoc:
+  module Tabular #:nodoc:
     # A Cursor is used to navigate a Table without having to specify the
     # data position each time.
     class Cursor
