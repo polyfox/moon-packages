@@ -122,12 +122,12 @@ module Moon #:nodoc:
 
     # Resizes the dataset
     #
-    # @param [Integer] xsize  New xsize
-    # @param [Integer] ysize  New ysize
+    # @param [Integer] nxsize  New xsize
+    # @param [Integer] nysize  New ysize
     # @return [self]
-    def resize(xsize, ysize)
-      oxsize, oysize = *size
-      @xsize, @ysize = xsize, ysize
+    def resize(nxsize, nysize)
+      oxsize, oysize = xsize, ysize
+      @xsize, @ysize = nxsize, nysize
       old_data = @data
       create_data
       map_with_xy do |n, x, y|
