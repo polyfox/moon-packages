@@ -1,3 +1,6 @@
 require 'data_bags/errors'
+require 'data_bags/table/tabular'
 require 'data_bags/table'
+require 'data_bags/table/partition'
+require 'data_bags/table/cursor'
 require 'data_bags/data_matrix'
