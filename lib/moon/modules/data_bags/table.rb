@@ -61,14 +61,19 @@ module Moon #:nodoc:
     # @param [Integer] xsize
     # @param [Integer] ysize
     # @param [Hash<Symbol, Object>] options
+    # @option options [Integer] :default  (0) default value also used as the :fill
+    # @option options [Integer] :fill  (:default) value used to fill the data
+    # @option options [Boolean] :unitialized  (false) used in place of .alloc (API)
+    # @option options [Array<Integer>] :data  data to use for table
     def initialize(xsize, ysize, options = {})
+      return if options[:uninitialized]
       @xsize = xsize.to_i
       @ysize = ysize.to_i
       @default = options.fetch(:default, 0)
       if options.key?(:data)
-        @data = options.fetch(:data)
+        @data = options.fetch(:data).dup
       else
-        create_data
+        create_data(options.fetch(:fill, @default))
       end
       yield self if block_given?
     end
@@ -79,9 +84,9 @@ module Moon #:nodoc:
     end
 
     # @api
-    private def create_data
+    private def create_data(fill = @default)
       recalculate_size
-      @data = Array.new(@size, @default)
+      @data = Array.new(@size, fill)
     end
 
     # @param [Moon::Table] org
