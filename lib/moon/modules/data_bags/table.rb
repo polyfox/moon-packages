@@ -171,9 +171,9 @@ module Moon #:nodoc:
     #
     # @param [Integer] i
     # @param [Integer] value
-    def set_by_index(i, value)
+    def set_by_index(index, value)
       return if index < 0 || index >= size
-      @data[i] = value
+      @data[index] = value
     end
 
     # Initializes and returns an Iterator
