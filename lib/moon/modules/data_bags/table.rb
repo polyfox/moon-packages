@@ -185,12 +185,9 @@ module Moon #:nodoc:
 
     # @return [String]
     def to_s
-      result = ''
-      @ysize.times do |y|
-        result.concat(@data[y * @xsize, @xsize].join(', '))
-        result.concat("\n")
-      end
-      return result
+      @ysize.times.map do |y|
+        @data[y * @xsize, @xsize].join(', ')
+      end.join("\n")
     end
 
     # @return [String]
