@@ -15,42 +15,6 @@ module Moon
     attr_reader :ticks
 
     ##
-    # @return [Hash<String, Float>]
-    DURATION_SUFFIX = {
-      ''  => 0.001,
-      's' => 1.0,
-      'm' => 60.0,
-      'h' => 3_600.0,
-      'd' => 86_400.0,
-      'w' => 604_800.0,
-      'M' => 2_592_000.0,
-      'y' => 31_536_000.0
-    }
-
-    ##
-    # @param [String] str
-    # @return [Float] duration  in seconds
-    def self.parse_duration(str)
-      #   - milliseconds
-      # s - seconds
-      # m - minutes
-      # h - hours
-      # d - days
-      # w - weeks
-      # M - months
-      # y - years
-      # Now lets be honest here, who would be running this thing for more than
-      # a few hours anyway...
-      value = 0.0
-      str.scan(/(\d+|\d+\.\d+)([smhdwMy])?/).each do |a|
-        v = a[0].to_f
-        suffix = a[1].to_s
-        value = v * DURATION_SUFFIX[suffix]
-      end
-      value
-    end
-
-    ##
     # :nodoc:
     def initialize
       @jobs = []
@@ -76,7 +40,7 @@ module Moon
     # @param [Numeric, String] duration
     # @return [Scheduler::Job::Base<>] instance
     private def new_job(klass, duration, &block)
-      duration = self.class.parse_duration(duration) if duration.is_a?(String)
+      duration = TimeUtil.parse_duration(duration) if duration.is_a?(String)
       job = klass.new(duration, &block)
       @jobs.push job
       job
