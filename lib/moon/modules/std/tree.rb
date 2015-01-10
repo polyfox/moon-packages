@@ -11,6 +11,10 @@ module Moon #:nodoc
       @children.each(&block)
     end
 
+    def add(child)
+      @children.push(child)
+    end
+
     def set(index, child)
       @children[index] = child
     end
