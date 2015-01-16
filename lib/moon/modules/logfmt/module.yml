@@ -1,0 +1,7 @@
+---
+name: Logfmt
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: A basic implementation of logfmt for moon
+require: _basalt.rb
+deps:
+  - std
