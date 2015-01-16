@@ -14,6 +14,11 @@ module Moon #:nodoc:
           super(&block)
         end
 
+        # @return [Boolean]
+        def done?
+          @killed || @time <= 0
+        end
+
         # @return [Float]
         def rate
           @time / @duration

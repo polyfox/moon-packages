@@ -5,6 +5,11 @@ module Moon #:nodoc:
       # after the duration has ended, and then restart, which is similar
       # behavior to a Timeout.
       class Interval < TimeBase
+        # @return [Boolean]
+        def done?
+          @killed
+        end
+
         # When time reaches 0 or less
         def on_timeout
           trigger
