@@ -1,0 +1,7 @@
+---
+name: Physics
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: Basic collision detection and Quadtree implementations
+require: _basalt.rb
+deps:
+  - std
