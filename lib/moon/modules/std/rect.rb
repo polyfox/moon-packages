@@ -1,4 +1,4 @@
-module Moon
+module Moon #:nodoc:
   class Rect
     include Serializable
 
@@ -16,7 +16,23 @@ module Moon
       end
     end
 
-    def inside?(obj)
+    # Splits the current rect into 4 sub rects of half size
+    # @return [Array[4]<Moon::Rect>]
+    def split
+      sw = (bounds.w / 2.0).round
+      sh = (bounds.h / 2.0).round
+      x = bounds.x.round
+      y = bounds.y.round
+
+      r1 = self.class.new(x + sw, y, sw, sh)
+      r2 = self.class.new(x, y, sw, sh)
+      r3 = self.class.new(x, y + sh, sw, sh)
+      r4 = self.class.new(x + sw, y + sh, sw, sh)
+
+      return r1, r2, r3, r4
+    end
+
+    def contains?(obj)
       x, y = *Vector2.extract(obj)
       x.between?(self.x, self.x2-1) && y.between?(self.y, self.y2-1)
     end
@@ -67,7 +83,7 @@ module Moon
 
     ##
     # @param [String] key
-    # @value [Integer] value
+    # @param [Integer] value
     def set_property(key, value)
       case key.to_s
       when 'x'           then self.x = value
