@@ -34,7 +34,7 @@ module Moon #:nodoc:
       str.scan(/(\d+|\d+\.\d+)([smhdwMy])?/).each do |a|
         v = a[0].to_f
         suffix = a[1].to_s
-        value = v * DURATION_SUFFIX[suffix]
+        value += v * DURATION_SUFFIX[suffix]
       end
       value
     end
