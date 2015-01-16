@@ -1,103 +1,108 @@
-##
-# :nodoc:
-module Moon
+module Moon #:nodoc:
   ##
-  #
+  # A Scheduler is used to manage Job objects, any object that implements
+  # a #done? and #update can be used.
+  # Adding a new job is done via #add, when a job is #done?, it will be removed
+  # from the list of jobs, no further operations are done on the done job.
+  # If you wish to have something like a on_done callback, implement it in
+  # the job.
   class Scheduler
+    include Moon::Activatable
+
     ##
-    # @return [Array<Scheduler::Job::Base*>]
+    # @return [Array<Moon::Scheduler::Job::Base*>]
     attr_accessor :jobs
     ##
     # @return [Float] uptime  in seconds
     attr_reader :uptime
-    ##
+    # Keeps count of how many times the Scheduler has been updated.
     # @return [Integer] ticks  in frames
     attr_reader :ticks
 
-    ##
     # :nodoc:
     def initialize
       @jobs = []
-      @paused = false
+      @active = true
       @ticks = 0
       @uptime = 0.0
     end
 
-    ##
-    # Pauses the Scheduler
-    def pause
-      @paused = true
-    end
-
-    ##
-    # Unpauses the Scheduler
-    def resume
-      @paused = false
-    end
-
-    ##
-    # @param [Class<Scheduler::Job::Base>] klass
-    # @param [Numeric, String] duration
-    # @return [Scheduler::Job::Base<>] instance
-    private def new_job(klass, duration, &block)
-      duration = TimeUtil.parse_duration(duration) if duration.is_a?(String)
-      job = klass.new(duration, &block)
+    # @param [Moon::Scheduler::Jobs::Base]
+    def add(job)
       @jobs.push job
       job
     end
 
-    ##
-    # every(duration) { execute_every_duration }
-    # @param [Integer] duration
-    # @return [Interval]
-    def every(duration, &block)
-      new_job(Jobs::Interval, duration, &block)
-    end
-
-    ##
-    # in(duration) { to_execute_on_timeout }
-    # @param [Integer] duration
-    # @return [Timeout]
-    def in(duration, &block)
-      new_job(Jobs::Timeout, duration, &block)
-    end
-
-    ##
-    # Clears all jobs
+    # Clears all jobs, this will ignore the state of the job.
     def clear
       @jobs.clear
       self
     end
 
-    ##
-    # Removes a job
-    # @overload remove(obj)
-    def remove(obj = nil)
-      @jobs.delete(obj)
+    # Removes a job.
+    #
+    # @param [Moon::Scheduler::Job::Base*] job
+    def remove(job)
+      @jobs.delete(job)
     end
 
-    ##
-    # Removes a job by id
+    # Removes a job by id.
+    #
+    # @param [String] id
     def remove_by_id(id)
       @jobs.delete { |job| job.id == id }
     end
 
     ##
-    # Force all jobs to finish.
+    # Kill all active jobs.
+    #
     # @return [Void]
-    def finish
+    def kill
       return unless @jobs
-      @jobs.each(&:finish)
+      @jobs.each(&:kill)
     end
 
-    ##
+    # Creates a new Interval job
+    #
+    # @param [Integer] duration
+    # @return [Moon::Scheduler::Jobs::Interval]
+    def every(duration, &block)
+      add Jobs::Interval.new(duration, &block)
+    end
+
+    # Creates a Timeout job
+    #
+    # @param [Integer] duration
+    # @return [Moon::Scheduler::Jobs::Timeout]
+    def in(duration, &block)
+      add Jobs::Timeout.new(duration, &block)
+    end
+
+    # Creates a TimedProcess job
+    #
+    # @return [Moon::Scheduler::Jobs::TimedProcess]
+    def run_for(duration, &block)
+      add Jobs::TimedProcess.new(duration, &block)
+    end
+
+    # Creates a Process job
+    #
+    # @return [Moon::Scheduler::Jobs::Process]
+    def run(&block)
+      add Jobs::Process.new(&block)
+    end
+
     # Frame update
+    # @param [Float] delta
     def update(delta)
-      return if @paused
+      return unless active?
       dead = []
-      @jobs.each do |task|
-        task.update delta
-        dead << task if task.done?
+      @jobs.each do |job|
+        if job.done?
+          dead << job
+          next
+        end
+        job.update delta
       end
       @jobs -= dead unless dead.empty?
       @uptime += delta

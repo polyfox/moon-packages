@@ -1,8 +1,11 @@
-module Moon
-  class Scheduler
-    module Jobs
-      class Timeout < Base
+module Moon #:nodoc:
+  class Scheduler #:nodoc:
+    module Jobs #:nodoc:
+      # Timeouts are one off tasks which will execute after their time has
+      # expired.
+      class Timeout < TimeBase
         # Has this timeout reached its end?
+        #
         # @return [Boolean]
         def done?
           @time <= 0
@@ -11,7 +14,7 @@ module Moon
         # When time reaches 0 or less
         def on_timeout
           trigger
-          @active = false
+          deactivate
         end
       end
     end

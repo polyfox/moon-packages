@@ -1,21 +1,14 @@
-module Moon
-  class Scheduler
-    module Jobs
-      class Interval < Base
-        # Intervals are never done.
-        # @return [Boolean]
-        def done?
-          false
-        end
-
-        def reset
-          @time = @duration
-        end
-
+module Moon #:nodoc:
+  class Scheduler #:nodoc:
+    module Jobs #:nodoc:
+      # Invertals are forever running jobs, they will execute their callback
+      # after the duration has ended, and then restart, which is similar
+      # behavior to a Timeout.
+      class Interval < TimeBase
         # When time reaches 0 or less
         def on_timeout
           trigger
-          reset
+          restart
         end
 
         # Force end the interval
