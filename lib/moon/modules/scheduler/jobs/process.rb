@@ -8,7 +8,7 @@ module Moon #:nodoc:
       class Process < Base
         # @param [Float] delta
         def update_frame(delta)
-          trigger(delta)
+          trigger(delta, self)
         end
       end
     end

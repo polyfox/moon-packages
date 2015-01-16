@@ -13,7 +13,7 @@ module Moon #:nodoc:
 
         # @param [Float] delta
         def update_frame(delta)
-          trigger(delta)
+          trigger(delta, self)
           super
         end
       end
