@@ -10,7 +10,7 @@ module Moon #:nodoc:
 
         # @param [Float, String] duration
         def initialize(duration, &block)
-          @time = @duration = TimeUtil.parse_duration(duration)
+          @time = @duration = TimeUtil.to_duration(duration)
           super(&block)
         end
 
