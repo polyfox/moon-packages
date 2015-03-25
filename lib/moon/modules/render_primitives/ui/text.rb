@@ -98,8 +98,13 @@ module Moon
             x -= @font.calc_bounds(line)[0] / 2
           end
 
+          rc = @render_color
+          if op = options[:opacity]
+            rc = rc.dup
+            rc.a *= op
+          end
           font.render(x, y + index * font_line_height, z,
-                      line, @render_color, options)
+                      line, rc, options)
         end
       end
       super
