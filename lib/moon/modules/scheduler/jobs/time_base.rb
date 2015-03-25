@@ -47,7 +47,7 @@ module Moon #:nodoc:
         # Sets the time to the duration, ultimately restarting the job's
         # internal timer.
         def restart
-          @time = @duration
+          @time += @duration
         end
 
         # Finish will force the job to stop, and call its callback,
