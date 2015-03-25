@@ -122,18 +122,18 @@ module Moon #:nodoc:
     end
 
     ##
-    # @overload inside?(vec3)
+    # @overload contains?(vec3)
     #   @param [Vector3] vec3
-    # @overload inside?(x, y, z)
+    # @overload contains?(x, y, z)
     #   @param [Integer] x
     #   @param [Integer] y
     #   @param [Integer] z
     # @return [Boolean]
-    def inside?(*args)
+    def contains?(*args)
       x, y, z = *Vector3.extract(args.singularize)
-      x.between?(self.x, self.x2-1) &&
-      y.between?(self.y, self.y2-1) &&
-      z.between?(self.z, self.z2-1)
+      x.between?(self.x, self.x2 - 1) &&
+      y.between?(self.y, self.y2 - 1) &&
+      z.between?(self.z, self.z2 - 1)
     end
 
     ##
