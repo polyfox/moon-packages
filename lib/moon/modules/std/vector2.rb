@@ -5,7 +5,8 @@ module Moon
 
     # @return [String]
     def inspect
-      "<Moon::Vector2: x=#{x} y=#{y}>"
+      ptr = format('%x', __id__)
+      "<#{self.class}#0x#{ptr}: x=#{x} y=#{y}>"
     end
 
     # @return [Float]

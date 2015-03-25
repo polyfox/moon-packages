@@ -4,7 +4,8 @@ module Moon
     include Serializable
 
     def inspect
-      "<Moon::Vector3: x=#{x} y=#{y} z=#{z}>"
+      ptr = format('%x', __id__)
+      "<#{self.class}#0x#{ptr}: x=#{x} y=#{y} z=#{z}>"
     end
 
     # @return [Float]
