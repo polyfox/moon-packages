@@ -1,8 +1,32 @@
 module Moon #:nodoc:
   #   aka. Table3
   class DataMatrix
+    class Iterator
+      attr_reader :src
+
+      def initialize(src)
+        @src = src
+      end
+
+      def each(&block)
+        src.data.each(&block)
+      end
+
+      # @return [self]
+      def each_with_xyz
+        src.zsize.times do |z|
+          src.ysize.times do |y|
+            src.xsize.times do |x|
+              yield src.data[x + y * src.xsize + z * src.xsize * src.ysize], x, y, z
+            end
+          end
+        end
+      end
+    end
+
     include Serializable
     include Serializable::PropertyHelper
+    include MatrixLike
 
     # @!group Properties
     # @attribute [r] xsize
@@ -115,24 +139,11 @@ module Moon #:nodoc:
       @data[x + y * @xsize + z * @xsize * @ysize] = n
     end
 
-    def each
-      @data.each do |layer|
-        layer.each do |row|
-          row.each do |n|
-            yield n
-          end
-        end
-      end
-    end
-
-    def each_with_xyz
-      @zsize.times do |z|
-        @ysize.times do |y|
-          @xsize.times do |x|
-            yield @data[x + y * @xsize + z * @xsize * @ysize], x, y, z
-          end
-        end
-      end
+    # Initializes and returns an Iterator
+    #
+    # @return [Interator]
+    def iter
+      @iter ||= Iterator.new(self)
     end
 
     def map_with_xyz
