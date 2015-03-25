@@ -5,7 +5,26 @@ module States
     middleware InputMiddleware
     include Moon::TransitionHost
 
-    @@__cvar__ = {}
+
+    class CVar
+      def initialize
+        @data = {}
+      end
+
+      def clear
+        @data.clear
+      end
+
+      def [](key)
+        @data[key]
+      end
+
+      def []=(key, value)
+        @data[key] = value
+      end
+    end
+
+    @@__cvar__ = CVar.new
 
     def cvar
       @@__cvar__
