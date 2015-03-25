@@ -121,21 +121,30 @@ module Moon #:nodoc:
       Cuboid.new 0, 0, 0, xsize, ysize, zsize
     end
 
-    def in_bounds?(x, y, z)
+    # @return [Boolean]
+    def contains?(x, y, z)
       return ((x >= 0) && (x < @xsize)) &&
              ((y >= 0) && (y < @ysize)) &&
              ((z >= 0) && (z < @zsize))
     end
 
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] z
+    # @return [Integer]
     def [](x, y, z)
       x = x.to_i; y = y.to_i; z = z.to_i
-      return @default unless in_bounds?(x, y, z)
+      return @default unless contains?(x, y, z)
       @data[x + y * @xsize + z * @xsize * @ysize]
     end
 
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] z
+    # @param [Integer] n  Value
     def []=(x, y, z, n)
       x = x.to_i; y = y.to_i; z = z.to_i; n = n.to_i
-      return unless in_bounds?(x, y, z)
+      return unless contains?(x, y, z)
       @data[x + y * @xsize + z * @xsize * @ysize] = n
     end
 
