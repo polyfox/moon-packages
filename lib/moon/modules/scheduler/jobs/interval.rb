@@ -12,8 +12,10 @@ module Moon #:nodoc:
 
         # When time reaches 0 or less
         def on_timeout
-          trigger
-          restart
+          until @time > 0
+            trigger
+            restart
+          end
         end
 
         # Force end the interval
