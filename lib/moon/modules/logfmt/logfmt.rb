@@ -1,5 +1,13 @@
 # Implementation of logfmt for Moon
 module Logfmt
+  class NullOut
+    def puts(*args, &block)
+    end
+    public :puts
+  end
+
+  NULLOUT = NullOut.new
+
   # Regular expression used for checking strings that may need escaping.
   # This regular expression will validate true if the string doesn't need
   # escaping.
@@ -28,7 +36,7 @@ module Logfmt
   # #new will copy the current logger and append its context data
   class Logger
     # The underlaying IO to write to, the default is STDOUT
-    # @return [IO]
+    # @return [IO, #puts]
     attr_accessor :io
     # Whether to prepend timestamps to the logs
     # @return [Boolean]
@@ -57,9 +65,10 @@ module Logfmt
     #
     # @param [Hash<[String, Symbol], String>] data
     # @return [String]
-    private def format_context(data)
+    def format_context(data)
       Logfmt.format_context data
     end
+    private :format_context
 
     # Most basic function for the logger, writes a new log line.
     #
@@ -84,4 +93,7 @@ module Logfmt
       logger
     end
   end
+
+  NullLogger = Logger.new
+  NullLogger.io = NULLOUT
 end
