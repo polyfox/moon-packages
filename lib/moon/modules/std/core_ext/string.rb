@@ -1,10 +1,12 @@
 class String
-  def presence
-    empty? ? nil : self
+  def blank?
+    return true if empty?
+    return true if strip.empty?
+    false
   end
 
-  def blank?
-    empty?
+  def presence
+    blank? ? nil : self
   end
 
   def demodulize
