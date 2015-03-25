@@ -6,6 +6,7 @@ module Moon
 
     def clear_events
       @event_listeners = {}
+      @subscribers = []
       @aliases = {}
     end
 
@@ -15,11 +16,19 @@ module Moon
       true
     end
 
+    def subscribe(listener)
+      @subscribers.push listener
+    end
+
+    def unsubscribe(listener)
+      @subscribers.delete listener
+    end
+
     # Adds a new event listener.
     # @param [Symbol] keys The keys to listen for..
     # @param [Proc] block The block we want to execute when we catch the type.
     def on(event, *keys, &block)
-      keys = keys.flatten.map! { |k| Input.convert_key(k) }
+      keys = keys.flatten.map(&:to_sym)
       listener = { block: block }
       listener[:keys] = keys unless keys.empty?
       if event.is_a?(Enumerable)
@@ -66,12 +75,19 @@ module Moon
       trigger_event(:any, event)
     end
 
+    def trigger_subs(event)
+      @subscribers.each do |sub|
+        sub.trigger(sub)
+      end
+    end
+
     # @param [Event] event
     def trigger(event)
       event = Event.new(event) unless event.is_a?(Event)
 
       return unless allow_event?(event)
 
+      trigger_subs(event)
       trigger_any(event)
       trigger_event(event.type, event)
       trigger_aliases(event.type, event)
