@@ -3,8 +3,10 @@ module States
     include StateMiddlewarable
     middleware SchedulerMiddleware
     middleware InputMiddleware
+    middleware StateManagerMiddleware
     include Moon::TransitionHost
 
+    attr_accessor :state_manager
     attr_reader :updatables
     attr_reader :renderables
     attr_reader :tree
