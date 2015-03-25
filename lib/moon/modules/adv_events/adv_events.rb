@@ -1,4 +1,4 @@
-module Moon
+module Moon #:nodoc:
   class Event
     def self.make_filter(options)
       lambda do |event|
@@ -61,11 +61,13 @@ module Moon
       end
 
       on Moon::MouseEvent do |event|
-        trigger MouseFocusedEvent.new(event, self, screen_bounds.inside?(event.position))
+        p = event.position
+        trigger MouseFocusedEvent.new(event, self, screen_bounds.contains?(p.x, p.y))
       end
 
       on Moon::MouseMove do |event|
-        trigger MouseHoverEvent.new(event, self, screen_bounds.inside?(event.position))
+        p = event.position
+        trigger MouseHoverEvent.new(event, self, screen_bounds.contains?(p.x, p.y))
       end
     end
 
