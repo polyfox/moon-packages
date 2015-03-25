@@ -3,21 +3,23 @@
 #   Base class for all States
 class State
   ##
-  # @type [Array<State>]
-  @states = []
-
-  ##
-  # @type [Integer]
+  # @return [Integer]
   attr_reader :ticks
   ##
-  # @type [???]
+  # @return [Void]
   attr_reader :engine
 
   ##
-  # @param [???] engine
+  # @param [Void] engine
   def initialize(engine)
     @engine = engine
     @started = false
+  end
+
+  ##
+  # Used when the State is just added to the Stack
+  def invoke
+    reset
   end
 
   ##
@@ -131,64 +133,5 @@ class State
   # @return [Void]
   def post_render
     #
-  end
-
-  ##
-  # Is the State in debug mode?
-  def self.debug
-    yield
-  end
-
-  ##
-  # List of all States on the stack
-  def self.states
-    @states
-  end
-
-  ##
-  # @return [State]
-  def self.current
-    @states.last
-  end
-
-  ##
-  # Moon step entry function
-  # @param [Float] delta
-  def self.step(delta)
-    current.step(delta)
-  end
-
-  ##
-  # @param [State] state
-  def self.change(state)
-    last_state = nil
-    if !@states.empty?
-      @states.last.terminate
-      last_state = @states.pop
-    end
-    debug { puts "[State] CHANGE #{last_state.class} >> #{state}" }
-    @states.push state.new(self)
-    @states.last.reset
-  end
-
-  ##
-  #
-  def self.pop
-    @states.last.terminate
-    last_state = @states.pop
-
-    debug { puts "[State] POP #{last_state.class} > #{@states.last.class}" }
-    @states.last.resume if !@states.empty?
-    debug { puts "--State now empty--" }
-  end
-
-  ##
-  # @param [State] state
-  def self.push(state)
-    last_state = @states.last
-    @states.last.pause unless @states.empty?
-    debug { puts "[State] PUSH #{last_state.class} > #{state}" }
-    @states.push state.new(self)
-    @states.last.reset
   end
 end
