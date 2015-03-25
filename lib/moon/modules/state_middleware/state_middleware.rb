@@ -62,7 +62,7 @@ module Middlewarable
   private def init_middleware
     raise if @middleware_manager # re-initialization!
     @middleware_manager = MiddlewareManager.new(self)
-    @middleware_manager.setup(self.class.all_middlewares)
+    @middleware_manager.setup self.class.all_middlewares
   end
 
   def middleware(klass)
@@ -134,6 +134,16 @@ module StateMiddlewarable
   end
 end
 
+class EventHopper
+  def initialize(target)
+    @target = target
+  end
+
+  def trigger(event)
+    @target << event
+  end
+end
+
 class BaseMiddleware
   attr_reader :state
 
@@ -154,30 +164,20 @@ class BaseMiddleware
   end
 end
 
-class EventHopper
-  def initialize(target)
-    @target = target
-  end
-
-  def trigger(event)
-    @target << event
-  end
-end
-
 class InputMiddleware < BaseMiddleware
   attr_reader :handle
 
   private def register
-    Moon::Input.register(@hopper)
+    state.engine.input.register @hopper
   end
 
   private def unregister
-    Moon::Input.unregister(@hopper)
+    state.engine.input.unregister @hopper
   end
 
   hook def init
     @event_stack = []
-    @hopper = EventHopper.new(@event_stack)
+    @hopper = EventHopper.new @event_stack
     @handle = Moon::Input::Observer.new
   end
 
@@ -196,7 +196,7 @@ class InputMiddleware < BaseMiddleware
   hook def pre_update(delta)
     until @event_stack.empty?
       ev = @event_stack.shift
-      @handle.trigger(ev)
+      @handle.trigger ev
     end
   end
 end
@@ -209,6 +209,10 @@ class SchedulerMiddleware < BaseMiddleware
   end
 
   hook def pre_update(delta)
-    @scheduler.update(delta)
+    @scheduler.update delta
   end
+end
+
+class StateManagerMiddleware < BaseMiddleware
+  attr_accessor :state_manager
 end
