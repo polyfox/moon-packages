@@ -21,11 +21,10 @@ class MapEditorMapView < State::ViewBase
   end
 
   private def create_passage_layer
-    @passage_tilemap = Moon::Tilemap.new do |tilemap|
-      tilemap.position.set 0, 0, 0
-      tilemap.tileset = @passage_ss
-      tilemap.data = @passage_data # special case passage data
-    end
+    t = @passage_tilemap = Moon::Tilemap.new
+    t.position.set 0, 0, 0
+    t.tileset = @passage_ss
+    t.data = @passage_data # special case passage data
   end
 
   def refresh_tilemaps

@@ -40,8 +40,8 @@ module States
     end
 
     private def create_controller
-      @map_controller = MapEditorMapController.new(@model, @map_view)
-      @gui_controller = MapEditorGuiController.new(@model, @gui_view)
+      @map_controller = MapEditorMapController.new @model, @map_view
+      @gui_controller = MapEditorGuiController.new @model, @gui_view
       @updatables.push @map_controller
       @updatables.push @gui_controller
       @gui_controller.set_layer(-1)
@@ -54,11 +54,11 @@ module States
     end
 
     private def create_input_delegate
-      @inp = MapEditorInputDelegate.new(@gui_controller)
-      @inp.register(@input)
-      @input.on(:any) do |e|
-        @gui_view.trigger(e)
-        @map_view.trigger(e)
+      @inp = MapEditorInputDelegate.new @gui_controller
+      @inp.register input
+      input.on(:any) do |e|
+        @gui_view.trigger e
+        @map_view.trigger e
       end
     end
 
@@ -80,7 +80,7 @@ module States
     end
 
     private def create_autosave_interval
-      @autosave_interval = @scheduler.every('3m') do
+      @autosave_interval = scheduler.every('3m') do
         @controller.autosave
       end.tag('autosave')
     end

@@ -184,6 +184,7 @@ class MapRenderer < Moon::RenderArray
       renderer.layer_opacity = @layer_opacity
       add(renderer)
     end
+    # clear size, so it can refresh
     self.width = nil
     self.height = nil
   end

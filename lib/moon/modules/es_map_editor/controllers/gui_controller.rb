@@ -98,7 +98,7 @@ class MapEditorGuiController < State::ControllerBase
     chunk.data     = Moon::DataMatrix.new(bounds.w, bounds.h, 2, default: -1)
     chunk.passages = Moon::Table.new(bounds.w, bounds.h)
     chunk.flags    = Moon::DataMatrix.new(bounds.w, bounds.h, 2)
-    chunk.tileset  = ES::Tileset.find_by(uri: "/tilesets/common")
+    chunk.tileset  = ES::Tileset.find_by(uri: '/tilesets/common')
     @model.map.chunks << chunk
     @view.refresh_tilemaps
     chunk
@@ -289,7 +289,7 @@ class MapEditorGuiController < State::ControllerBase
 
   def chunk_at_position(position)
     chunk = @model.map.chunks.find do |c|
-      c.bounds.inside?(position)
+      c.bounds.contains?(position)
     end
   end
 
@@ -301,7 +301,8 @@ class MapEditorGuiController < State::ControllerBase
       tile_data.chunk = chunk
       tile_data.data_position = position.xyz
       tile_data.chunk_data_position = position.xyz - chunk.position.xyz
-      tile_data.tile_ids = chunk.data.pillar_a(*tile_data.chunk_data_position.xy)
+      x, y, _ = *tile_data.chunk_data_position
+      tile_data.tile_ids = chunk.data.sampler.pillar(x, y).to_a
       tile_data.passage = chunk.passages[*tile_data.chunk_data_position.xy]
     end
     tile_data
