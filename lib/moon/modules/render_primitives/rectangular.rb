@@ -158,6 +158,12 @@ module Moon
       def to_rect
         Moon::Rect.new(x, y, width, height)
       end
+
+      ##
+      # @return [Boolean] is the position inside the rectanagle?
+      def contains?(cx, cy)
+        cx.between?(x, x2 - 1) && cy.between?(y, y2 - 1)
+      end
     end
   end
 end
