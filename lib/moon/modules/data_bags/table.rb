@@ -1,38 +1,11 @@
 module Moon #:nodoc:
+  # A 2 dimensional array used normally for storing Tilemap data or any 2d grid
+  # based data such heightmaps, image data, passage data.
   class Table
     # Iterators do not modify the underlying data
     # This iterator has its functions rewritten and optimized specifically for
     # Table
     class Iterator < Tabular::IteratorBase
-      def each(&block)
-        src.data.each(&block)
-      end
-
-      def each_row
-        xs = src.xsize
-        ys.times do |y|
-          yield src.data.slice(y * xs, xs), y
-        end
-      end
-
-      # Iterates and yields each columns data
-      # @yield
-      def each_column
-        xs, ys = src.xsize, src.ysize
-        xs.times do |x|
-          yield ys.times.map { |i| src.data[x + i * xs] }, x
-        end
-      end
-
-      def each_with_xy
-        xs, ys = src.xsize, src.ysize
-        ys.times do |y|
-          row = y * xs
-          xs.times do |x|
-            yield src.data[x + row], x, y
-          end
-        end
-      end
     end
 
     include Serializable
@@ -192,7 +165,8 @@ module Moon #:nodoc:
 
     # @return [String]
     def inspect
-      "<#{self.class}: xsize=#{xsize} ysize=#{ysize} size=#{size} default=#{default} data=[...]>"
+      ptr = format('%x', __id__)
+      "<#{self.class}#0x#{ptr}: xsize=#{xsize} ysize=#{ysize} size=#{size} default=#{default} data=[...]>"
     end
 
     # Serialization

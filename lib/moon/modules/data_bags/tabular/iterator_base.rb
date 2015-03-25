@@ -1,18 +1,27 @@
 module Moon #:nodoc:
   # Tabular objects are expected to respond to:
-  #   xsize
-  #   ysize
-  #   []
-  #   []=
+  #   xsize -> Integer
+  #   ysize -> Integer
+  #   [](x, y) -> Integer
+  #   []=(x, y, value)
   # As well as implementing the methods required by IteratorBase
   module Tabular
+    # Iteratable Tabular objects are expected to respond to:
+    #   xsize -> Integer
+    #   ysize -> Integer
+    #   [](x, y) -> Integer
     class IteratorBase
+      # @return [Moon::Tabular]
       attr_reader :src
 
+      # @param [Moon::Tabular] src
       def initialize(src)
         @src = src
       end
 
+      # @yieldparam [Integer] value  Value
+      # @yieldparam [Integer] x  x-Coord
+      # @yieldparam [Integer] y  y-Coord
       def each_with_xy
         xs, ys = src.xsize, src.ysize
         ys.times do |y|
@@ -22,10 +31,15 @@ module Moon #:nodoc:
         end
       end
 
+      # @yieldparam [Integer] value  Value
       def each
         each_with_xy { |n, _, _| yield n }
       end
 
+      # Iterates and yields each rows data
+      #
+      # @yieldparam [Integer] value  Value
+      # @yieldparam [Integer] y  Row
       def each_row
         xs = src.xsize
         src.ysize.times do |y|
@@ -33,6 +47,10 @@ module Moon #:nodoc:
         end
       end
 
+      # Iterates and yields each columns data
+      #
+      # @yieldparam [Integer] value  Value
+      # @yieldparam [Integer] x  Column
       def each_column
         ys = src.ysize
         src.xsize.times do |x|
@@ -70,8 +88,8 @@ module Moon #:nodoc:
     end
 
     # @yieldparam [Integer] value  Value at the current position
-    # @yieldparam [Integer] x  x-coord
-    # @yieldparam [Integer] y  y-coord
+    # @yieldparam [Integer] x  x-Coord
+    # @yieldparam [Integer] y  y-Coord
     def map_with_xy
       iter.each_with_xy do |n, x, y|
         self[x, y] = yield self[x, y], x, y
