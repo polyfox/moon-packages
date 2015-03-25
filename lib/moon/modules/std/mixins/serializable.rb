@@ -140,6 +140,14 @@ module Moon
         data = Exporter.export(data || {}, self, depth)
         data.merge!(serialization_export_header).stringify_keys
       end
+
+      # Makes a copy of the Object using the .load and #export methods
+      # This should not be confused with deep_clone, which uses Marshal.
+      #
+      # @return [Object]  copy of the object
+      def copy
+        self.class.load export
+      end
     end
 
     module ClassMethods
