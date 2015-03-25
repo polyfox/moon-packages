@@ -32,9 +32,9 @@ module Moon #:nodoc:
       return r1, r2, r3, r4
     end
 
-    def contains?(obj)
-      x, y = *Vector2.extract(obj)
-      x.between?(self.x, self.x2-1) && y.between?(self.y, self.y2-1)
+    def contains?(*args)
+      x, y = *Vector2.extract(args.singularize)
+      x.between?(self.x, self.x2 - 1) && y.between?(self.y, self.y2 - 1)
     end
 
     def clear
@@ -58,7 +58,26 @@ module Moon #:nodoc:
     end
 
     def set(*args)
-      self.x, self.y, self.w, self.h = *Rect.extract(args.size > 1 ? args : args.first)
+      self.x, self.y, self.w, self.h = *Rect.extract(args.singularize)
+    end
+
+    # Creates a new Rect from the current translated by the given position
+    def translate(*args)
+      r = Rect.new x, y, w, h
+      r.position += args.singularize
+      r
+    end
+
+    def translatef(*args)
+      r = Rect.new x, y, w, h
+      r.position += Vector2[args.singularize] * r.resolution
+      r
+    end
+
+    def scale(*args)
+      r = Rect.new x, y, w, h
+      r.resolution = Vector2[args.singularize] * r.resolution
+      r
     end
 
     def to_s
@@ -66,7 +85,8 @@ module Moon #:nodoc:
     end
 
     def inspect
-      "<#{self.class}: x=#{x} y=#{y} w=#{w} h=#{h}>"
+      ptr = format('%x', __id__)
+      "<#{self.class}#0x#{ptr}: x=#{x} y=#{y} w=#{w} h=#{h}>"
     end
 
     def to_a
@@ -111,13 +131,15 @@ module Moon #:nodoc:
       self.y = y2 - height
     end
 
-    def xy
+    def position
       Vector2.new x, y
     end
+    alias :xy :position
 
-    def xy=(other)
+    def position=(other)
       self.x, self.y = *Vector2.extract(other)
     end
+    alias :xy= :position=
 
     def xyz
       Vector3.new x, y, 0
@@ -127,13 +149,15 @@ module Moon #:nodoc:
       self.x, self.y, _ = *Vector3.extract(other)
     end
 
-    def wh
+    def resolution
       Vector2.new width, height
     end
+    alias :wh :resolution
 
-    def wh=(other)
+    def resolution=(other)
       self.w, self.h = *Vector2.extract(other)
     end
+    alias :wh= :resolution=
 
     def whd
       Vector3.new width, height, 0
