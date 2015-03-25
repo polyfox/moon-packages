@@ -228,7 +228,7 @@ module Moon
         @log = Log.new
         # debug logger
         @logger = NullOut.new
-        @name = name || "#{self.class.name}"
+        @name = name || "#{self.class}"
         @tests = []
         @test_stack = [@tests]
       end
