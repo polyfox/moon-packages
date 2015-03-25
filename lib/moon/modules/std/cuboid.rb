@@ -101,8 +101,21 @@ module Moon #:nodoc:
       self
     end
 
-    def move(*args)
-      @x, @y, @z = *Vector3.extract(args.singularize)
+    # @return [Vector3]
+    def position
+      Vector3.new @x, @y, @z
+    end
+
+    # Moves the Cuboid to the given position
+    #
+    # @overload position=(x, y, z)
+    #   @param [Float] x
+    #   @param [Float] y
+    #   @param [Float] z
+    # @overload position=(position)
+    #   @param [Vector3] position
+    def position=(other)
+      @x, @y, @z = *Vector3.extract(other)
       self
     end
 
