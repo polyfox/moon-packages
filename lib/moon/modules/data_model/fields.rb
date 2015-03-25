@@ -95,6 +95,11 @@ module Moon
         # this allows Models to behave like Hashes :)
         include Enumerable
 
+        # @return [Array[Symbol, Object]]
+        def assoc(key)
+          [key, send(key)]
+        end
+
         ##
         # @param [Symbol] key
         private def init_field(key)
@@ -115,7 +120,8 @@ module Moon
         #   each do |key, value|
         #   end
         def each
-          each_field_with_value do |key, field, value|
+          return enum_for(:each) unless block_given?
+          each_field_with_value do |key, _, value|
             yield key, value
           end
         end
@@ -124,48 +130,42 @@ module Moon
         # @example
         #   each_field do |key, field|
         #   end
-        def each_field
-          self.class.all_fields.each do |k, field|
-            yield k, field
-          end
+        def each_field(&block)
+          return enum_for(:each_field) unless block_given?
+          self.class.all_fields.each(&block)
         end
 
-        ##
         # @example
         #   each_field_name do |key|
         #   end
         def each_field_name
-          each_field do |k,_|
+          return enum_for(:each_field_name) unless block_given?
+          each_field do |k, _|
             yield k
           end
         end
         alias :each_key :each_field_name
 
-        ##
         # @example
         #   each_field_with_value do |key, field, value|
         #   end
         def each_field_with_value
+          return enum_for(:each_field_with_value) unless block_given?
           each_field do |k, field|
             yield k, field, send(k)
           end
         end
 
-        ##
         # @return [Boolean]
         def validate_fields?
           true
         end
 
-        ##
         # @return [Hash<Symbol, Object>]
         def fields_hash
-          hsh = {}
-          each_field_name { |k| hsh[k] = send(k) }
-          hsh
+          each_field_name.map { |k, h| assoc(k) }.to_h
         end
 
-        ##
         # @return [self]
         def validate
           each_field do |key, field|
@@ -174,6 +174,8 @@ module Moon
           self
         end
 
+        # @yieldparam [Symbol] key
+        # @yieldparam [Object] value
         def serialization_properties
           fields_hash.each do |key, value|
             yield key, value
