@@ -12,16 +12,13 @@ class CameraBase < Moon::DataModel::Metal
   # @!attribute obj
   #   @return [Object]
   field :obj,      type: Object,        allow_nil: true, default: nil
-  # @!attribute viewport
+  # @!attribute view
   #   @return [Moon::Rect]
-  field :viewport, type: Moon::Rect,    default: (proc do
-    Moon::Rect.new(-Moon::Screen.width / 2, -Moon::Screen.height / 2,
-                    Moon::Screen.width / 2,  Moon::Screen.height / 2)
-  end)
+  field :view,     type: Moon::Rect
 
-  # @abstract Subclass and overwrite using .field with a Moon::Vector class
+  # @abstract Subclass and overwrite using .field with a Moon::Vector* class
   abstract_attr_accessor :position
-  # @abstract Subclass and overwrite using .field with a Moon::Vector class
+  # @abstract Subclass and overwrite using .field with a Moon::Vector* class
   abstract_attr_accessor :tilesize
 
   ##

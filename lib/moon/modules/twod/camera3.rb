@@ -15,6 +15,6 @@ class Camera3 < CameraBase
   #
   # @return [Moon::Vector3]
   def view
-    @position + @viewport.xyz
+    @position + @view.xyz
   end
 end
