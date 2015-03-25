@@ -10,7 +10,6 @@ module Moon
       attr_reader :registered
 
       def register(sym)
-        # of course we'd like something prettier... -,-
         System.manager.remove(@registered) if @registered
         @registered = sym
         System.manager.set(@registered, self)

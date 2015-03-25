@@ -11,7 +11,6 @@ module Moon
       attr_reader :registered
 
       def register(sym)
-        # of course we'd like something prettier... -,-
         Component.manager.remove(@registered) if @registered
         @registered = sym
         Component.manager.set(@registered, self)

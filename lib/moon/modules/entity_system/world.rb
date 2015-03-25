@@ -1,5 +1,8 @@
 module Moon
   class World
+    EMPTY_HASH = {}
+    EMPTY_ARRAY = []
+
     attr_reader :entities
     attr_reader :random
 
@@ -43,16 +46,40 @@ module Moon
     ##
     # Get Entities for each component and intersect
     # @param [Array<Symbol>] *syms
-    def [](*syms)
-      return [] if syms.empty?
+    # @yieldparam [Entity]
+    def filter(*syms, &block)
+      return if syms.empty?
       if syms.size == 1
-        @components[syms.first].keys
+        (@components[syms.first] || EMPTY_HASH).each_key(&block)
       else
         sym = syms.shift
-        result = (@components[sym] || {}).keys
-        return [] if result.empty?
-        syms.each_with_object(result) do |sym, result|
-          result &= @components[sym].keys
+        result = (@components[sym] || EMPTY_HASH)
+        return if result.empty?
+        result = result.keys
+        if syms.empty?
+          result.each(&block)
+        else
+          result.each do |e|
+            yield e if syms.all? { |s| (l = @components[s]) && l.key?(e) }
+          end
+        end
+      end
+    end
+
+    ##
+    # Get Entities for each component and intersect
+    # @param [Array<Symbol>] *syms
+    # @return [Array<Entity>]
+    def [](*syms, &block)
+      return EMPTY_ARRAY if syms.empty?
+      if syms.size == 1
+        (@components[syms.first] || EMPTY_HASH).keys
+      else
+        sym = syms.shift
+        result = (@components[sym] || EMPTY_HASH)
+        return EMPTY_ARRAY if result.empty?
+        syms.each_with_object(result.keys) do |sym, r|
+          r &= @components[sym].keys
         end
       end
     end
