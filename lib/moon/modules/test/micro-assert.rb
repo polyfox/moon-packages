@@ -4,16 +4,15 @@ module Moon
   ##
   # Basic Assertion Framework
   module Test
-    module Assert
-      class AssertError < StandardError
-        attr_accessor :test_stack
+    class AssertError < StandardError
+      attr_accessor :test_stack
 
-        def initialize(stack, message)
-          @test_stack = stack
-          super message
-        end
+      def initialize(stack, message)
+        @test_stack = stack
+        super message
       end
-
+    end
+    module Assert
       class << self
         attr_accessor :fail_on_assert_error
       end
@@ -57,7 +56,7 @@ module Moon
           fail  # just to nab a backtrace
         rescue RuntimeError => ex
           # curry the error
-          err = AssertError.new(ex.backtrace.slice(1, ex.backtrace.size - 1),
+          err = AssertError.new(ex.backtrace.dup.slice(1, ex.backtrace.size - 1),
                                 message)
           fail err
         end
