@@ -1,5 +1,5 @@
 module Moon
-  module Input
+  class Input
     STRING_TO_KEY = {
       'space' => SPACE,
       'apostrophe' => APOSTROPHE,

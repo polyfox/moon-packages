@@ -1,5 +1,5 @@
 module Moon
-  module Input
+  class Input
     class Observer
       include Eventable
 
