@@ -22,12 +22,4 @@ class Numeric
   def to_vec4
     Vector4.new self, self, self, self
   end
-
-  def masked?(flag)
-    if flag == 0
-      self == 0
-    else
-      (self & flag) == flag
-    end
-  end
 end
