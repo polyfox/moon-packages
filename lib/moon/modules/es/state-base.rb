@@ -5,6 +5,9 @@ module States
     middleware InputMiddleware
     include Moon::TransitionHost
 
+    attr_reader :updatables
+    attr_reader :renderables
+    attr_reader :tree
 
     class CVar
       def initialize
@@ -44,6 +47,10 @@ module States
       @renderables = []
       @renderer = Moon::RenderContainer.new
       @gui = Moon::RenderContainer.new
+      @tree = Moon::Tree.new
+
+      @tree.add @renderer
+      @tree.add @gui
 
       @updatables << @renderer
       @updatables << @gui

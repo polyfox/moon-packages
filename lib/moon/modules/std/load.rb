@@ -21,6 +21,8 @@ require 'std/animation'
 require 'std/palette_parser'
 # timing
 require 'std/clock'
+# data
+require 'std/tree'
 # state
 require 'std/state_manager'
 require 'std/state'
