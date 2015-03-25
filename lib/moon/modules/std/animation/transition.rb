@@ -25,7 +25,7 @@ module Moon
       @src = src
       @dest = dest
       @time = 0.0
-      @duration = duration
+      @duration = TimeUtil.to_duration(duration)
       @easer = easer
       @callback = block
     end
