@@ -102,6 +102,11 @@ module States
       input.on :press, :down do
         @debug_shell.history_next if @debug_shell
       end
+
+      input.on :press, :f12 do
+        State.pop
+        State.push self.class
+      end
     end
 
     private def register_input
