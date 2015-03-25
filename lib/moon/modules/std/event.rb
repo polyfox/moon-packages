@@ -10,6 +10,7 @@ module Moon
       @id = @@id += 1
     end
   end
+
   class InputEvent < Event
     attr_reader :action, :key, :mods
 
@@ -37,6 +38,7 @@ module Moon
       @mods.masked? Moon::Input::MOD_SHIFT
     end
   end
+
   class KeyboardTypingEvent < Event
     attr_reader :char
     attr_reader :action
@@ -47,8 +49,10 @@ module Moon
       super @action
     end
   end
+
   class KeyboardEvent < InputEvent
   end
+
   class MouseEvent < InputEvent
     attr_reader :action
     attr_accessor :position
@@ -60,21 +64,21 @@ module Moon
       super button, action, mods
     end
   end
-  class MouseMove < Event
-    attr_reader :x, :y
-    attr_accessor :position
-    attr_accessor :relative
 
-    def initialize(x, y)
-      @x = x
-      @y = y
+  class MouseMove < Event
+    attr_reader :screen_rect
+    attr_reader :position
+    attr_reader :relative
+
+    def initialize(x, y, screen_rect)
+      @screen_rect = screen_rect
       @position = Vector2.new(x, y)
       @relative = Vector2.new(x, y)
       super :mousemove
     end
 
     def normalize_position
-      @position / [Screen.width, Screen.height]
+      @position / [@screen_rect.width, @screen_rect.height]
     end
   end
 end
