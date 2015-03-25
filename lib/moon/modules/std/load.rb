@@ -22,4 +22,5 @@ require 'std/palette_parser'
 # timing
 require 'std/clock'
 # state
+require 'std/state_manager'
 require 'std/state'
