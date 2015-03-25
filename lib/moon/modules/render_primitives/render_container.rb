@@ -8,7 +8,6 @@ module Moon #:nodoc:
   # of constructing Render Trees
   class RenderContainer < RenderContext
     include Enumerable
-
     # @return [Array<Moon::RenderContext>]
     attr_reader :elements
 

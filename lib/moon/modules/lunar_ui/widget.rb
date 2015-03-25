@@ -29,7 +29,6 @@ module Lunar #:nodoc:
     end
 
     private def init_widget_events
-      super
       on :resize do
         @background.width = width
         @background.height = height

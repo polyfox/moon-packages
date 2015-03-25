@@ -1,4 +1,4 @@
-module Moon
+module Moon #:nodoc:
   class Text
     class StringChangedEvent < Event
       attr_accessor :string

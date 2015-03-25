@@ -4,6 +4,7 @@ module Moon
     attr_accessor :active
 
     # Sets active to true
+    #
     # @return [self]
     def activate
       @active = true
@@ -11,6 +12,7 @@ module Moon
     end
 
     # Sets active to false
+    #
     # @return [self]
     def deactivate
       @active = false

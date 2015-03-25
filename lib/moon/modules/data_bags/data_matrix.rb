@@ -61,17 +61,19 @@ module Moon #:nodoc:
       yield self if block_given?
     end
 
-    #
+    # Recalculates the internal data size
     private def recalculate_size
       @size = @xsize * @ysize * @zsize
     end
 
-    #
+    # Initializes the internal data
     private def create_data
       recalculate_size
       @data = Array.new(@size, @default)
     end
 
+    # Ruby's copy initializer
+    #
     # @param [DataMatrix] org
     def initialize_copy(org)
       super org
@@ -92,12 +94,12 @@ module Moon #:nodoc:
       @data.replace(data_p)
     end
 
-    # @param [Integer] xsize
-    # @param [Integer] ysize
-    # @param [Integer] zsize
-    def resize(xsize, ysize, zsize)
-      oxsize, oysize, ozsize = *size
-      @xsize, @ysize, @zsize = xsize, ysize, zsize
+    # @param [Integer] nxsize
+    # @param [Integer] nysize
+    # @param [Integer] nzsize
+    def resize(nxsize, nysize, nzsize)
+      oxsize, oysize, ozsize = xsize, ysize, zsize
+      @xsize, @ysize, @zsize = nxsize, nysize, nzsize
       old_data = @data
       create_data
       map_with_xyz do |n, x, y, z|
@@ -109,14 +111,17 @@ module Moon #:nodoc:
       end
     end
 
-    def size
+    # @return [Moon::Vector3]
+    def sizes
       Vector3.new xsize, ysize, zsize
     end
 
+    # @return [Moon::Rect]
     def rect
       Rect.new 0, 0, xsize, ysize
     end
 
+    # @return [Moon::Cuboid]
     def cuboid
       Cuboid.new 0, 0, 0, xsize, ysize, zsize
     end
@@ -155,6 +160,7 @@ module Moon #:nodoc:
       @iter ||= Iterator.new(self)
     end
 
+    # @return [self]
     def map_with_xyz
       each_with_xyz do |n, x, y, z|
         index = x + y * @xsize + z * @xsize * @ysize
@@ -162,6 +168,7 @@ module Moon #:nodoc:
       end
     end
 
+    # @return [String]
     def to_s
       result = ''
       @zsize.times do |z|
@@ -180,6 +187,9 @@ module Moon #:nodoc:
       "<#{self.class}#0x#{ptr}: xsize=#{xsize} ysize=#{ysize} zsize=#{zsize} size=#{size} default=#{default} data=[...]>"
     end
 
+    # @param [Hash<String, Integer>] data
+    # @param [Integer] depth  recursion counter
+    # @return [Moon::DataMatrix]
     def self.load(data, depth = 0)
       instance = new data['xsize'], data['ysize'], data['zsize'],
                      default: data['default']

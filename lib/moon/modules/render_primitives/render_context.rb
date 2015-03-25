@@ -33,7 +33,9 @@ module Moon
       init_events
       init
 
-      yield self if block_given?
+      if block_given?
+        yield self
+      end
     end
 
     private def init_members

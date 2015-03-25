@@ -12,16 +12,16 @@ class String
   def demodulize
     path = self.to_s
     if i = path.rindex('::')
-      path[(i+2)..-1]
+      path[(i + 2)..-1]
     else
       path
     end
   end
 
   def indent(n)
-    result = ""
+    result = ''
     self.each_line do |line|
-      result << (" " * n) +  line
+      result << (' ' * n) +  line
     end
     result
   end

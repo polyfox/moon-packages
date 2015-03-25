@@ -11,7 +11,7 @@ module Moon #:nodoc:
 
       include Tabular
 
-      # @return [Moon::Table]
+      # @return [Moon::Tabular]
       attr_reader :src
       # @return [Integer]
       attr_reader :ox

@@ -1,4 +1,4 @@
-module Moon
+module Moon #:nodoc:
   module Serializable
     # The PropertyHelper, as it names implies, helps with stating properties
     # for use with Serializable or Standalone, use this module after including
@@ -66,7 +66,7 @@ module Moon
         end
       end
 
-      # @param [#serialization_properties, #[]=] target
+      # @param [#serialization_properties, #[]=] dest
       # @param [#[]] data
       # @param [Integer] depth
       def import(dest, data, depth = 0)
@@ -76,7 +76,7 @@ module Moon
         dest
       end
 
-      # @param [#serialization_properties, #[]=] target
+      # @param [#serialization_properties, #[]=] dest
       # @param [#[]] data
       # @param [Integer] depth
       def self.import(target, data, depth = 0)
@@ -85,6 +85,9 @@ module Moon
     end
 
     class Exporter < Serializer
+      # @param [Symbol] key
+      # @param [Object] value
+      # @param [Integer] depth
       private def export_object(key, value, depth = 0)
         if value.respond_to?(:export)
           value.export({}, depth + 1)
@@ -97,6 +100,9 @@ module Moon
         end
       end
 
+      # @param [#[]=] target
+      # @param [#serialization_properties] data
+      # @param [Integer] depth
       def export(target, data, depth = 0)
         data.serialization_properties do |key, value|
           target[key] = export_object(key, value, depth + 1)
@@ -104,6 +110,9 @@ module Moon
         target
       end
 
+      # @param [Object] target
+      # @param [Object] data
+      # @param [Integer] depth
       def self.export(target, data, depth = 0)
         new.export(target, data, depth + 1)
       end

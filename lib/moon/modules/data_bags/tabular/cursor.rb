@@ -3,12 +3,12 @@ module Moon #:nodoc:
     # A Cursor is used to navigate a Table without having to specify the
     # data position each time.
     class Cursor
-      # @return [Moon::Table]
+      # @return [Moon::Tabular]
       attr_reader :src
       # @return [Moon::Vector2]
       attr_accessor :position
 
-      # @param [Moon::Table] src
+      # @param [Moon::Tabular] src
       def initialize(src)
         @position = Vector2.zero
         @src = src
@@ -39,8 +39,10 @@ module Moon #:nodoc:
       #   @param [Integer] value  Value to set
       def put(*args)
         case args.size
+        # value
         when 1
           src[position.x, position.y] = args.first
+        # x, y, value
         when 3
           x, y, value = *args
           src[position.x + x, position.y + y] = value
