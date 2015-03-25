@@ -39,13 +39,13 @@ module Moon
       ##
       # Determines if position is inside the Container
       #
-      # @overload pos_inside?(x, y)
+      # @overload contains_pos?(x, y)
       #   @param [Integer] x
       #   @param [Integer] y
-      # @overload pos_inside?(vec2)
+      # @overload contains_pos?(vec2)
       #   @param [Moon::Vector2] vec2
       # @return [Boolean]
-      def pos_inside?(*args)
+      def contains_pos?(*args)
         px, py = *Vector2.extract(args.size > 1 ? args : args.first)
         px.between?(x, x2) && py.between?(y, y2)
       end
@@ -53,13 +53,13 @@ module Moon
       ##
       # Determines if position is inside the Container relatively
       #
-      # @overload pos_inside?(x, y)
+      # @overload contains_pos?(x, y)
       #   @param [Integer] x
       #   @param [Integer] y
-      # @overload pos_inside?(vec2)
+      # @overload contains_pos?(vec2)
       #   @param [Moon::Vector2] vec2
       # @return [Boolean]
-      def relative_pos_inside?(*args)
+      def relative_contains_pos?(*args)
         px, py = *Vector2.extract(args.size > 1 ? args : args.first)
         px.between?(0, width) && py.between?(0, height)
       end
