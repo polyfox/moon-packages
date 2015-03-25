@@ -1,4 +1,16 @@
 class Hash
+  # Has checks if target hash has all the data the other has, this is different
+  # from eql? which checks for complete matches.
+  #
+  # @param [Hash]
+  # @return [Boolean]
+  def has?(other)
+    other.all? do |pair|
+      key, value = *pair
+      key?(key) && self[key] == value
+    end
+  end
+
   def values_of(*syms)
     syms.map { |key| self[key] }
   end
