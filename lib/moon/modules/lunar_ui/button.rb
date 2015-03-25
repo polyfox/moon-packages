@@ -39,11 +39,11 @@ module Lunar #:nodoc:
 
     def init_button_events
       on :press, :mouse_left do |e|
-        trigger PressEvent.new(self) if screen_bounds.inside?(e.position)
+        trigger PressEvent.new(self) if screen_bounds.contains?(e.position)
       end
 
       on :release, :mouse_left do |e|
-        trigger DepressEvent.new(self) if screen_bounds.inside?(e.position)
+        trigger DepressEvent.new(self) if screen_bounds.contains?(e.position)
       end
     end
   end
