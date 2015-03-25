@@ -10,11 +10,17 @@ module Moon
       attr_reader :angle
       # @return [Array<Moon::Vector2>]
       attr_reader :points
+      # @return [Array<Moon::Vector2>]
+      attr_reader :normals
+      # @return [Array<Moon::Vector2>]
+      attr_reader :calc_points
 
       def initialize(pos = Moon::Vector2.zero, points = [])
         @position = pos
         @angle = 0
         @offset = Moon::Vector2.zero
+        @points = []
+        @normals = []
         self.points = points
       end
 
