@@ -176,7 +176,8 @@ module Moon #:nodoc:
 
     # @return [String]
     def inspect
-      "<#{self.class}: xsize=#{xsize} ysize=#{ysize} zsize=#{zsize} size=#{size} default=#{default} data=[...]>"
+      ptr = format('%x', __id__)
+      "<#{self.class}#0x#{ptr}: xsize=#{xsize} ysize=#{ysize} zsize=#{zsize} size=#{size} default=#{default} data=[...]>"
     end
 
     def self.load(data, depth = 0)
