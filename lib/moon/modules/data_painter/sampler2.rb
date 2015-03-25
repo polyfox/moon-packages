@@ -1,8 +1,12 @@
 module Moon #:nodoc:
   # Factories, as their name imply produce Objects. nuff said
   class TableFactory
+    # @param [Integer] xsize
+    # @param [Integer] ysize
+    # @param [Hash] options
+    # @return [Table]
     def new(xsize, ysize, options = {})
-      Table.new(xsize, ysize, options)
+      Table.new xsize, ysize, options
     end
   end
 
@@ -36,7 +40,7 @@ module Moon #:nodoc:
     #   @param [Integer] h
     # @return [Moon::Table]
     def subsample(*args)
-      rx, ry, rw, rh = *Rect.extract(args.size > 1 ? args : args.first)
+      rx, ry, rw, rh = *Rect.extract(args.singularize)
       result = factory2.new(rw, rh, default: src.default)
       result.ysize.times do |y|
         dy = y + ry
@@ -95,7 +99,7 @@ module Moon #:nodoc:
     # @param [Integer] angle
     # @return [*Data2]
     def rotate(angle)
-      case (angle % 360)
+      case angle % 360
       when 0   then dup
       when 90  then rotate_cw
       when 180 then rotate_flip

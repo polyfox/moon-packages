@@ -1,28 +1,41 @@
 module Moon #:nodoc:
   class Painter3
+    # @return [Moon::DataMatrix]
     attr_reader :target
 
+    # @param [Moon::DataMatrix] target
     def initialize(target)
       @target = target
     end
 
+    # Replace all the data with (n)
+    #
+    # @param [Integer] n
     def fill(n)
       target.map_with_xyz { |_, _, _, _| n }
     end
 
-    def clear(n = 0)
-      fill(n)
+    # Replace all data with the default
+    #
+    # @param [Integer] n
+    def clear(n = nil)
+      fill(n || @target.default)
     end
 
     # @overload map_cube(cube)
     #   @param [Moon::Cube, Array[6]<Integer>] cube
-    # @overload map_cube(x, y, width, height)
+    # @overload map_cube(x, y, z, width, height, depth)
     #   @param [Integer] x
     #   @param [Integer] y
     #   @param [Integer] z
     #   @param [Integer] width
     #   @param [Integer] height
     #   @param [Integer] depth
+    # @yieldparam [Integer] current_value  Current value at this position
+    # @yieldparam [Integer] x  x-Coord
+    # @yieldparam [Integer] y  y-Coord
+    # @yieldparam [Integer] z  z-Coord
+    # @yieldreturn [Integer] New value to set
     # @return [self]
     def map_cube(*args)
       x, y, z, w, h, d = *Cube.extract(args.size > 1 ? args : args.first)
@@ -36,20 +49,29 @@ module Moon #:nodoc:
       self
     end
 
-    # @param [Integer] x  x-coord
-    # @param [Integer] y  y-coord
-    # @param [Integer] z  z-coord
-    # @param [Integer] w  width
-    # @param [Integer] h  height
-    # @param [Integer] d  depth
-    # @param [Integer] v  value
+    # @param [Integer] x  x-Coord
+    # @param [Integer] y  y-Coord
+    # @param [Integer] z  z-Coord
+    # @param [Integer] w  Width
+    # @param [Integer] h  Height
+    # @param [Integer] d  Depth
+    # @param [Integer] v  Value
     # @return [self]
     def fill_cube_xyzwhd(x, y, z, w, h, d, v)
       map_cube(x, y, z, w, h, d) { v }
     end
 
-    # @param [Moon::Cube] cube
-    # @param [Integer] value
+    # @overload fill_cube(cube, value)
+    #   @param [Moon::Cube, Array[6]<Integer>] cube  Selection
+    #   @param [Integer] value  Value
+    # @overload fill_cube(x, y, z, w, h, d, v)
+    #   @param [Integer] x  x-Coord
+    #   @param [Integer] y  y-Coord
+    #   @param [Integer] z  z-Coord
+    #   @param [Integer] w  Width
+    #   @param [Integer] h  Height
+    #   @param [Integer] d  Depth
+    #   @param [Integer] v  Value
     def fill_cube(*args)
       case args.size
       when 2

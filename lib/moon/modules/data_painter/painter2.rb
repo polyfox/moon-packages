@@ -1,7 +1,9 @@
 module Moon #:nodoc:
   class Painter2
+    # @return [Moon::Tabular]
     attr_reader :target
 
+    # @param [Moon::Table] target
     def initialize(target)
       @target = target
     end
@@ -12,8 +14,8 @@ module Moon #:nodoc:
     end
 
     # @param [Integer] n
-    def clear(n = 0)
-      fill(n)
+    def clear(n = nil)
+      fill(n || @target.default)
     end
 
     # @overload map_rect(rect)
@@ -67,14 +69,35 @@ module Moon #:nodoc:
       end
     end
 
+    ##
+    # @param [Moon::Tabular] table
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] sx
+    # @param [Integer] sy
+    # @param [Integer] sw
+    # @param [Integer] sh
+    # @yieldparam [Integer] n
+    # @yieldparam [Integer] i
+    # @yieldparam [Integer] j
+    # @return [self]
+    # @api
     private def blit_xywh_with_block(table, x, y, sx, sy, sw, sh)
       map_rect(x, y, sw, sh) do |o, i, j|
-        yield(n) ? table[sx + i, sy + j] : o
+        yield(o, i, j) ? table[sx + i, sy + j] : o
       end
     end
 
     ##
+    # @param [Moon::Tabular] table
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] sx
+    # @param [Integer] sy
+    # @param [Integer] sw
+    # @param [Integer] sh
     # @return [self]
+    # @api
     private def blit_xywh_without_block(table, x, y, sx, sy, sw, sh)
       map_rect(x, y, sw, sh) do |o, i, j|
         table[sx + i, sy + j]
@@ -83,13 +106,14 @@ module Moon #:nodoc:
 
     ##
     #
-    # @param [Moon::Table] table
-    # @param [Integer] x
-    # @param [Integer] y
-    # @param [Integer] sx
-    # @param [Integer] sy
-    # @param [Integer] sw
-    # @param [Integer] sh
+    # @overload blit_xywh(table, x, y, sx, sy, sw, sh)
+    #   @param [Moon::Table] table
+    #   @param [Integer] x
+    #   @param [Integer] y
+    #   @param [Integer] sx
+    #   @param [Integer] sy
+    #   @param [Integer] sw
+    #   @param [Integer] sh
     # @return [self]
     def blit_xywh(*args, &block)
       if block_given?
@@ -132,7 +156,7 @@ module Moon #:nodoc:
     # @param [Hash<Integer, Integer>] rmap
     # @return [self]
     def replace_map(rmap)
-      map_with_xy do |n, x, y|
+      target.map_with_xy do |n, x, y|
         rmap[n] || n
       end
       self
