@@ -1,7 +1,18 @@
 module Moon #:nodoc:
-  class Event
+  class Event #:nodoc:
+    # Creates a filter proc for handling extra options from an Eventable#on
+    #
+    # @param [Hash<Symbol, Object>] options  used for filter.
+    # @return [Proc]
     def self.make_filter(options)
       lambda do |event|
+        # Checks that all pairs in the options match the event's properties.
+        #
+        # @example KeyboardEvent with key
+        #   # this will filter KeyboardEvents with the :press action and :a key.
+        #   on Moon::KeyboardEvent, action: :press, key: :a do |ev|
+        #     do_action ev
+        #   end
         options.all? do |k, v|
           event.send(k) == v
         end
@@ -9,10 +20,18 @@ module Moon #:nodoc:
     end
   end
 
-  class WrapEvent < Event
-    attr_accessor :original_event
-    attr_accessor :parent
+  # An event used for wrapping other events.
+  # This is not used on its own and is normally subclassed.
+  class WrappedEvent < Event
+    # @!attribute [r] original_event
+    #   @return [Event] the original event
+    attr_reader :original_event
+    # @!attribute [r] parent
+    #   @return [RenderContainer] parent render context of this event
+    attr_reader :parent
 
+    # @param [Event] event
+    # @param [RenderContainer] parent
     def initialize(event, parent)
       @original_event = event
       @parent = parent
@@ -20,95 +39,78 @@ module Moon #:nodoc:
     end
   end
 
-  class MouseHoverEvent < WrapEvent
+  # Base event for state events.
+  class WrappedStateEvent < WrappedEvent
+    # @!attribute [r] state
+    #   @return [Boolean] whether its hovering, or not
     attr_reader :state
 
+    # @param [Event] event
+    # @param [RenderContainer] parent
+    # @param [Boolean] state
     def initialize(event, parent, state)
       @state = state
       super event, parent
     end
   end
 
-  class MouseFocusedEvent < WrapEvent
-    attr_reader :state
+  # An event triggered when the Mouse hovers over an Object.
+  class MouseHoverEvent < WrappedStateEvent
+  end
 
-    def initialize(event, parent, state)
-      @state = state
-      super event, parent
+  # An event triggered when a Mouse click takes place inside an Object.
+  class MouseFocusedEvent < WrappedEvent
+  end
+
+  # An event triggered when an Object resizes
+  class ResizeEvent < Event
+    # @!attribute [r] parent
+    #   @return [RenderContainer] parent render context of this event
+    attr_accessor :parent
+
+    # @param [RenderContainer] parent
+    def initialize(parent)
+      @parent = parent
+      super :resize
     end
   end
 
-  class RenderContainer
-    class ResizeEvent < Event
-      attr_accessor :parent
-
-      def initialize(parent)
-        @parent = parent
-        super :resize
-      end
-    end
-
-    def init_events
-      ##
-      # generic event passing callback
-      # this callback will trigger the passed event in the children elements
-      # Input::MouseEvent are handled specially, since it requires adjusting
-      # the position of the event
-      on Moon::Event do |event|
-        @elements.each do |element|
-          element.trigger event
-        end
-      end
-
-      on Moon::MouseEvent do |event|
-        p = event.position
-        trigger MouseFocusedEvent.new(event, self, screen_bounds.contains?(p.x, p.y))
-      end
-
-      on Moon::MouseMove do |event|
-        p = event.position
-        trigger MouseHoverEvent.new(event, self, screen_bounds.contains?(p.x, p.y))
-      end
-    end
-
-    def width=(width)
-      @width = width
-      trigger ResizeEvent.new(self)
-    end
-
-    def height=(height)
-      @height = height
-      trigger ResizeEvent.new(self)
-    end
-
-    def resize(w, h)
-      @width, @height = w, h
-      trigger ResizeEvent.new(self)
-      self
-    end
-  end
-
-  module Eventable
+  module Eventable #:nodoc:
     remove_method :alias_event
     remove_method :trigger_aliases
     remove_method :trigger_any
 
+    # Structure for holding event listener information.
     class Listener
+      # @!attribute [rw] klass
+      #   @return [Class] event class object
       attr_accessor :klass
+      # @!attribute [rw] filter
+      #   @return [Proc] used to determine if the event is valid.
       attr_accessor :filter
+      # @!attribute [rw] callback
+      #   @return [Proc] function to call when the Event is triggered
       attr_accessor :callback
 
+      # @param [Class] klass
+      # @param [Proc] filter
+      # @param [callback] callback
       def initialize(klass, filter, callback)
         @klass, @filter, @callback = klass, filter, callback
       end
     end
 
+    # @param [Class] klass
+    # @param [Hash] options
+    # @yieldparam [Event] ev
     private def register_event(klass, options, &block)
       event_filter = klass.make_filter(options)
       listener = Listener.new(klass, event_filter, block)
       add_event_listener(klass, listener)
     end
 
+    # @param [Class] klass
+    # @param [Hash] options
     def on(klass, options = {}, &block)
       if klass.is_a?(Class)
         register_event(klass, options, &block)
