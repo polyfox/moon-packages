@@ -1,7 +1,0 @@
----
-name: Export Load
-author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Library for loading 'export' scripts
-require: _basalt.rb
-deps:
-  - std
