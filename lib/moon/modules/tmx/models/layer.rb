@@ -1,6 +1,5 @@
-##
-# TMX Map Layer model
-module TMX
+module TMX #:nodoc:
+  # TMX Map Layer model
   class Layer < Moon::DataModel::Metal
     # @!attribute x
     #   @return [Integer]

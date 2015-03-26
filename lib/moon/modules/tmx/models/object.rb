@@ -1,6 +1,5 @@
-##
-# TMX Object model
-module TMX
+module TMX #:nodoc:
+  # TMX Object model
   class Object < Moon::DataModel::Metal
     # @!attribute x
     #   @return [Integer]

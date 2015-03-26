@@ -1,6 +1,5 @@
-##
-# TMX Tileset model
-module TMX
+module TMX #:nodoc:
+  # TMX Tileset model
   class Tileset < Moon::DataModel::Metal
     # @!attribute firstgid
     #   @return [Integer]
