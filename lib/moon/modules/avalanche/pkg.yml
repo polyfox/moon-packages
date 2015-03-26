@@ -1,7 +1,0 @@
----
-name: Avalanche
-author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Avalanche common modules.
-require: _basalt.rb
-deps:
-  - std
