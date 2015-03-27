@@ -1,5 +1,33 @@
 module Moon #:nodoc:
   class Rect
+    module Cast
+      def self.extract_array(obj)
+        case obj.size
+        # v2, v2
+        when 2 then [*Vector2.extract(obj[0]), *Vector2.extract(obj[1])]
+        # x, y, w, h
+        when 4 then obj.to_a
+        else
+          raise ArgumentError,
+                "wrong Array size #{obj.size} (expected 1, 2 or 4)"
+        end
+      end
+
+      def self.extract(obj)
+        case obj
+        when Array   then extract_array(obj)
+        when Hash    then obj.fetch_multi(:x, :y, :w, :h)
+        when Numeric then return 0, 0, obj, obj
+        when Rect    then obj.to_a
+        when Vector2 then return 0, 0, *obj
+        when Vector4 then obj.to_a
+        else
+          raise TypeError,
+                "wrong argument type #{obj.class.inspect} (expected Array, Hash, Numeric, Rect or Vector2)"
+        end
+      end
+    end
+
     include Serializable
     include Serializable::Properties
 
@@ -154,30 +182,7 @@ module Moon #:nodoc:
     # @param [Object] obj
     # @return [Array<Integer>]
     def self.extract(obj)
-      case obj
-      when Array
-        case obj.size
-        when 2
-          return [*Vector2.extract(obj[0]), *Vector2.extract(obj[1])]
-        # x, y, w, h
-        when 4
-          return *obj
-        else
-          raise ArgumentError,
-                "wrong Array size #{obj.size} (expected 1, 2 or 4)"
-        end
-      when Hash
-        return obj.fetch_multi(:x, :y, :w, :h)
-      when Numeric
-        return 0, 0, obj, obj
-      when Moon::Rect
-        return *obj
-      when Moon::Vector2
-        return 0, 0, *obj
-      else
-        raise TypeError,
-              "wrong argument type #{obj.class.inspect} (expected Array, Hash, Numeric, Rect or Vector2)"
-      end
+      Cast.extract(obj)
     end
 
     def self.[](*objs)
