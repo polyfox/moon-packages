@@ -1,5 +1,5 @@
-module Moon
-  module EntitySystem
+module Moon #:nodoc:
+  module EntitySystem #:nodoc:
     class Manager
       def initialize
         @data = {}
