@@ -1,22 +1,19 @@
 module Moon #:nodoc:
-  # Factories, as their name imply produce Objects. nuff said
-  class DataMatrixFactory
-    def new(xsize, ysize, zsize, options = {})
-      DataMatrix.new(xsize, ysize, zsize, options)
-    end
-  end
-
   # A Sampler3 is meant for wrapping 2d data objects and producing new 3d data
   # objects.
-  # Sampler3 does not mutate the internal target data
+  # Samplers do not modify the underlying data.
   class Sampler3
-    # some variation of DataMatrix
+    # @!attribute [r] src
+    #   @return [MatrixLike]
     attr_reader   :src
-    # object factory, the number signifies the dimensions expected
+    # @!attribute [r] factory2
+    #   @return [Object]
     attr_accessor :factory2
+    # @!attribute [r] factory3
+    #   @return [Object]
     attr_accessor :factory3
 
-    # @param [*Data3]
+    # @param [Object] src
     # @param [Hash<Symbol, Object>] options
     #   @option options [#new] factory3
     def initialize(src, options = {})
@@ -30,10 +27,12 @@ module Moon #:nodoc:
       # A factory is used to produce objects of the same type as the src
       # wrapped by the Sampler, the Factory uses a common API, and knows
       # how to create the object from the parameters
-      @factory2 = options.fetch(:factory2) { TableFactory.new }
-      @factory3 = options.fetch(:factory3) { DataMatrixFactory.new }
+      @factory2 = options.fetch(:factory2) { Table }
+      @factory3 = options.fetch(:factory3) { DataMatrix }
     end
 
+    # Gets data at provided position.
+    #
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z

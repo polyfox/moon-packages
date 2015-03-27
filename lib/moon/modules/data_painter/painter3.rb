@@ -1,5 +1,5 @@
 module Moon #:nodoc:
-  class Painter3
+  class Painter3 #:nodoc:
     # @return [Moon::DataMatrix]
     attr_reader :target
 

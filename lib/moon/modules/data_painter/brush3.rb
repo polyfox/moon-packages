@@ -1,5 +1,5 @@
-module Moon
-  module DataPainter
+module Moon #:nodoc:
+  module DataPainter #:nodoc:
     class Brush3
       # @return [MatrixLike::Cursor]
       attr_reader :dest

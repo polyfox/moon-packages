@@ -1,29 +1,24 @@
 module Moon #:nodoc:
-  # Factories, as their name imply produce Objects. nuff said
-  class TableFactory
-    # @param [Integer] xsize
-    # @param [Integer] ysize
-    # @param [Hash] options
-    # @return [Table]
-    def new(xsize, ysize, options = {})
-      Table.new xsize, ysize, options
-    end
-  end
-
+  # Sampler2 is a class used for sampling data from a Tabular object.
+  # Samplers do not modify the underlying data.
   class Sampler2
-    # some variation of Table
+    # @!attribute [r] src
+    #   @return [Tabular]
     attr_reader   :src
-    # object factory, the number signifies the dimensions expected
+    # @!attribute [rw] factory2
+    #   @return [Object] object used for creating new Table objects.
     attr_accessor :factory2
 
-    # @param [*Data2]
+    # @param [Object] src
     # @param [Hash<Symbol, Object>] options
     #   @option options [#new] factory2
     def initialize(src, options = {})
       @src = src
-      @factory2 = options.fetch(:factory2) { TableFactory.new }
+      @factory2 = options.fetch(:factory2) { Table }
     end
 
+    # Gets data at the given position.
+    #
     # @param [Integer] x
     # @param [Integer] y
     # @return [Integer]
@@ -31,6 +26,8 @@ module Moon #:nodoc:
       src[x, y]
     end
 
+    # Takes a section of the +src+ and creates a new object from it.
+    #
     # @overload subsample(rect)
     #   @param [Moon::Rect, Array<Integer>] rect
     # @overload subsample(x, y, w, h)
@@ -38,7 +35,7 @@ module Moon #:nodoc:
     #   @param [Integer] y
     #   @param [Integer] w
     #   @param [Integer] h
-    # @return [Moon::Table]
+    # @return [Tabular]
     def subsample(*args)
       rx, ry, rw, rh = *Rect.extract(args.singularize)
       result = factory2.new(rw, rh, default: src.default)
@@ -51,19 +48,25 @@ module Moon #:nodoc:
       result
     end
 
+    # Samples all the data in column +x+
+    #
     # @param [Integer] x
     # @return [Array<Integer>] column
     def column(x)
       src.ysize.times.map { |y| src[x, y] }
     end
 
+    # Samples all data in row +y+
+    #
     # @param [Integer] y
     # @return [Array<Integer>] row
     def row(y)
       src.xsize.times.map { |x| src[x, y] }
     end
 
-    # @return [*Data2]
+    # Rotates the +src+ data clockwise
+    #
+    # @return [Object] rotated object
     private def rotate_cw
       result = factory2.new(ysize, xsize, default: default)
       ys = ysize - 1
@@ -73,7 +76,9 @@ module Moon #:nodoc:
       result
     end
 
-    # @return [*Data2]
+    # Rotates the +src+ data anti-clockwise
+    #
+    # @return [Object] rotated object
     private def rotate_ccw
       result = factory2.new(ysize, xsize, default: default)
       xs = xsize - 1
@@ -83,7 +88,9 @@ module Moon #:nodoc:
       result
     end
 
-    # @return [*Data2]
+    # Flips the +src+ data by 180*
+    #
+    # @return [Object] flipped object
     private def rotate_flip
       result = factory2.new(xsize, ysize, default: default)
       xs, ys = xsize - 1, ysize - 1
@@ -93,11 +100,10 @@ module Moon #:nodoc:
       result
     end
 
-    ##
-    # Rotate the Table data, returns a new Table with the rotated data
+    # Rotate the +src+ data, returns a new object with the rotated data
     #
     # @param [Integer] angle
-    # @return [*Data2]
+    # @return [Object]
     def rotate(angle)
       case angle % 360
       when 0   then dup
