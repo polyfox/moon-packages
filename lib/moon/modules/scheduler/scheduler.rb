@@ -9,31 +9,35 @@ module Moon #:nodoc:
   class Scheduler
     include Moon::Activatable
 
-    ##
-    # @return [Array<Moon::Scheduler::Job::Base*>]
+    # @!attribute [rw] jobs
+    #   @return [Array<Moon::Scheduler::Job::Base*>]
     attr_accessor :jobs
-    ##
-    # @return [Float] uptime  in seconds
+    # @!attribute [r] uptime
+    #   @return [Float] uptime  how long the scheduler has been running in seconds.
     attr_reader :uptime
-    # Keeps count of how many times the Scheduler has been updated.
-    # @return [Integer] ticks  in frames
+    # @!attribute [r] ticks
+    #   @return [Integer] ticks  how many times has the scheduler updated.
     attr_reader :ticks
 
-    # :nodoc:
-    def initialize
+    def initialize #:nodoc:
       @jobs = []
       @active = true
       @ticks = 0
       @uptime = 0.0
     end
 
-    # @param [Moon::Scheduler::Jobs::Base]
+    # Add a job to the Scheduler
+    #
+    # @param [Moon::Scheduler::Jobs::Base] job
+    # @return [self]
     def add(job)
       @jobs.push job
       job
     end
 
     # Clears all jobs, this will ignore the state of the job.
+    #
+    # @return [self]
     def clear
       @jobs.clear
       self
@@ -42,6 +46,7 @@ module Moon #:nodoc:
     # Removes a job.
     #
     # @param [Moon::Scheduler::Job::Base*] job
+    # @return [Object] the job removed
     def remove(job)
       @jobs.delete(job)
     end
@@ -49,11 +54,11 @@ module Moon #:nodoc:
     # Removes a job by id.
     #
     # @param [String] id
+    # @return [Object] the job removed
     def remove_by_id(id)
       @jobs.delete { |job| job.id == id }
     end
 
-    ##
     # Kill all active jobs.
     #
     # @return [Void]
@@ -64,7 +69,7 @@ module Moon #:nodoc:
 
     # Creates a new Interval job
     #
-    # @param [Integer] duration
+    # @param [String, Integer] duration
     # @return [Moon::Scheduler::Jobs::Interval]
     def every(duration, &block)
       add Jobs::Interval.new(duration, &block)
@@ -72,7 +77,7 @@ module Moon #:nodoc:
 
     # Creates a Timeout job
     #
-    # @param [Integer] duration
+    # @param [String, Integer] duration
     # @return [Moon::Scheduler::Jobs::Timeout]
     def in(duration, &block)
       add Jobs::Timeout.new(duration, &block)
@@ -80,6 +85,7 @@ module Moon #:nodoc:
 
     # Creates a TimedProcess job
     #
+    # @param [String, Integer] duration
     # @return [Moon::Scheduler::Jobs::TimedProcess]
     def run_for(duration, &block)
       add Jobs::TimedProcess.new(duration, &block)
@@ -93,6 +99,7 @@ module Moon #:nodoc:
     end
 
     # Frame update
+    #
     # @param [Float] delta
     def update(delta)
       return unless active?

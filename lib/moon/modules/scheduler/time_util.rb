@@ -2,7 +2,6 @@ module Moon #:nodoc:
   # TimeUtil (Time Utility), has nothing to do with ruby Time, this module
   # has various methods for dealing with durations, timings etc.. for Moon.
   module TimeUtil
-    ##
     # @return [Hash<String, Float>]
     # @api
     DURATION_SUFFIX = {
@@ -16,7 +15,8 @@ module Moon #:nodoc:
       'y' => 31_536_000.0
     }
 
-    ##
+    # Parses a string and returns the duration value of it
+    #
     # @param [String] str
     # @return [Float] duration  in seconds
     def self.parse_duration(str)
@@ -42,7 +42,7 @@ module Moon #:nodoc:
     # Converts a given object to a duration, if the object is a string
     # it goes though the parse_duration method instead.
     #
-    # @param [String, #to_f] str
+    # @param [String, #to_f] obj
     # @return [Numeric]
     def self.to_duration(obj)
       obj.is_a?(String) ? parse_duration(obj) : obj.to_f
