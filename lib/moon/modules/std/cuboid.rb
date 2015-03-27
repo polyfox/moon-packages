@@ -1,5 +1,43 @@
 module Moon #:nodoc:
   class Cuboid
+    module Cast
+      def self.extract_array(obj)
+        case obj.size
+        when 2
+          pos, size = *obj
+          return [*Vector3.extract(pos), *Vector3.extract(size)]
+        when 6 then return obj
+        else
+          raise ArgumentError, "expected Array of size 2 or 6" if obj.size != 6
+        end
+      end
+
+      def self.extract_hash(obj)
+        if obj.key?(:position)
+          pos  = obj.fetch(:position)
+          size = obj.fetch(:size)
+          x, y, z = *Vector3.extract(pos)
+          w, h, d = *Vector3.extract(size)
+          return x, y, z, w, h, d
+        else
+          return obj.fetch_multi(:x, :y, :z, :w, :h, :d)
+        end
+      end
+
+      def self.extract(obj)
+        case obj
+        when Array   then extract_array(obj)
+        when Cuboid  then obj.to_a
+        when Hash    then extract_hash(obj)
+        when Numeric then return 0, 0, 0, obj, obj, obj
+        when Vector3 then return 0, 0, 0, *obj
+        else
+          raise TypeError,
+                "wrong argument type #{obj.class} (expected Array, Cuboid, Hash, Numeric, Vector3)"
+        end
+      end
+    end
+
     include Serializable
     include Serializable::Properties
 
@@ -204,39 +242,7 @@ module Moon #:nodoc:
     # @param [Object] obj
     # @return [Array<Numeric>] (x, y, z, w, h, d)
     def self.extract(obj)
-      case obj
-      when Array
-        case obj.size
-        when 2
-          pos, size = *obj
-          x, y, z = *Vector3.extract(pos)
-          w, h, d = *Vector3.extract(size)
-          return x, y, z, w, h, d
-        when 6
-          return *obj
-        else
-          raise ArgumentError, "expected Array of size 2 or 6" if obj.size != 6
-        end
-      when Moon::Cuboid
-        return *obj
-      when Hash
-        if obj.key?(:position)
-          pos  = obj.fetch(:position)
-          size = obj.fetch(:size)
-          x, y, z = *Vector3.extract(pos)
-          w, h, d = *Vector3.extract(size)
-          return x, y, z, w, h, d
-        else
-          return obj.fetch_multi(:x, :y, :z, :w, :h, :d)
-        end
-      when Numeric
-        return 0, 0, 0, obj, obj, obj
-      when Moon::Vector3
-        return 0, 0, 0, *obj
-      else
-        raise TypeError,
-              "wrong argument type #{obj.class} (expected Array, Cuboid, Hash, Numeric, Vector3)"
-      end
+      Cast.extract(obj)
     end
 
     def self.[](*objs)
