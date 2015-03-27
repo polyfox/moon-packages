@@ -20,11 +20,8 @@ module Moon #:nodoc:
     # Splits the current rect into 4 sub rects of half size
     # @return [Array[4]<Moon::Rect>]
     def split
-      sw = (bounds.w / 2.0).round
-      sh = (bounds.h / 2.0).round
-      x = bounds.x.round
-      y = bounds.y.round
-
+      sw = (w / 2.0).round
+      sh = (h / 2.0).round
       return Rect.new(x + sw, y, sw, sh),
         Rect.new(x, y, sw, sh),
         Rect.new(x, y + sh, sw, sh),
