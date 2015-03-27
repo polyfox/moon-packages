@@ -212,7 +212,3 @@ class SchedulerMiddleware < BaseMiddleware
     @scheduler.update delta
   end
 end
-
-class StateManagerMiddleware < BaseMiddleware
-  attr_accessor :state_manager
-end
