@@ -5,4 +5,5 @@ require 'yard/rake/yardoc_task'
 YARD::Rake::YardocTask.new
 RuboCop::RakeTask.new
 
-task default: [:rubocop, :yard]
+task doc: :yard
+task default: [:rubocop, :doc]
