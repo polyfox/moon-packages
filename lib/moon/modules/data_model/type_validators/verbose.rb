@@ -2,7 +2,7 @@ module Moon
   module DataModel
     module TypeValidators
       module Verbose
-        include Moon::DataModel::TypeValidators::Base
+        include Moon::DataModel::TypeValidators::Soft
 
         def check_array_content(type, key, value, options = {})
           value.each_with_index do |obj, i|
@@ -43,35 +43,6 @@ module Moon
         def check_hash_type(type, key, value, options = {})
           check_object_class(key, Hash, value, options)
           check_hash_content(type, key, value, options)
-        end
-
-        def check_normal_type(type, key, value, options = {})
-          check_object_class(key, type, value, options)
-          true
-        end
-
-        def check_type(type, key, value, options = {})
-          if options[:allow_nil] && value.nil?
-            return true
-          elsif !options[:allow_nil] && value.nil?
-            if options[:quiet]
-              return false
-            else
-              raise TypeError, ":#{key} shall not be nil (expected #{type})"
-            end
-          end
-          # validate that obj is an Array and contains correct types
-          if type.is_a?(Array)
-            check_array_type(type, key, value, options)
-          # validate that value is a Hash of key type and value type
-          elsif type.is_a?(Hash)
-            check_hash_type(type, key, value, options)
-          # validate that value is of type
-          elsif type.is_a?(Module)
-            check_normal_type(type, key, value, options)
-          else
-            true
-          end
         end
 
         private :check_hash_content
