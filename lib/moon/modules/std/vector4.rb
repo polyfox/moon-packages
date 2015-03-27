@@ -2,11 +2,12 @@ module Moon
   class Vector4
     include Comparable
     include Serializable
+    include Serializable::Properties
 
-    def inspect
-      ptr = format('%x', __id__)
-      "<#{self.class}#0x#{ptr}: x=#{x} y=#{y} z=#{z} w=#{w}>"
-    end
+    property :x
+    property :y
+    property :z
+    property :w
 
     # @return [Float]
     def sum

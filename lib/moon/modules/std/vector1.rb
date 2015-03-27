@@ -2,6 +2,9 @@ module Moon
   class Vector1
     include Comparable
     include Serializable
+    include Serializable::Properties
+
+    property :x
 
     # @return [Float]
     def sum
@@ -23,17 +26,14 @@ module Moon
       { x: x }
     end
 
+    # @return [Integer]
     def to_i
       x.to_i
     end
 
+    # @return [Float]
     def to_f
       x.to_f
-    end
-
-    # @yield Array[Symbol, Float]
-    def serialization_properties(&block)
-      to_h.each(&block)
     end
 
     # @param [Integer] index
@@ -50,6 +50,14 @@ module Moon
       case index
       when :x, 'x', 0 then self.x = value
       end
+    end
+
+    def property_get(key)
+      send key
+    end
+
+    def property_set(key, value)
+      send "#{key}=", value
     end
   end
 end

@@ -25,28 +25,29 @@ module Moon #:nodoc:
     end
 
     include Serializable
-    include Serializable::PropertyHelper
+    include Serializable::Properties
     include MatrixLike
 
     # @!group Properties
-    # @attribute [r] xsize
+    # @!attribute [r] xsize
+    #   @return [Integer] number of columns in the matrix
+    property_reader :xsize
+    # @!attribute [r] ysize
+    #   @return [Integer] number of rows in the matrix
+    property_reader :ysize
+    # @!attribute [r] zsize
+    #   @return [Integer] number of layers in the matrix
+    property_reader :zsize
+    # @!attribute [r] size
+    #   @return [Integer] xsize * ysize * zsize
+    property_reader :size
+    # @!attribute [r] data
+    #   @return [Array<Integer>] underlaying Array of data
+    #   @api
+    property_reader :data
+    # @!attribute [rw] default
     #   @return [Integer]
-    attr_reader property(:xsize)
-    # @attribute [r] ysize
-    #   @return [Integer]
-    attr_reader property(:ysize)
-    # @attribute [r] zsize
-    #   @return [Integer]
-    attr_reader property(:zsize)
-    # @attribute [r] size
-    #   @return [Integer]
-    attr_reader property(:size)
-    # @attribute [r] data
-    #   @return [Array<Integer>]
-    attr_reader property(:data)
-    # @attribute default
-    #   @return [Integer]
-    attr_accessor property(:default)
+    property_accessor :default
     # @!endgroup
 
     # @param [Integer] xsize
@@ -179,12 +180,6 @@ module Moon #:nodoc:
         result.concat("\n")
       end
       return result
-    end
-
-    # @return [String]
-    def inspect
-      ptr = format('%x', __id__)
-      "<#{self.class}#0x#{ptr}: xsize=#{xsize} ysize=#{ysize} zsize=#{zsize} size=#{size} default=#{default} data=[...]>"
     end
 
     # @param [Hash<String, Integer>] data

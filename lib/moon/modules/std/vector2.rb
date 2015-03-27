@@ -2,12 +2,10 @@ module Moon
   class Vector2
     include Comparable
     include Serializable
+    include Serializable::Properties
 
-    # @return [String]
-    def inspect
-      ptr = format('%x', __id__)
-      "<#{self.class}#0x#{ptr}: x=#{x} y=#{y}>"
-    end
+    property :x
+    property :y
 
     # @return [Float]
     def sum
@@ -34,27 +32,12 @@ module Moon
       self.x, self.y = *Vector2.extract(other)
     end
 
-    # @return [Moon::Vector3]
-    def xyz
-      Vector3.new x, y, 0
-    end
-
-    # @param [Moon::Vector3]
-    def xyz=(other)
-      self.x, self.y, _ = *Vector3.extract(other)
-    end
-
     alias :to_vec2 :xy
-    alias :to_vec3 :xyz
     alias :to_s :inspect
 
     # @return [Hash<Symbol, Float>]
     def to_h
       { x: x, y: y }
-    end
-
-    def serialization_properties(&block)
-      to_h.each(&block)
     end
 
     def [](index)
@@ -116,7 +99,7 @@ module Moon
       Math.atan2(y, x)
     end
 
-    # @param [Float]
+    # @param [Float] n
     def angle=(n)
       l = length
       self.x = l * Math.cos(n)

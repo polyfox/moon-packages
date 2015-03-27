@@ -9,7 +9,7 @@ module Moon #:nodoc:
       # @return [Integer]
       attr_accessor :z
 
-      # @param [Integer]
+      # @param [MatrixLike] src
       def initialize(src)
         @src = src
         @z = 0

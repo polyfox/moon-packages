@@ -9,26 +9,26 @@ module Moon #:nodoc:
     end
 
     include Serializable
-    include Serializable::PropertyHelper
+    include Serializable::Properties
     include Tabular
 
     # @!group Properties
     # @attribute [r] xsize
     #   @return [Integer]
-    attr_reader property(:xsize)
+    property_reader :xsize
     # @attribute [r] ysize
     #   @return [Integer]
-    attr_reader property(:ysize)
+    property_reader :ysize
     # @attribute [r] size
     #   @return [Integer]
-    attr_reader property(:size)
+    property_reader :size
     # @attribute [r] data
     #   @return [Array<Integer>]
     # @api
-    attr_reader property(:data)
+    property_reader :data
     # @attribute default
     #   @return [Integer]
-    attr_accessor property(:default)
+    property_accessor :default
     # @!endgroup
 
     # @param [Integer] xsize
@@ -142,7 +142,7 @@ module Moon #:nodoc:
     # Because sometimes its too damn troublesome to convert an index to the
     # proper coords
     #
-    # @param [Integer] i
+    # @param [Integer] index
     # @param [Integer] value
     def set_by_index(index, value)
       return if index < 0 || index >= size
@@ -161,12 +161,6 @@ module Moon #:nodoc:
       @ysize.times.map do |y|
         @data[y * @xsize, @xsize].join(', ')
       end.join("\n")
-    end
-
-    # @return [String]
-    def inspect
-      ptr = format('%x', __id__)
-      "<#{self.class}#0x#{ptr}: xsize=#{xsize} ysize=#{ysize} size=#{size} default=#{default} data=[...]>"
     end
 
     # Serialization

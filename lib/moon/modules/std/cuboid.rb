@@ -1,24 +1,20 @@
 module Moon #:nodoc:
   class Cuboid
-    # @return [Integer]
-    attr_accessor :x
-    # @return [Integer]
-    attr_accessor :y
-    # @return [Integer]
-    attr_accessor :z
-    # @return [Integer]
-    attr_accessor :width
-    # @return [Integer]
-    attr_accessor :height
-    # @return [Integer]
-    attr_accessor :depth
+    include Serializable
+    include Serializable::Properties
 
-    alias :w :width
-    alias :w= :width=
-    alias :h :height
-    alias :h= :height=
-    alias :d :depth
-    alias :d= :depth=
+    # @return [Integer]
+    property_accessor :x
+    # @return [Integer]
+    property_accessor :y
+    # @return [Integer]
+    property_accessor :z
+    # @return [Integer]
+    property_accessor :w
+    # @return [Integer]
+    property_accessor :h
+    # @return [Integer]
+    property_accessor :d
 
     # @overload initialize(cuboid)
     #   @param [Cuboid] cuboid
@@ -29,13 +25,13 @@ module Moon #:nodoc:
     # @overload initialize(position, size)
     #   @param [Vector3] position
     #   @param [Vector3] size
-    # @overload initialize(x, y, z, width, height, depth)
+    # @overload initialize(x, y, z, w, h, d)
     #   @param [Integer] x
     #   @param [Integer] y
     #   @param [Integer] z
-    #   @param [Integer] width
-    #   @param [Integer] height
-    #   @param [Integer] depth
+    #   @param [Integer] w
+    #   @param [Integer] h
+    #   @param [Integer] d
     def initialize(*args)
       clear
       set(*args) unless args.empty?
@@ -44,60 +40,60 @@ module Moon #:nodoc:
     ##
     # @return [Integer]
     def x2
-      @x + @width
+      @x + @w
     end
 
     ##
     # @return [Integer]
     def y2
-      @y + @height
+      @y + @h
     end
 
     ##
     # @return [Integer]
     def z2
-      @z + @depth
+      @z + @d
     end
 
     ##
     # @return [Array<Integer>[6]]
     def to_a
-      return @x, @y, @z, @width, @height, @depth
+      return @x, @y, @z, @w, @h, @d
     end
 
     ##
     # @return [Hash<Symbol, Integer>]
     def to_h
-      { x: @x, y: @y, z: @z, width: @width, height: @height, depth: @depth }
+      { x: @x, y: @y, z: @z, w: @w, h: @h, d: @d }
     end
 
     ##
     # @return [Rect]
     def to_rect_xy
-      Moon::Rect.new(@x, @y, @width, @height)
+      Moon::Rect.new(@x, @y, @w, @h)
     end
 
     ##
     # @return [Rect]
     def to_rect_xz
-      Moon::Rect.new(@x, @z, @width, @depth)
+      Moon::Rect.new(@x, @z, @w, @d)
     end
 
     ##
     # @return [Rect]
     def to_rect_yz
-      Moon::Rect.new(@y, @z, @height, @depth)
+      Moon::Rect.new(@y, @z, @h, @d)
     end
 
     ##
     # @return [self]
     def clear
-      @x, @y, @z, @width, @height, @depth = 0, 0, 0, 0, 0, 0
+      @x, @y, @z, @w, @h, @d = 0, 0, 0, 0, 0, 0
       self
     end
 
     def set(*args)
-      @x, @y, @z, @width, @height, @depth = *self.class.extract(args.singularize)
+      @x, @y, @z, @w, @h, @d = *self.class.extract(args.singularize)
       self
     end
 
@@ -122,15 +118,15 @@ module Moon #:nodoc:
     ##
     # @overload resize(vec3)
     #   @param [Vector3] vec3
-    # @overload resize(width, height, depth)
-    #   @param [Integer] width
-    #   @param [Integer] height
-    #   @param [Integer] depth
+    # @overload resize(w, h, d)
+    #   @param [Integer] w
+    #   @param [Integer] h
+    #   @param [Integer] d
     # @overload resize(hash)
     #   @param [Hash<Symbol, Integer>]
     # @return [self]
     def resize(*args)
-      @width, @height, @depth = *Vector3.extract(args.singularize)
+      @w, @h, @d = *Vector3.extract(args.singularize)
       self
     end
 
@@ -152,7 +148,7 @@ module Moon #:nodoc:
     ##
     # @return [Boolean]
     def empty?
-      return width == 0 && height == 0 && depth == 0
+      return w == 0 && h == 0 && d == 0
     end
 
     ##
@@ -182,25 +178,25 @@ module Moon #:nodoc:
     ##
     # @return [Vector2]
     def wh
-      Vector2.new @width, @height
+      Vector2.new @w, @h
     end
 
     ##
     # @param [Vector2] vec2
     def wh=(vec2)
-      @width, @height = *Vector2.extract(vec2)
+      @w, @h = *Vector2.extract(vec2)
     end
 
     ##
     # @return [Vector3]
     def whd
-      Vector3.new @width, @height, @depth
+      Vector3.new @w, @h, @d
     end
 
     ##
     # @param [Vector3] vec3
     def whd=(vec3)
-      @width, @height, @depth = *Vector3.extract(vec3)
+      @w, @h, @d = *Vector3.extract(vec3)
     end
 
     ##
@@ -231,7 +227,7 @@ module Moon #:nodoc:
           w, h, d = *Vector3.extract(size)
           return x, y, z, w, h, d
         else
-          return obj.fetch_multi(:x, :y, :z, :width, :height, :depth)
+          return obj.fetch_multi(:x, :y, :z, :w, :h, :d)
         end
       when Numeric
         return 0, 0, 0, obj, obj, obj

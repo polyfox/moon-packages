@@ -1,16 +1,17 @@
 module Moon #:nodoc:
   class Rect
     include Serializable
+    include Serializable::Properties
 
-    alias :w :width
-    alias :w= :width=
-    alias :h :height
-    alias :h= :height=
+    property :x
+    property :y
+    property :w
+    property :h
 
     alias :initialize_xywh :initialize
     def initialize(*args)
       if args.empty?
-        initialize_xywh(0, 0, 0, 0)
+        initialize_xywh 0, 0, 0, 0
       else
         initialize_xywh(*args)
       end
@@ -46,7 +47,7 @@ module Moon #:nodoc:
     end
 
     def empty?
-      return width == 0 && height == 0
+      return w == 0 && h == 0
     end
 
     def &(other)
@@ -84,51 +85,39 @@ module Moon #:nodoc:
       "#{x},#{y},#{w},#{h}"
     end
 
-    def inspect
-      ptr = format('%x', __id__)
-      "<#{self.class}#0x#{ptr}: x=#{x} y=#{y} w=#{w} h=#{h}>"
-    end
-
     def to_a
-      [x, y, width, height]
+      [x, y, w, h]
     end
 
     def to_h
-      { x: x, y: y, width: width, height: height }
+      { x: x, y: y, w: w, h: h }
     end
 
-    def serialization_properties(&block)
-      to_h.each(&block)
+    def property_get(key)
+      send key
     end
 
-    ##
+    #
     # @param [String] key
     # @param [Integer] value
-    def set_property(key, value)
-      case key.to_s
-      when 'x'           then self.x = value
-      when 'y'           then self.y = value
-      when 'w', 'width'  then self.w = value
-      when 'h', 'height' then self.h = value
-      else
-        raise KeyError, "no property named #{key}"
-      end
+    def property_set(key, value)
+      send "#{key}=", value
     end
 
     def x2
-      x + width
+      x + w
     end
 
     def x2=(x2)
-      self.x = x2 - width
+      self.x = x2 - w
     end
 
     def y2
-      y + height
+      y + h
     end
 
     def y2=(y2)
-      self.y = y2 - height
+      self.y = y2 - h
     end
 
     def position
@@ -150,7 +139,7 @@ module Moon #:nodoc:
     end
 
     def resolution
-      Vector2.new width, height
+      Vector2.new w, h
     end
     alias :wh :resolution
 
@@ -160,16 +149,17 @@ module Moon #:nodoc:
     alias :wh= :resolution=
 
     def whd
-      Vector3.new width, height, 0
+      Vector3.new w, h, 0
     end
 
     def whd=(other)
       self.w, self.h, _ = *Vector3.extract(other)
     end
 
-    ###
     # Extracts Rect related arguments from the given Object (obj)
+    #
     # @param [Object] obj
+    # @return [Array<Integer>]
     def self.extract(obj)
       case obj
       when Array
@@ -184,7 +174,7 @@ module Moon #:nodoc:
                 "wrong Array size #{obj.size} (expected 1, 2 or 4)"
         end
       when Hash
-        return obj.fetch_multi(:x, :y, :width, :height)
+        return obj.fetch_multi(:x, :y, :w, :h)
       when Numeric
         return 0, 0, obj, obj
       when Moon::Rect
