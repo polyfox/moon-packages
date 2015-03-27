@@ -25,12 +25,10 @@ module Moon #:nodoc:
       x = bounds.x.round
       y = bounds.y.round
 
-      r1 = self.class.new(x + sw, y, sw, sh)
-      r2 = self.class.new(x, y, sw, sh)
-      r3 = self.class.new(x, y + sh, sw, sh)
-      r4 = self.class.new(x + sw, y + sh, sw, sh)
-
-      return r1, r2, r3, r4
+      return Rect.new(x + sw, y, sw, sh),
+        Rect.new(x, y, sw, sh),
+        Rect.new(x, y + sh, sw, sh),
+        Rect.new(x + sw, y + sh, sw, sh)
     end
 
     def contains?(*args)
@@ -51,11 +49,9 @@ module Moon #:nodoc:
     end
 
     def &(other)
-      nx  = x < other.x ? other.x : x
-      ny  = y < other.y ? other.y : y
-      nx2 = x2 < other.x2 ? x2 : other.x2
-      ny2 = y2 < other.y2 ? y2 : other.y2
-      Rect.new nx, ny, nx2 - nx, ny2 - ny
+      nx  = [x, other.x].max
+      ny  = [y, other.y].max
+      Rect.new nx, ny, [x2, other.x2].min - nx, [y2, other.y2].min - ny
     end
 
     def set(*args)
