@@ -1,4 +1,5 @@
 require 'data_bags/errors'
+require 'data_bags/n_data'
 require 'data_bags/tabular/iterator_base'
 require 'data_bags/tabular/partition'
 require 'data_bags/tabular/cursor'

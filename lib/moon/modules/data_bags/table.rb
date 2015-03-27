@@ -8,6 +8,7 @@ module Moon #:nodoc:
     class Iterator < Tabular::IteratorBase
     end
 
+    include NData
     include Serializable
     include Serializable::Properties
     include Tabular
@@ -79,20 +80,6 @@ module Moon #:nodoc:
       @data  = data_p
     end
 
-    # write_data is a variation of change_data, it validates the size of the
-    # data set and then replaces the current data with the given
-    #
-    # @param [Array<Integer>] data_p
-    # @api
-    def write_data(data_p)
-      if data_p.size > size
-        raise Moon::OverflowError, 'given dataset is larger than internal'
-      elsif data_p.size < @size
-        raise Moon::UnderflowError, 'given dataset is smaller than internal'
-      end
-      @data.replace(data_p)
-    end
-
     # Resizes the dataset
     #
     # @param [Integer] nxsize  New xsize
@@ -112,13 +99,23 @@ module Moon #:nodoc:
       end
     end
 
+    # Given a 2d position, calculates the data index
+    #
+    # @param [Integer] x
+    # @param [Integer] y
+    # @return [Integer]
+    private def calc_index(x, y)
+      x + y * @xsize
+    end
+
     # @param [Integer] x
     # @param [Integer] y
     # @return [Integer]
     def [](x, y)
-      x = x.to_i; y = y.to_i
+      x = x.to_i
+      y = y.to_i
       return @default unless contains?(x, y)
-      @data[x + y * @xsize]
+      @data[calc_index(x, y)]
     end
 
     # Retrieve a value from the internal data at (index)
@@ -134,9 +131,11 @@ module Moon #:nodoc:
     # @param [Integer] y
     # @param [Integer] n
     def []=(x, y, n)
-      x = x.to_i; y = y.to_i; n = n.to_i
+      x = x.to_i
+      y = y.to_i
+      n = n.to_i
       return unless contains?(x, y)
-      @data[x + y * @xsize] = n
+      @data[calc_index(x, y)] = n
     end
 
     # Because sometimes its too damn troublesome to convert an index to the

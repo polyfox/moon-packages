@@ -24,6 +24,7 @@ module Moon #:nodoc:
       end
     end
 
+    include NData
     include Serializable
     include Serializable::Properties
     include MatrixLike
@@ -82,19 +83,6 @@ module Moon #:nodoc:
       map_with_xyz { |_, x, y, z| org.data[x + y * @xsize + z * @xsize * @ysize] }
     end
 
-    # write_data is a variation of change_data, it validates the size of the
-    # data set and then replaces the current data with the given
-    #
-    # @param [Array<Integer>] data_p
-    def write_data(data_p)
-      if data_p.size > size
-        raise Moon::OverflowError, 'given dataset is larger than internal'
-      elsif data_p.size < @size
-        raise Moon::UnderflowError, 'given dataset is smaller than internal'
-      end
-      @data.replace(data_p)
-    end
-
     # @param [Integer] nxsize
     # @param [Integer] nysize
     # @param [Integer] nzsize
@@ -134,14 +122,26 @@ module Moon #:nodoc:
              ((z >= 0) && (z < @zsize))
     end
 
+    # Given a 3d position, calculates the data index
+    #
+    # @param [Integer] x
+    # @param [Integer] y
+    # @param [Integer] z
+    # @return [Integer]
+    private def calc_index(x, y, z)
+      x + y * @xsize + z * @xsize * @ysize
+    end
+
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
     # @return [Integer]
     def [](x, y, z)
-      x = x.to_i; y = y.to_i; z = z.to_i
+      x = x.to_i
+      y = y.to_i
+      z = z.to_i
       return @default unless contains?(x, y, z)
-      @data[x + y * @xsize + z * @xsize * @ysize]
+      @data[calc_index(x, y, z)]
     end
 
     # @param [Integer] x
@@ -149,9 +149,12 @@ module Moon #:nodoc:
     # @param [Integer] z
     # @param [Integer] n  Value
     def []=(x, y, z, n)
-      x = x.to_i; y = y.to_i; z = z.to_i; n = n.to_i
+      x = x.to_i
+      y = y.to_i
+      z = z.to_i
+      n = n.to_i
       return unless contains?(x, y, z)
-      @data[x + y * @xsize + z * @xsize * @ysize] = n
+      @data[calc_index(x, y, z)] = n
     end
 
     # Initializes and returns an Iterator
@@ -179,7 +182,7 @@ module Moon #:nodoc:
         end
         result.concat("\n")
       end
-      return result
+      result
     end
 
     # @param [Hash<String, Integer>] data
