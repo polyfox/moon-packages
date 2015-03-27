@@ -1,4 +1,4 @@
-class Integer
+class Integer #:nodoc:
   def pred
     self - 1
   end

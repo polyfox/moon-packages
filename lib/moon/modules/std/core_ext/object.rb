@@ -1,12 +1,18 @@
-class Object
-  # @return [self]
-  def presence
-    self
-  end
-
+class Object #:nodoc:
+  # Whether the object is valid or not, subclasses should overwrite this
+  # method to denote their own blank? state.
+  #
   # @return [Boolean]
   def blank?
     !!presence
+  end
+
+  # Checks whether the object is blank or not, returns nil if the object is
+  # blank?, otherwise self.
+  #
+  # @return [self]
+  def presence
+    blank? ? nil : self
   end
 
   # @param [Symbol, String] method_name
@@ -26,8 +32,8 @@ class Object
   end
 
   #
-  # @param [String, Symbol, Array<String, Symbol>] dotsend
-  # @eg
+  # @param [String, Symbol, Array<String, Symbol>] path
+  # @example
   #   obj.dotsend('position.x')
   #   obj.dotsend('map.data.xsize')
   def dotsend(path, *args, &block)

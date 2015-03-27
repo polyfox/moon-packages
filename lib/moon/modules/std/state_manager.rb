@@ -37,6 +37,7 @@ module Moon
     # Steps the current state
     # @param [Float] delta
     def step(delta)
+      return unless current
       current.step(delta)
     end
 

@@ -1,10 +1,9 @@
-class FalseClass
+class FalseClass #:nodoc:
   include Boolean
 
-  def presence
-    nil
-  end
-
+  # Always returns true.
+  #
+  # @return [Boolean]
   def blank?
     true
   end

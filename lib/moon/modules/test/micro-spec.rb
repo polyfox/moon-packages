@@ -1,9 +1,5 @@
-##
-# :nodoc:
-module Moon
-  ##
-  # Basic Spec Framework
-  module Test
+module Moon #:nodoc:
+  module Test #:nodoc:
     module Colorize
       # swiped from colorize.rb
       CONSOLE_COLORS = {
@@ -321,6 +317,7 @@ module Moon
       end
     end
 
+    # Basic Spec Framework
     module Spec
       attr_accessor :spec_suite
 

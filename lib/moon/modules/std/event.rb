@@ -1,19 +1,37 @@
-module Moon
+module Moon #:nodoc:
+  # Base class for every other Event.
   class Event
     @@id = 0
 
+    # @!attribute [r] type
+    #   @return [Symbol] type of event
     attr_reader :type
+    # @!attribute [r] id
+    #   @return [Integer] id of the event
     attr_reader :id
 
+    # @param [Symbol] type
     def initialize(type)
       @type = type
       @id = @@id += 1
     end
   end
 
+  # Base class for Input related events.
   class InputEvent < Event
-    attr_reader :action, :key, :mods
+    # @!attribute [r] action
+    #   @return [Symbol] state of the key, whether its :press, :release, or :repeat
+    attr_reader :action
+    # @!attribute [r] key
+    #   @return [Symbol] name of the key
+    attr_reader :key
+    # @!attribute [r] mods
+    #   @return [Integer] modifiers
+    attr_reader :mods
 
+    # @param [Symbol] key
+    # @param [Symbol] action
+    # @param [Integer] mods
     def initialize(key, action, mods)
       @action = action
       @key = key
@@ -22,18 +40,22 @@ module Moon
       super @action
     end
 
+    # Is the alt modifier active?
     def alt?
       @mods.masked? Moon::Input::MOD_ALT
     end
 
+    # Is the control modifier active?
     def control?
       @mods.masked? Moon::Input::MOD_CONTROL
     end
 
+    # Is the super/winkey modifier active?
     def super?
       @mods.masked? Moon::Input::MOD_SUPER
     end
 
+    # Is the shift modifier active?
     def shift?
       @mods.masked? Moon::Input::MOD_SHIFT
     end

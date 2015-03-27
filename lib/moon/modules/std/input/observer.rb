@@ -1,5 +1,5 @@
-module Moon
-  class Input
+module Moon #:nodoc:
+  class Input #:nodoc:
     class Observer
       include Eventable
 
@@ -10,12 +10,6 @@ module Moon
       def clear
         clear_events
       end
-
-      # Debugging
-      #def trigger(event)
-      #  p event
-      #  super
-      #end
     end
   end
 end

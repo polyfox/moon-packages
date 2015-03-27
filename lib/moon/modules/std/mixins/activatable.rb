@@ -1,6 +1,8 @@
 module Moon
+  # Mixin for marking objects as active, as to what active means, depends on the
+  # object.
   module Activatable
-    # @return [Boolean] active  is active?
+    # @return [Boolean] active  is the object active?
     attr_accessor :active
 
     # Sets active to true

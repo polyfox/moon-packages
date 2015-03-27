@@ -1,3 +1,3 @@
-class Float
+class Float #:nodoc:
   alias :modulo :%
 end

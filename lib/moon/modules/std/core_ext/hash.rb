@@ -1,8 +1,8 @@
-class Hash
+class Hash #:nodoc:
   # Has checks if target hash has all the data the other has, this is different
   # from eql? which checks for complete matches.
   #
-  # @param [Hash]
+  # @param [Hash] other
   # @return [Boolean]
   def has?(other)
     other.all? do |pair|
@@ -11,16 +11,23 @@ class Hash
     end
   end
 
-  def values_of(*syms)
-    syms.map { |key| self[key] }
+  # @param [Object] keys
+  # @return [Array<Object>] values from keys
+  def values_of(*keys)
+    keys.map { |key| self[key] }
   end
 
-  def fetch_multi(*syms)
-    syms.map { |key| fetch(key) }
+  # @param [Object] keys
+  # @return [Array<Object>] values from keys
+  def fetch_multi(*keys)
+    keys.map { |key| fetch(key) }
   end
 
-  def presence
-    empty? ? nil : self
+  # Whether the Hash is blank or not.
+  #
+  # @return [Boolean]
+  def blank?
+    empty?
   end
 
   def exclude(*excluded_keys)

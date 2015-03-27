@@ -1,5 +1,7 @@
-module Moon
+module Moon #:nodoc:
+  # Input extension for using Moon::Events
   class Input
+    # @return [Set]
     private def channels
       @channels ||= Set.new
     end
