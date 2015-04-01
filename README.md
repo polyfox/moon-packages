@@ -5,3 +5,10 @@ Moon Modules
 [![Inline docs](http://inch-ci.org/github/IceDragon200/moon-modules.svg?branch=master)](http://inch-ci.org/github/IceDragon200/moon-modules)
 
 These are scripts written for the [Moon Engine](https://github.com/archSeer/moon).
+
+
+.basaltrc entry
+```yaml
+paths:
+- /path/to/this/lib/moon/packages
+```
