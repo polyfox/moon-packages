@@ -1,0 +1,7 @@
+---
+name: Treap
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: Tree implementation from Warzone2100
+require: _basalt.rb
+deps:
+  - std

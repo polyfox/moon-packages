@@ -1,0 +1,7 @@
+---
+name: Poll Input
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: Classes for polling input.
+require: _basalt.rb
+deps:
+- std
