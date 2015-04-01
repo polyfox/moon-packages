@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
-  s.name        = 'moon-modules'
-  s.summary     = 'Moon Game Modules'
-  s.description = 'Moon-Player game Modules.'
-  s.homepage    = 'https://github.com/IceDragon200/moon-modules'
+  s.name        = 'moon-packages'
+  s.summary     = 'Moon Game Packages'
+  s.description = 'Moon-Player game Packages.'
+  s.homepage    = 'https://github.com/IceDragon200/moon-packages'
   s.email       = 'mistdragon100@gmail.com'
   s.version     = '0.0.0'
   s.platform    = Gem::Platform::RUBY
