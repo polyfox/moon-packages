@@ -2,6 +2,8 @@ module Moon
   module DataModel
     module Fields
       module ClassMethods
+        include Serializable::Properties::ClassMethods
+
         ##
         # Returns all fields pretaining to this class only
         #
@@ -92,6 +94,8 @@ module Moon
       end
 
       module InstanceMethods
+        include Serializable::Properties::InstanceMethods
+
         # this allows Models to behave like Hashes :)
         include Enumerable
 
