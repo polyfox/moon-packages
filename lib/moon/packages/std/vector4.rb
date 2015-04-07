@@ -9,6 +9,14 @@ module Moon
     property :z
     property :w
 
+    def property_set(key, value)
+      send "#{key}=", value
+    end
+
+    def property_get(key)
+      send key
+    end
+
     # @return [Float]
     def sum
       x + y + z + w
@@ -57,7 +65,11 @@ module Moon
     alias :to_vec2 :xy
     alias :to_vec3 :xyz
     alias :to_vec4 :xyzw
-    alias :to_s :inspect
+
+    # @return [String]
+    def to_s
+      "#{x}, #{y}, #{z}, #{w}"
+    end
 
     def to_h
       { x: x, y: y, z: z, w: w }

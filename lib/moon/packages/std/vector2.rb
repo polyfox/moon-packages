@@ -7,6 +7,14 @@ module Moon
     property :x
     property :y
 
+    def property_set(key, value)
+      send "#{key}=", value
+    end
+
+    def property_get(key)
+      send key
+    end
+
     # @return [Float]
     def sum
       x + y
@@ -33,7 +41,11 @@ module Moon
     end
 
     alias :to_vec2 :xy
-    alias :to_s :inspect
+
+    # @return [String]
+    def to_s
+      "#{x}, #{y}"
+    end
 
     # @return [Hash<Symbol, Float>]
     def to_h

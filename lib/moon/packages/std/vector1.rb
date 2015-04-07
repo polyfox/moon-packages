@@ -6,6 +6,14 @@ module Moon
 
     property :x
 
+    def property_set(key, value)
+      send "#{key}=", value
+    end
+
+    def property_get(key)
+      send key
+    end
+
     # @return [Float]
     def sum
       x
@@ -34,6 +42,11 @@ module Moon
     # @return [Float]
     def to_f
       x.to_f
+    end
+
+    # @return [String]
+    def to_s
+      "#{x}"
     end
 
     # @param [Integer] index
