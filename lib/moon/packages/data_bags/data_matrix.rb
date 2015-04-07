@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   #   aka. Table3
   class DataMatrix
     class Iterator

@@ -1,6 +1,6 @@
 # Component as mixin
-module Moon #:nodoc:
-  module EntitySystem #:nodoc:
+module Moon
+  module EntitySystem
     module Component
       @@manager = Manager.new
 

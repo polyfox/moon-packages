@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   # An Error that occurs when writing to a dataset or buffer that is too small,
   # or already full.
   class OverflowError < RuntimeError

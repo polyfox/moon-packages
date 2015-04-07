@@ -1,4 +1,4 @@
-module TMX #:nodoc:
+module TMX
   # TMX Tileset model
   class Tileset < Moon::DataModel::Metal
     # @!attribute firstgid

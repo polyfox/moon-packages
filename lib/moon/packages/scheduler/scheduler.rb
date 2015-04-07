@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   ##
   # A Scheduler is used to manage Job objects, any object that implements
   # a #done? and #update can be used.
@@ -19,7 +19,7 @@ module Moon #:nodoc:
     #   @return [Integer] ticks  how many times has the scheduler updated.
     attr_reader :ticks
 
-    def initialize #:nodoc:
+    def initialize
       @jobs = []
       @active = true
       @ticks = 0

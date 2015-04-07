@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   # A Sampler3 is meant for wrapping 2d data objects and producing new 3d data
   # objects.
   # Samplers do not modify the underlying data.

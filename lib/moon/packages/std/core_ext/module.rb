@@ -1,4 +1,4 @@
-class Module #:nodoc:
+class Module
   alias :__const_get__ :const_get
 
   def family_attr(name)

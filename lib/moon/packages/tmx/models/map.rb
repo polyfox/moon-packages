@@ -1,4 +1,4 @@
-module TMX #:nodoc:
+module TMX
   # TMX Map model
   class Map < Moon::DataModel::Metal
     # @!attribute version

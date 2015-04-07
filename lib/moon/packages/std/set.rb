@@ -2,7 +2,7 @@
 class Set
   include Enumerable
 
-  # @param [#each] data
+  # @param [#each] enum
   def initialize(enum = nil, &block)
     @data = {}
     if block_given?
@@ -51,7 +51,7 @@ class Set
 
   # Determines if the Set matches the given object
   #
-  # @param [Object] obj
+  # @param [Object] other
   # @return [Boolean]
   def ==(other)
     if other.equal?(self)
@@ -73,7 +73,7 @@ class Set
 
   # Adds an object to the Set.
   #
-  # @param [Object] value
+  # @param [Object] values
   def add(*values)
     values.each do |e|
       @data[e] = true

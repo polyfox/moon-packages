@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  module Test #:nodoc:
+module Moon
+  module Test
     class TestAbort < RuntimeError
     end
 

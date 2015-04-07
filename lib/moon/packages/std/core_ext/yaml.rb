@@ -1,4 +1,4 @@
-module YAML #:nodoc:
+module YAML
   # Loads a file +filename+ and parses it as YAML
   #
   # @param [String] filename

@@ -1,6 +1,6 @@
-module Moon #:nodoc:
-  class Scheduler #:nodoc:
-    module Jobs #:nodoc:
+module Moon
+  class Scheduler
+    module Jobs
       # Base class for all Scheduler jobs, this is completely optional
       # for custom user jobs, as long as they implement the basic methods
       # for the job API, (#update, #done?).

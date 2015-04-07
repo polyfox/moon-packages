@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  module DataPainter #:nodoc:
+module Moon
+  module DataPainter
     class Brush2
       # @return [Tabular::Cursor]
       attr_reader :dest

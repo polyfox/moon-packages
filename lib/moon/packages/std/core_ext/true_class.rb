@@ -1,4 +1,4 @@
-class TrueClass #:nodoc:
+class TrueClass
   include Boolean
 
   # Always returns true.

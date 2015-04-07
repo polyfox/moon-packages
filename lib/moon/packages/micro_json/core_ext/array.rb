@@ -1,4 +1,4 @@
-class Array #:nodoc:
+class Array
   # Dumps the Array as a JSON string.
   #
   # @return [String]

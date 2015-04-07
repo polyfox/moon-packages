@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  class Input #:nodoc:
+module Moon
+  class Input
     class Observer
       include Eventable
 

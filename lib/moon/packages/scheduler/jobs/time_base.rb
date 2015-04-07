@@ -1,6 +1,6 @@
-module Moon #:nodoc:
-  class Scheduler #:nodoc:
-    module Jobs #:nodoc:
+module Moon
+  class Scheduler
+    module Jobs
       # TimeBase is the base class for all timebound events.
       class TimeBase < Base
         # @return [Float]

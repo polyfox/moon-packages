@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   # Tabular objects are expected to respond to:
   #   xsize -> Integer
   #   ysize -> Integer

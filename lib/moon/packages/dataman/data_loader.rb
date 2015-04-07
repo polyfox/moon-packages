@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   # DataLoader is a helper module for loading data from the filesystem.
   # DataLoader assumes that all data is serialized as YAML with the file
   # extension .yml.

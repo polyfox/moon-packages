@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   # Sampler2 is a class used for sampling data from a Tabular object.
   # Samplers do not modify the underlying data.
   class Sampler2

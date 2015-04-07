@@ -1,3 +1,3 @@
-class Fixnum #:nodoc:
+class Fixnum
   alias :modulo :%
 end

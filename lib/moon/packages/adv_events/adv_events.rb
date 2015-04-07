@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  class Event #:nodoc:
+module Moon
+  class Event
     # Creates a filter proc for handling extra options from an Eventable#on
     #
     # @param [Hash<Symbol, Object>] options  used for filter.
@@ -75,7 +75,7 @@ module Moon #:nodoc:
     end
   end
 
-  module Eventable #:nodoc:
+  module Eventable
     remove_method :alias_event
     remove_method :trigger_aliases
     remove_method :trigger_any

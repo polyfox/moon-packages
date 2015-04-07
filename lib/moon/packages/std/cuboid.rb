@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   class Cuboid
     module Cast
       def self.extract_array(obj)

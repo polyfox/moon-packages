@@ -1,4 +1,4 @@
-class NilClass #:nodoc:
+class NilClass
   # nil should always return a presence of nil.
   #
   # @return [nil]

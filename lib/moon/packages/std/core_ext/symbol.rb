@@ -1,3 +1,3 @@
-class Symbol #:nodoc:
+class Symbol
   #
 end

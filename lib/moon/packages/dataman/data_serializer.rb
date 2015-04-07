@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   module DataSerializer
     class Resolver
       def resolve(data, depth)

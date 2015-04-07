@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   class Clock
     #
   end

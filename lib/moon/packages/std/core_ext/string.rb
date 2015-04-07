@@ -1,4 +1,4 @@
-class String #:nodoc:
+class String
   # Determines if the string is empty, or filled with whitespace.
   #
   # @return [Boolean] whether the string is blank

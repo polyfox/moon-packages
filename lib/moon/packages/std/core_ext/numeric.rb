@@ -1,4 +1,4 @@
-class Numeric #:nodoc:
+class Numeric
   def lerp(target, d)
     self + (target - self) * d
   end

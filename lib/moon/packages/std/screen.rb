@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  class Screen #:nodoc:
+module Moon
+  class Screen
     #
   end
 end

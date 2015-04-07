@@ -47,7 +47,6 @@ module Moon
         end
       end
 
-      ##
       # Set internal attributes using the hash key~value pairs.
       # These attributes are subject to validation, use #set! instead if
       # validation needs to be bypassed.
@@ -58,10 +57,9 @@ module Moon
         self
       end
 
-      ##
       # Sets internal attributes using the Hash key~value pairs.
       # These attributes bypass validation, use #set instead if validation is
-      # needed
+      # needed.
       #
       # @param [Hash<Symbol, Object>] opts
       def set!(opts)
@@ -69,7 +67,6 @@ module Moon
         self
       end
 
-      ##
       # Converts to a Hash
       #
       # @return [Hash<Symbol, Object>]

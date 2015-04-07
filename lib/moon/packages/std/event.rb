@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   # Base class for every other Event.
   class Event
     @@id = 0

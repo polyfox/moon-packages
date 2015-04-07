@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  module EntitySystem #:nodoc:
+module Moon
+  module EntitySystem
     class World
       EMPTY_HASH = {}
       EMPTY_ARRAY = []

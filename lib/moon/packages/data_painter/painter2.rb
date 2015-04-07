@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  class Painter2 #:nodoc:
+module Moon
+  class Painter2
     # @return [Moon::Tabular]
     attr_reader :target
 

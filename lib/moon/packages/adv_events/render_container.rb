@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  class RenderContainer #:nodoc:
+module Moon
+  class RenderContainer
     # @return [Void]
     private def init_events
       # generic event passing callback

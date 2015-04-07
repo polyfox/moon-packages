@@ -1,6 +1,6 @@
-module Moon #:nodoc:
-  class Scheduler #:nodoc:
-    module Jobs #:nodoc:
+module Moon
+  class Scheduler
+    module Jobs
       # Timeouts are one off tasks which will execute after their time has
       # expired.
       class Timeout < TimeBase

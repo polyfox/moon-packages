@@ -1,4 +1,4 @@
-class Object #:nodoc:
+class Object
   # Whether the object is valid or not, subclasses should overwrite this
   # method to denote their own blank? state.
   #

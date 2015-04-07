@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  module EntitySystem #:nodoc:
+module Moon
+  module EntitySystem
     module System
       @@manager = Manager.new
 

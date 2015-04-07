@@ -1,6 +1,6 @@
-module Moon #:nodoc:
-  class Scheduler #:nodoc:
-    module Jobs #:nodoc:
+module Moon
+  class Scheduler
+    module Jobs
       # Processes are forever running jobs, unlike intervals which execute
       # after duration and simply restart, processes will call their
       # callback everytime they update.

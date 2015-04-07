@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  class Text #:nodoc:
+module Moon
+  class Text
     # @!attribute [rw] use_events
     #   @return [Boolean]
     attr_accessor :use_events

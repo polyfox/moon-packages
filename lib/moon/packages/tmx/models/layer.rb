@@ -1,4 +1,4 @@
-module TMX #:nodoc:
+module TMX
   # TMX Map Layer model
   class Layer < Moon::DataModel::Metal
     # @!attribute x

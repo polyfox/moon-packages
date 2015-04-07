@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  module RenderPrimitive #:nodoc:
+module Moon
+  module RenderPrimitive
     ##
     # Mixin for containerizing RenderContext objects in a RenderContainer
     module Containable

@@ -1,4 +1,4 @@
-class FalseClass #:nodoc:
+class FalseClass
   include Boolean
 
   # Always returns true.

@@ -1,6 +1,6 @@
-module Moon #:nodoc:
-  class Scheduler #:nodoc:
-    module Jobs #:nodoc:
+module Moon
+  class Scheduler
+    module Jobs
       # Invertals are forever running jobs, they will execute their callback
       # after the duration has ended, and then restart, which is similar
       # behavior to a Timeout.

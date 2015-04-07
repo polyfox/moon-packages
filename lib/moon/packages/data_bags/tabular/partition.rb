@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  module Tabular #:nodoc:
+module Moon
+  module Tabular
     # Partitions are used to mask a section of a Table for editing as if it
     # was a seperate Table, any changes done in the partition are done to the
     # underlaying +src+ Table, this is a nice way to trick other classes into

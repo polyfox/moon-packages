@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  module MatrixLike #:nodoc:
+module Moon
+  module MatrixLike
     # A wrapper class around a DataMatrix instance to allow Table like behaviour
     class TableAdaptor
       include Tabular

@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  module RenderPrimitive #:nodoc:
+module Moon
+  module RenderPrimitive
     module DataAttributes
       attr_accessor :data_attrs
 

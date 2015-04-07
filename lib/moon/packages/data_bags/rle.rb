@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   # RunLengthEncoded Program
   class RleProgram
     attr_reader :instructions

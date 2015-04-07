@@ -1,4 +1,4 @@
-class Hash #:nodoc:
+class Hash
   # Has checks if target hash has all the data the other has, this is different
   # from eql? which checks for complete matches.
   #

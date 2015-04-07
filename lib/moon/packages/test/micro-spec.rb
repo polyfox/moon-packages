@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  module Test #:nodoc:
+module Moon
+  module Test
     module Colorize
       # swiped from colorize.rb
       CONSOLE_COLORS = {

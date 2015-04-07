@@ -1,4 +1,4 @@
-module Debug #:nodoc:
+module Debug
   # Debugging Module for Moon::DataModel(s)
   module DataModel
     module PrettyFormat

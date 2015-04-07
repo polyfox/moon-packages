@@ -1,6 +1,6 @@
-module Moon #:nodoc:
-  class Scheduler #:nodoc:
-    module Jobs #:nodoc:
+module Moon
+  class Scheduler
+    module Jobs
       # TimedProcess jobs are similar to Processes, they will run over their
       # provided duration, however, once complete they will execute their
       # on_done callback.

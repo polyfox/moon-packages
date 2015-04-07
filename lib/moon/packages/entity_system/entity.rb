@@ -1,5 +1,5 @@
-module Moon #:nodoc:
-  module EntitySystem #:nodoc:
+module Moon
+  module EntitySystem
     class Entity
       attr_reader :id
 

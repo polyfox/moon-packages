@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   # A 2 dimensional array used normally for storing Tilemap data or any 2d grid
   # based data such hmaps, image data, passage data.
   class Table

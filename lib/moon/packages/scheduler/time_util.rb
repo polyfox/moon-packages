@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   # TimeUtil (Time Utility), has nothing to do with ruby Time, this module
   # has various methods for dealing with durations, timings etc.. for Moon.
   module TimeUtil

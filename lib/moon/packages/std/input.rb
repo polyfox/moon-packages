@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   # Input extension for using Moon::Events
   class Input
     # @return [Set]

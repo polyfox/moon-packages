@@ -1,4 +1,4 @@
-module TMX #:nodoc:
+module TMX
   # TMX Object model
   class Object < Moon::DataModel::Metal
     # @!attribute x
