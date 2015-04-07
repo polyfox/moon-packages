@@ -1,11 +1,13 @@
-module Moon #:nodoc:
+module Moon
   module Serializable
     # Properties are special attributes on an object, its default implementation,
     # is to use instance variables, to change this overwrites the
     # #property_get and #property_set methods.
     module Properties
-      module ClassMethods #:nodoc:
-        family_attr :properties
+      module ClassMethods
+        extend Moon::Prototype
+
+        prototype_attr :property
 
         # Adds +name+ as a property of the class.
         #
@@ -39,7 +41,7 @@ module Moon #:nodoc:
         end
       end
 
-      module InstanceMethods #:nodoc:
+      module InstanceMethods
         # @param [Symbol] key
         def property_get(key)
           instance_variable_get "@#{key}"
@@ -104,6 +106,7 @@ module Moon #:nodoc:
       end
     end
 
+    # @abstract
     class Serializer
     end
 
