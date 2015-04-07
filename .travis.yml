@@ -1,9 +1,9 @@
 language: ruby
 rvm:
 - 1.9.3
-- 2.1.0
-- 2.2.0
-- ruby_head
+- 2.1
+- 2.2
+- ruby-head
 before_install:
 - gem install bundle
 install:
