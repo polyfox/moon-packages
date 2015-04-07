@@ -1,4 +1,4 @@
-module Moon #:nodoc:
+module Moon
   class Rect
     module Cast
       def self.extract_array(obj)
@@ -84,21 +84,37 @@ module Moon #:nodoc:
     end
 
     # Creates a new Rect from the current translated by the given position
+    #
+    # @overload translate(tx, ty)
+    #   @param [Integer] tx
+    #   @param [Integer] ty
+    # @return [Rect]
     def translate(*args)
       r = Rect.new x, y, w, h
-      r.position += args.singularize
+      r.position += Vector2[args.singularize]
       r
     end
 
+    # Same as translate, however the provided position will be scaled against
+    # the Rect's resolution
+    #
+    # @overload translatef(tx, ty)
+    #   @param [Float] tx
+    #   @param [Float] ty
+    # @return [Rect]
     def translatef(*args)
       r = Rect.new x, y, w, h
-      r.position += Vector2[args.singularize] * r.resolution
+      r.position += r.resolution * Vector2[args.singularize]
       r
     end
 
+    # @overload scale(sx, sy)
+    #   @param [Float] sx
+    #   @param [Float] sy
+    # @return [Rect]
     def scale(*args)
       r = Rect.new x, y, w, h
-      r.resolution = Vector2[args.singularize] * r.resolution
+      r.resolution = r.resolution * Vector2[args.singularize]
       r
     end
 
