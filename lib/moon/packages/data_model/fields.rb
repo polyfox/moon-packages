@@ -1,50 +1,75 @@
 module Moon
   module DataModel
+    class FieldError < RuntimeError
+    end
+
+    class FieldNotFound < FieldError
+    end
+
     module Fields
+      # Patches the provided options hash.
+      #
+      # @param [Hash] options
+      # @return [Hash] same one given
+      def self.adjust_field_options(options)
+        # if the default value is set to nil, and allow_nil hasn't already
+        # been set, then the field is allowed to be nil.
+        if options.key?(:default) && options[:default].nil?
+          options[:allow_nil] = true unless options.key?(:allow_nil)
+        end
+
+        # if default value was not set, but the field allows nil,
+        # then the default value is nil
+        if !options.key?(:default) && options[:allow_nil]
+          options[:default] = nil
+        end
+
+        # if no type was given, assume it allows anything, therefore Object
+        unless options.key?(:type)
+          options[:type] = Object
+        end
+
+        options
+      end
+
       module ClassMethods
         include Serializable::Properties::ClassMethods
 
-        ##
-        # Returns all fields pretaining to this class only
-        #
-        # @return [Hash<Symbol, Field>]
-        def fields
-          (@fields ||= {})
-        end
+        prototype_attr :field, default: proc { {} }
 
-        ##
-        # Traverses all parent classes and returns every field every defined
-        # in the object chain
-        #
-        # @return [Array<Symbol>]
-        def all_fields
-          ancestors.reverse.each_with_object({}) do |klass, hash|
-            hash.merge!(klass.fields) if klass.respond_to?(:fields)
+        def find_field(expected_key)
+          each_field do |key, value|
+            return value if expected_key == key
           end
+          nil
         end
 
-        ##
+        #
+        def fetch_field(expected_key)
+          find_field(expected_key) ||
+            (raise FieldNotFound, "could not find field #{key}.")
+        end
+
         # Define a new field with option adjustments
         #
         # @param [Symbol] name
         # @param [Hash] options
         # @return [Symbol]
         def field(name, options)
-          # if the default value is set to nil, and allow_nil hasn't already
-          # been set, then assign it as true
-          if options.key?(:default) && options[:default].nil?
-            options[:allow_nil] = true unless options.key?(:allow_nil)
-          end
-          # if default value does not exist, but the field allows nil
-          # set the default as nil
-          if !options.key?(:default) && options[:allow_nil]
-            options[:default] = nil
-          end
+          options = Fields.adjust_field_options options
 
           add_field name, options
         end
 
-        ##
+        private def define_field_writer(field, name)
+          setter = "_#{name}_set"
+          alias_method setter, "#{name}="
+          define_method "#{name}=" do |obj|
+            field.check_type(name, obj) if validate_fields?
+            send setter, obj
+          end
+        end
+
         # Define a new field, without option adjustments
         #
         # @param [Symbol] name
@@ -52,26 +77,21 @@ module Moon
         private def add_field(name, options)
           field = fields[name.to_sym] = Field.new(options)
 
-          setter = "_#{name}_set"
-
+          # first setup the Serializable property, this also creates the
+          # initial attr for us
           property_accessor name
-          alias_method setter, "#{name}="
-
-          define_method "#{name}=" do |obj|
-            field.check_type(name, obj) if validate_fields?
-            send setter, obj
-          end
+          # next we'll need to overwrite the writer created by property_accessor,
+          # with our field validation one.
+          define_field_writer field, name
 
           name.to_sym
         end
 
-        ##
         # @param [Symbol] sym
         def remove_field(sym)
           fields.delete(sym.to_sym)
         end
 
-        ##
         # Defines a new Array field, is a shorthand for field type: [Type]
         #
         # @return [Symbol]
@@ -82,7 +102,6 @@ module Moon
                                    default: default)
         end
 
-        ##
         # Defines a new Hash field, is a shorthand for field type: {Type=>Type}
         #
         # @return [Symbol]
@@ -95,8 +114,7 @@ module Moon
 
       module InstanceMethods
         include Serializable::Properties::InstanceMethods
-
-        # this allows Models to behave like Hashes :)
+        # this allows Fields to behave like Hashes :)
         include Enumerable
 
         # @return [Array[Symbol, Object]]
@@ -107,7 +125,7 @@ module Moon
         ##
         # @param [Symbol] key
         private def init_field(key)
-          field = self.class.all_fields.fetch(key)
+          field = self.class.fetch_field(key)
           send "#{key}=", field.make_default(self)
         end
 
@@ -121,29 +139,18 @@ module Moon
 
         ##
         # @example
-        #   each do |key, value|
-        #   end
-        def each
-          return enum_for(:each) unless block_given?
-          each_field_with_value do |key, _, value|
-            yield key, value
-          end
-        end
-
-        ##
-        # @example
         #   each_field do |key, field|
         #   end
         def each_field(&block)
-          return enum_for(:each_field) unless block_given?
-          self.class.all_fields.each(&block)
+          return to_enum :each_field unless block_given?
+          self.class.each_field.each(&block)
         end
 
         # @example
         #   each_field_name do |key|
         #   end
         def each_field_name
-          return enum_for(:each_field_name) unless block_given?
+          return to_enum :each_field_name unless block_given?
           each_field do |k, _|
             yield k
           end
@@ -154,9 +161,20 @@ module Moon
         #   each_field_with_value do |key, field, value|
         #   end
         def each_field_with_value
-          return enum_for(:each_field_with_value) unless block_given?
+          return to_enum :each_field_with_value unless block_given?
           each_field do |k, field|
             yield k, field, send(k)
+          end
+        end
+
+        ##
+        # @example
+        #   each do |key, value|
+        #   end
+        def each
+          return to_enum :each unless block_given?
+          each_field_with_value do |key, _, value|
+            yield key, value
           end
         end
 
@@ -170,6 +188,8 @@ module Moon
           each_field_name.map { |k, h| assoc(k) }.to_h
         end
 
+        # Runs the validation for each field on the model.
+        #
         # @return [self]
         def validate
           each_field do |key, field|
