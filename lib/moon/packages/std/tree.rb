@@ -13,7 +13,7 @@ module Moon #:nodoc
     # @param [Object] value
     def initialize(parent = nil, value = nil)
       @parent = parent
-      @value = nil
+      @value = value
       @children = []
     end
 
