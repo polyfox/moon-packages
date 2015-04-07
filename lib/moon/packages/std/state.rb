@@ -58,7 +58,7 @@ class State
 
   ##
   # @param [Float] delta
-  def update_step(delta)
+  private def update_step(delta)
     pre_update delta
     update delta
     post_update delta
@@ -66,7 +66,7 @@ class State
 
   ##
   #
-  def render_step
+  private def render_step
     pre_render
     render
     post_render
