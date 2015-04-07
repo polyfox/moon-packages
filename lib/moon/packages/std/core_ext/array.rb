@@ -13,4 +13,7 @@ class Array
   def sort_by!(&block)
     sort! { |a, b| block.call(a) <=> block.call(b) }
   end unless method_defined?(:sort_by!)
+
+  alias :prepend :unshift
+  alias :append :<<
 end
