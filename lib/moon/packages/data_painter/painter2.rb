@@ -15,7 +15,7 @@ module Moon
 
     # @param [Integer] n
     def clear(n = nil)
-      fill(n || @target.default)
+      fill(n || target.default)
     end
 
     # @overload map_rect(rect)
