@@ -1,0 +1,12 @@
+language: ruby
+rvm:
+- 1.9.3
+- 2.1.0
+- 2.2.0
+- ruby_head
+before_install:
+- gem install bundle
+install:
+- bundle install
+script:
+- bundle exec rspec -r ./spec/spec_helper.rb
