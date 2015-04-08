@@ -1,3 +1,5 @@
+require 'std/core_ext/object'
+
 class String
   # Determines if the string is empty, or filled with whitespace.
   #

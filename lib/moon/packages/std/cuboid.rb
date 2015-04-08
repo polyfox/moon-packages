@@ -1,3 +1,5 @@
+require 'std/mixins/serializable'
+
 module Moon
   class Cuboid
     module Cast

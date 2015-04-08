@@ -1,3 +1,5 @@
+require 'std/mixins/prototype'
+
 module Moon
   module Serializable
     # Properties are special attributes on an object, its default implementation,

@@ -1,3 +1,5 @@
+require 'std/core_ext/object'
+
 class Array
   def blank?
     empty?

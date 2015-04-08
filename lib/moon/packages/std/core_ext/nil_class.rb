@@ -1,3 +1,5 @@
+require 'std/core_ext/object'
+
 class NilClass
   # nil should always return a presence of nil.
   #

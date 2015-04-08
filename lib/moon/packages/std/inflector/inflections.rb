@@ -1,3 +1,5 @@
+require 'std/core_ext/array'
+
 module Moon
   # Proudly stolen from:
   # https://github.com/rails/rails/blob/master/activesupport/lib/active_support/inflector
