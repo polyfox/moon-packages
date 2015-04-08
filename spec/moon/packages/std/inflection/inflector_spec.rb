@@ -71,6 +71,7 @@ describe Moon::Inflector do
   # demodulize(path)
   context '.demodulize' do
     it 'it should demodulize a word' do
+      expect(inf.demodulize 'Moon').to eq('Moon')
       expect(inf.demodulize 'Moon::DisplayObject').to eq('DisplayObject')
     end
   end
@@ -78,7 +79,8 @@ describe Moon::Inflector do
   # deconstantize(path)
   context '.deconstantize' do
     it 'it should deconstantize a word' do
-      expect(inf.humanize 'MY_GREATEST_OBJECT').to eq('My greatest object')
+      expect(inf.deconstantize 'World::Politics').to eq('World')
+      expect(inf.deconstantize 'MY_GREATEST_OBJECT').to eq('')
     end
   end
 
@@ -93,6 +95,7 @@ describe Moon::Inflector do
   context '.constantize' do
     it 'it should constantize a word' do
       expect(inf.constantize 'Moon').to eq(Moon)
+      expect(inf.constantize 'Moon::Inflector').to eq(Moon::Inflector)
     end
   end
 
@@ -101,6 +104,7 @@ describe Moon::Inflector do
     it 'it should safe_constantize a word' do
       expect(inf.safe_constantize 'SomeModuleThatDoesntExist').to eq(nil)
       expect(inf.safe_constantize 'Moon').to eq(Moon)
+      expect(inf.safe_constantize 'Moon::Inflector').to eq(Moon::Inflector)
       expect(inf.safe_constantize 'Object::Array').to eq(Array)
     end
   end
@@ -111,6 +115,7 @@ describe Moon::Inflector do
       expect(inf.ordinal 1).to eq('st')
       expect(inf.ordinal 2).to eq('nd')
       expect(inf.ordinal 3).to eq('rd')
+      expect(inf.ordinal 11).to eq('th')
     end
   end
 
@@ -120,6 +125,7 @@ describe Moon::Inflector do
       expect(inf.ordinalize 1).to eq('1st')
       expect(inf.ordinalize 2).to eq('2nd')
       expect(inf.ordinalize 3).to eq('3rd')
+      expect(inf.ordinalize 13).to eq('13th')
       expect(inf.ordinalize 27).to eq('27th')
     end
   end
