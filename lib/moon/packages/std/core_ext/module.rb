@@ -1,20 +1,4 @@
 class Module
-  alias :__const_get__ :const_get
-
-  # const_get resolves namespaces and top level constants!
-  #
-  # @param [String] path
-  # @return [Module]
-  def const_get(path)
-    top = self
-    paths = path.to_s.split("::")
-    if path.to_s.start_with?("::")
-      top = Object
-      paths.shift
-    end
-    paths.reduce(top) { |klass, name| klass.__const_get__(name) }
-  end
-
   # Creates a new abstract method.
   # A abstract method will fail with a AbstractMethodError when called.
   # It is intended to be rewritten in the subclass before usage.
