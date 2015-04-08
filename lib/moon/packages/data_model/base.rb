@@ -22,7 +22,7 @@ module Moon
       # Meta Data, String Values and String Keys
       # @!attribute meta
       #   @return [Hash<String, String>]
-      dict :meta,  key: String, value: String default: proc { {} }
+      dict :meta,  key: String, value: String, default: proc { {} }
     end
   end
 end
