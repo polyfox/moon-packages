@@ -1,3 +1,6 @@
+#encoding:UTF-8
+require 'std/inflector/inflections'
+
 module Moon
   # Proudly stolen from:
   # https://github.com/rails/rails/blob/master/activesupport/lib/active_support/inflector
