@@ -34,6 +34,13 @@ module Moon
       @data.empty?
     end
 
+    # Determines if the Set is blank?
+    #
+    # @return [Boolean]
+    def blank?
+      empty?
+    end
+
     # Determins if the Set includes a object
     #
     # @param [Object] obj
