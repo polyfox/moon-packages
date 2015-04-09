@@ -1,49 +1,67 @@
 class Object
+  alias_method :public_send, :send unless method_defined?(:public_send)
+
   # Whether the object is valid or not, subclasses should overwrite this
-  # method to denote their own blank? state.
+  # method to denote their own `blank?` state.
   #
-  # @return [Boolean]
+  # @return [Boolean] is the object blank?
+  # @abstract
   def blank?
-    !!presence
+    !self
   end
 
-  # Checks whether the object is blank or not, returns nil if the object is
-  # blank?, otherwise self.
+  # The opposite of {#blank?}
+  #
+  # @return [Boolean] is the object present?
+  def present?
+    !blank?
+  end
+
+  # Checks whether the object is blank or not, returns `nil` if the object is
+  # {#blank?}, otherwise `self`.
   #
   # @return [self]
   def presence
     blank? ? nil : self
   end
 
+  # Tries to invoke method_name on the object, if the object does not `respond_to?`
+  # the method, nil is returned.
+  #
   # @param [Symbol, String] method_name
   def try(method_name = nil, *args, &block)
-    if method_name
-      __send__(method_name, *args, &block)
+    if respond_to?(method_name)
+      public_send(method_name, *args, &block)
     else
-      yield self
+      nil
     end
   end
 
-  # @param [Array<String, Symbol>] paths
-  def paths_send(paths, *args, &block)
-    pths = paths.dup
-    last = pths.pop
-    pths.reduce(self) { |r, meth| r.send(meth) }.send(last, *args, &block)
+  # Recursively `send`s the symbols to the object, each symbol is sent to the
+  # result of the previous send.
+  #
+  # @param [Array<String, Symbol>] path
+  # @api
+  #
+  # @example
+  #   my_map.recursive_send([:map, :data, :xsize])
+  private def recursive_send(path, *args, &block)
+    path[0, path.size - 1].reduce(self) { |r, meth| r.__send__(meth) }.__send__(path.last, *args, &block)
   end
 
   #
   # @param [String, Symbol, Array<String, Symbol>] path
+  #
   # @example
   #   obj.dotsend('position.x')
   #   obj.dotsend('map.data.xsize')
   def dotsend(path, *args, &block)
     if path.is_a?(Symbol)
-      send(path, *args, &block)
+      __send__(path, *args, &block)
     elsif path.is_a?(Array)
-      paths_send(path, *args, &block)
+      recursive_send(path, *args, &block)
     else
-      paths = path.split('.')
-      paths_send(paths, *args, &block)
+      recursive_send(path.split('.'), *args, &block)
     end
   end
 end
