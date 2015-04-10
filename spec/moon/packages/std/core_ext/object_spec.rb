@@ -5,21 +5,23 @@ require 'std/core_ext/string'
 require 'std/core_ext/nil_class'
 require 'std/set'
 
-class MyTestObject
-  class Point
-    attr_accessor :x
-    attr_accessor :y
+module Fixtures
+  class MyTestObject
+    class Point
+      attr_accessor :x
+      attr_accessor :y
 
-    def initialize(x = 0, y = 0)
-      @x = x
-      @y = y
+      def initialize(x = 0, y = 0)
+        @x = x
+        @y = y
+      end
     end
-  end
 
-  attr_accessor :position
+    attr_accessor :position
 
-  def initialize
-    @position = Point.new
+    def initialize
+      @position = Point.new
+    end
   end
 end
 
@@ -84,7 +86,7 @@ describe Object do
 
   context '#dotsend' do
     it 'should recursively call into an object' do
-      obj = MyTestObject.new
+      obj = Fixtures::MyTestObject.new
       obj.position.x = 12
       obj.position.y = 2
       # first with a symbol, for regular sends
