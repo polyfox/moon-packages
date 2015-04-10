@@ -3,7 +3,7 @@ module Moon
   class Input
     # @return [Set]
     private def channels
-      @channels ||= Set.new
+      @channels ||= Moon::Set.new
     end
 
     def register(channel)
