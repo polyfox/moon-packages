@@ -13,7 +13,7 @@ module Moon
       "@__prototype_#{plural_sym(singular_name)}__".to_sym
     end
 
-    def self.my_sym(singular_name)
+    def self.collective_sym(singular_name)
       #"my_#{plural_sym(singular_name)}".to_sym
       # originally I planned to name each instance level attr as my_<name>,
       # but it seems unusual on the userside of things.
@@ -31,7 +31,7 @@ module Moon
     # @return [Symbol]
     # @api
     private def define_prototype_enum(singular_name, options = {})
-      my_name = Prototype.my_sym singular_name
+      my_name = Prototype.collective_sym singular_name
       enum_name = Prototype.enum_sym singular_name
 
       define_method enum_name do |&block|
@@ -44,8 +44,6 @@ module Moon
           end
         end
       end
-
-      enum_name
     end
 
     # @return [Symbol]
@@ -53,7 +51,7 @@ module Moon
     private def define_prototype_instance_collection(singular_name, options = {})
       plural_name = Prototype.plural_sym singular_name
       variable_name = Prototype.varname_sym singular_name
-      my_name = Prototype.my_sym singular_name
+      my_name = Prototype.collective_sym singular_name
 
       # create default function
       dfault = if options.key?(:default)
@@ -74,11 +72,9 @@ module Moon
         end
         var
       end
-
-      my_name
     end
 
-    # Calls +method+ on each ancestor and yields the result of the method.
+    # Calls `method` on each ancestor and yields the result of the method.
     # The ancestor is skipped if it does not respond_to? +method+
     #
     # @param [String, Symbol] method
@@ -97,25 +93,13 @@ module Moon
     # @param [String, Symbol] singular_name
     # @return [Void]
     private def prototype_attr(singular_name, options = {})
-      all_name = Prototype.all_sym singular_name
-      define_prototype_instance_collection singular_name, options
+      pn = define_prototype_instance_collection singular_name, options
       enum_name = define_prototype_enum singular_name, options
       # all prototype attributes
+      all_name = Prototype.all_sym singular_name
       define_method all_name do
         send(enum_name).to_a
       end
-    end
-
-    # @deprecated
-    def family_attr(*args, &block)
-      warn '.family_attr is deprecated, use .prototype_attr instead'
-      prototype_attr(*args, &block)
-    end
-
-    # @deprecated
-    def family_call(*args, &block)
-      warn '.family_call is deprecated, use .prototype_call instead'
-      prototype_call(*args, &block)
     end
   end
 end
