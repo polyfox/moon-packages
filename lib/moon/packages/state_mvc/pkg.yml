@@ -1,9 +1,0 @@
----
-name: State MVC
-author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Model, View, Controller framework for Moon States
-require: _basalt.rb
-deps:
-  - std
-  - data_model
-  - render_primitives
