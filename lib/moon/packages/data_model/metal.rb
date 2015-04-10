@@ -1,21 +1,18 @@
-# :nodoc
+require 'data_model/model'
+
 module Moon
-  ##
   # Moon::DataModel serves as the base for most structured data types in Moon
   module DataModel
-    ##
     # Metal is a generic implementation of Moon::DataModel::Model
     class Metal
       include Model
 
-      ##
       # @return [Integer] DataModel id counter
       @@dmid = 0
 
       # @return [Integer] Generic DataModel id
       attr_reader :dmid
 
-      ##
       # @param [Hash<Symbol, Object>] opts
       #   Values to initialize the model with
       def initialize(opts = {})
@@ -31,13 +28,11 @@ module Moon
         post_init
       end
 
-      ##
       # Final initialization method
       private def post_init
         #
       end
 
-      ##
       # @param [Array<Symbol>] dont_init
       #   A list of keys not to initialize
       private def initialize_fields(dont_init = [])
@@ -74,7 +69,6 @@ module Moon
         fields_hash
       end
 
-      ##
       # A recursive method of #to_h
       #
       # @return [Hash<Symbol, Object>]
@@ -99,7 +93,6 @@ module Moon
         hsh
       end
 
-      ##
       # Force the type conversion of each field, if a particular type
       # cannot be converted immediately, #custom_type_cast is called
       #
@@ -123,7 +116,6 @@ module Moon
         self
       end
 
-      ##
       # @param [Symbol] key
       # @param [Object] value
       # @return [Object]

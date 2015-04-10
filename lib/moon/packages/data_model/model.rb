@@ -1,3 +1,6 @@
+require 'std/mixins/serializable'
+require 'data_model/fields'
+
 module Moon # :nodoc:
   module DataModel # :nodoc:
     module Model # :nodoc:

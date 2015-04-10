@@ -1,3 +1,7 @@
+require 'std/mixins/serializable'
+require 'std/mixins/prototype'
+require 'data_model/field'
+
 module Moon
   module DataModel
     class FieldError < RuntimeError
@@ -11,7 +15,12 @@ module Moon
       #
       # @param [Hash] options
       # @return [Hash] same one given
-      def self.adjust_field_options(options)
+      def self.adjust_field_options(klass, options)
+        # set the class default settings
+        klass.each_field_setting do |key, value|
+          options[key] = value
+        end
+
         # if the default value is set to nil, and allow_nil hasn't already
         # been set, then the field is allowed to be nil.
         if options.key?(:default) && options[:default].nil?
@@ -36,6 +45,7 @@ module Moon
         include Serializable::Properties::ClassMethods
 
         prototype_attr :field, default: proc { {} }
+        prototype_attr :field_setting, default: proc { {} }
 
         def find_field(expected_key)
           each_field do |key, value|
@@ -55,10 +65,43 @@ module Moon
         # @param [Symbol] name
         # @param [Hash] options
         # @return [Symbol]
-        def field(name, options)
-          options = Fields.adjust_field_options options
+        def field(name, options = {})
+          add_field name, Fields.adjust_field_options(self, options)
+        end
 
-          add_field name, options
+        # @overload field_setting(key)
+        #   Retrives value at key
+        #   @param [Symbol] key
+        #   @return [Object] value at key
+        #
+        # @overload field_setting(key, value)
+        #   Sets value at key
+        #   @param [Symbol] key
+        #   @param [Object] value
+        #   @return [Void]
+        #
+        # @overload field_setting(options)
+        #   Merges the options into the field settings
+        #   @param [Hash] options
+        #   @return [Void]
+        def field_setting(obj, *args)
+          # allows you to temporarily apply the field_settings to the block.
+          if block_given?
+            org = field_settings.dup
+            field_setting(obj, *args)
+            yield self
+            field_setting org
+          else
+            if Hash === obj
+              field_settings.merge!(obj)
+            else
+              if args.size > 0
+                field_settings[obj] = args.singularize
+              else
+                field_settings[obj]
+              end
+            end
+          end
         end
 
         private def define_field_writer(field, name)
@@ -117,16 +160,31 @@ module Moon
         # this allows Fields to behave like Hashes :)
         include Enumerable
 
+        # @param [Symbol] key
+        # @param [Object] value
+        # @return [Void]
+        # TODO properly handle field setters
+        def field_set(key, value)
+          send "#{key}=", value
+        end
+
+        # @param [Symbol] key
+        # @return [Object]
+        # TODO properly handle field getters
+        def field_get(key)
+          send key
+        end
+
         # @return [Array[Symbol, Object]]
         def assoc(key)
-          [key, send(key)]
+          [key, field_get(key)]
         end
 
         ##
         # @param [Symbol] key
         private def init_field(key)
           field = self.class.fetch_field(key)
-          send "#{key}=", field.make_default(self)
+          field_set key, field.make_default(self)
         end
 
         ##
@@ -163,7 +221,7 @@ module Moon
         def each_field_with_value
           return to_enum :each_field_with_value unless block_given?
           each_field do |k, field|
-            yield k, field, send(k)
+            yield k, field, field_get(k)
           end
         end
 
@@ -193,7 +251,7 @@ module Moon
         # @return [self]
         def validate
           each_field do |key, field|
-            field.check_type(key, send(key))
+            field.check_type(key, field_get(key))
           end
           self
         end

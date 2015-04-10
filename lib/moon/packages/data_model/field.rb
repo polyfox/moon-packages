@@ -51,6 +51,10 @@ module Moon
       end
 
       alias :allow_nil? :allow_nil
+
+      def self.default_proc
+        lambda { |klass, _| klass.new }
+      end
     end
   end
 end

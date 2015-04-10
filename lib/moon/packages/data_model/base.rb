@@ -1,7 +1,9 @@
-##
-# Based loosely off the RPG Maker RPG::BaseItem class
+require 'data_model/metal'
+
 module Moon
   module DataModel
+    ##
+    # Based loosely off the RPG Maker RPG::BaseItem class
     class Base < Metal
       # ID of the model
       # @!attribute id
