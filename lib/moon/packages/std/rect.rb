@@ -31,10 +31,10 @@ module Moon
     include Serializable
     include Serializable::Properties
 
-    property :x
-    property :y
-    property :w
-    property :h
+    add_property :x
+    add_property :y
+    add_property :w
+    add_property :h
 
     alias :initialize_xywh :initialize
     def initialize(*args)

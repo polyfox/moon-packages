@@ -4,10 +4,10 @@ module Moon
     include Serializable
     include Serializable::Properties
 
-    property :x
-    property :y
-    property :z
-    property :w
+    add_property :x
+    add_property :y
+    add_property :z
+    add_property :w
 
     def property_set(key, value)
       send "#{key}=", value
