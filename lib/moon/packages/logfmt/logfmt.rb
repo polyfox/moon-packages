@@ -1,13 +1,5 @@
 # Implementation of logfmt for Moon
 module Logfmt
-  class NullOut
-    def puts(*args, &block)
-    end
-    public :puts
-  end
-
-  NULLOUT = NullOut.new
-
   # Regular expression used for checking strings that may need escaping.
   # This regular expression will validate true if the string doesn't need
   # escaping.
@@ -95,5 +87,5 @@ module Logfmt
   end
 
   NullLogger = Logger.new
-  NullLogger.io = NULLOUT
+  NullLogger.io = NullIO::OUT
 end

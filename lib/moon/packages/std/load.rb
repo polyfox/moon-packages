@@ -30,3 +30,5 @@ require 'std/tree'
 # state
 require 'std/state_manager'
 require 'std/state'
+# io
+require 'std/io/null'

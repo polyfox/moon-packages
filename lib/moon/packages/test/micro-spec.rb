@@ -48,21 +48,6 @@ module Moon
         colorize(*args)
       end
     end
-
-    class NullOut
-      def write(*args, &block)
-      end
-
-      def print(*args, &block)
-      end
-
-      def puts(*args, &block)
-      end
-
-      def <<(*args, &block)
-      end
-    end
-
     class Log
       attr_reader :c
       attr_accessor :io
@@ -223,7 +208,7 @@ module Moon
         # spec log
         @log = Log.new
         # debug logger
-        @logger = NullOut.new
+        @logger = NullIO::OUT
         @name = name || "#{self.class}"
         @tests = []
         @test_stack = [@tests]
