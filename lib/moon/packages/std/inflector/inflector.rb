@@ -379,7 +379,11 @@ module Moon
       if word.empty? || inflections.uncountables.include?(result.downcase[/\b\w+\Z/])
         result
       else
-        rules.each { |(rule, replacement)| break if result.sub!(rule, replacement) }
+        rules.each do |pair|
+          # a little quirk with mruby not expanding arrays for block parameters
+          rule, replacement = *pair
+          break if result.sub!(rule, replacement)
+        end
         result
       end
     end
