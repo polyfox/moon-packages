@@ -1,7 +1,0 @@
----
-name: Linked Lists
-author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Utility library for creating Linked Lists
-require: _basalt.rb
-deps:
-  - std
