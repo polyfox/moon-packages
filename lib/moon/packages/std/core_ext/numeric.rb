@@ -1,15 +1,24 @@
 class Numeric
+  # Linear interpolation between self and target
+  #
+  # @param [Numeric] target
+  # @param [Float] d
+  # @return [Numeric]
   def lerp(target, d)
     self + (target - self) * d
   end
 
+  # Converts the number to a degree from radians
+  #
   # @return [Float]
   def to_degrees
-    57.2957795 * self
+    (57.2957795 * self).round
   end
 
+  # Converts the number to a radian from degrees
+  #
   # @return [Float]
-  def to_rads
+  def to_radians
     self / 57.2957795
   end
 
@@ -48,7 +57,7 @@ class Numeric
   # @param [Numeric] n
   # @return [Numeric]
   def min(n)
-    if n > self
+    if n < self
       n
     else
       self
@@ -56,14 +65,14 @@ class Numeric
   end
 
   #
-  # @param [Numeric] a
-  # @param [Numeric] b
+  # @param [Numeric] mn  the minimum
+  # @param [Numeric] mx  the maximum
   # @return [Numeric]
-  def clamp(a, b)
-    if self < a
-      a
-    elsif self > b
-      b
+  def clamp(mn, mx)
+    if self < mn
+      mn
+    elsif self > mx
+      mx
     else
       self
     end
