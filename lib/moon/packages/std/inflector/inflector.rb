@@ -1,5 +1,6 @@
 #encoding:UTF-8
 require 'std/inflector/inflections'
+require 'std/inflector/inflections/en'
 
 module Moon
   # Proudly stolen from:

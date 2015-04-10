@@ -1,4 +1,3 @@
 require 'std/inflector/inflector'
-require 'std/inflector/inflections'
-# for English inflections
-require 'std/inflector/inflections/en'
+# String and Integer patches
+require 'std/inflector/core_ext'
