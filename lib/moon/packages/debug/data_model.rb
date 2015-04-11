@@ -66,7 +66,7 @@ module Debug
       end
 
       def unindent
-        @indent_level = [@indent_level - 1, 0].max
+        @indent_level = (@indent_level - 1).max(0)
       end
 
       def indent

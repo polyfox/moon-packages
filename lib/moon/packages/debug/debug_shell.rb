@@ -88,12 +88,12 @@ class DebugShell < Moon::RenderContainer
   end
 
   def history_prev
-    @history_index = [@history_index - 1, 0].max
+    @history_index = (@history_index - 1).max(0)
     self.string = @history[@history_index]
   end
 
   def history_next
-    @history_index = [@history_index + 1, @history.size].min
+    @history_index = (@history_index + 1).min(@history.size)
     self.string = @history[@history_index]
   end
 
