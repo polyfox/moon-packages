@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'std/mixins/abstract'
 
 module Fixtures

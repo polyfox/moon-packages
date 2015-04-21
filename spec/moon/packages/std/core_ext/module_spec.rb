@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'std/core_ext/module'
 
 module Fixtures

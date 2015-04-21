@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'std/core_ext/random'
 
 describe Random do

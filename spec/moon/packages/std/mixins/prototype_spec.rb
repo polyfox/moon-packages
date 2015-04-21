@@ -1,3 +1,5 @@
+require 'spec_helper'
+require 'std/inflector'
 require 'std/inflector/core_ext/string'
 require 'std/mixins/prototype'
 
