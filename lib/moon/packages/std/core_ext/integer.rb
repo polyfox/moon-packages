@@ -1,12 +1,4 @@
 class Integer
-  def pred
-    self - 1
-  end unless method_defined?(:pred)
-
-  def round(*a)
-    to_f.round(*a)
-  end unless method_defined?(:round)
-
   def masked?(flag)
     if flag == 0
       self == 0
