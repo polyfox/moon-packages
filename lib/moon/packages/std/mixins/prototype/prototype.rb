@@ -1,5 +1,3 @@
-require 'std/inflector'
-
 module Moon
   module Prototype
     # @param [String, Symbol] singular_name
