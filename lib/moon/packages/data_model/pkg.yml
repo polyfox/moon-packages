@@ -1,7 +1,0 @@
----
-name: Data Model
-author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: Defines generic DataModel structures.
-require: _basalt.rb
-deps:
-  - std

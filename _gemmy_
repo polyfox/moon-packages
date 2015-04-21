@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-bundle update &&
-crawl_ruby_check . &&
-gemmy
