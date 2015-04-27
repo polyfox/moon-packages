@@ -1,6 +1,0 @@
----
-name: Logfmt
-author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
-description: A basic implementation of logfmt.
-require: _basalt.rb
-deps: []
