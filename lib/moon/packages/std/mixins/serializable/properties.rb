@@ -1,4 +1,4 @@
-require 'std/mixins/prototype'
+require 'moon-prototype/load'
 
 module Moon
   module Serializable
