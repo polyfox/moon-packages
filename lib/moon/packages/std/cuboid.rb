@@ -1,4 +1,4 @@
-require 'std/mixins/serializable'
+require 'moon-serializable/load'
 
 module Moon
   class Cuboid
