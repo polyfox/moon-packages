@@ -7,11 +7,11 @@ module Moon #:nodoc
       @name = name || self.class.to_s
       @cache = {}
 
-      post_init
+      post_initialize
     end
 
     # Hook function called at the end of initialize
-    def post_init
+    def post_initialize
       #
     end
 
