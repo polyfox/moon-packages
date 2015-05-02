@@ -8,4 +8,4 @@ CodeClimate::TestReporter.start
 SimpleCov.start
 
 require 'moon/packages'
-require 'std/inflector'
+require 'moon-inflector/load'

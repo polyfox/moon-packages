@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.authors     = ['Blaž Hrastnik', 'Corey Powell']
 
   s.add_dependency             'rake',    '~> 10.3'
+  s.add_dependency             'moon-inflector',    '~> 1.0'
   s.add_dependency             'moon-prototype',    '~> 1.0'
   s.add_dependency             'moon-serializable', '~> 1.0'
   s.add_development_dependency 'rubocop', '~> 0.27'

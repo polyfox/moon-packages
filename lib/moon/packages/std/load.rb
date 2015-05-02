@@ -1,8 +1,6 @@
 require 'std/err/abstract_method_error'
 require 'std/args_helper'
 require 'std/core_ext'
-# inflector
-require 'std/inflector'
 # mixins
 require 'std/mixins'
 # core
