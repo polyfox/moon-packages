@@ -13,6 +13,3 @@ These are scripts written for the [Moon Engine](https://github.com/archSeer/moon
 paths:
 - /path/to/this/lib/moon/packages
 ```
-
-## Credits
-Rails team for `std/inflection`, I copied it straight from active_support with a few moon-ly modifications.
