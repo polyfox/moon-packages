@@ -1,15 +1,25 @@
 module Moon
   class Transform
+    # Converts the Transform to a Hash.
+    #
+    # @return [Hash]
     def to_h
       {
         data: to_a
       }
     end
 
+    # Creates a valida Hash for serializing.
+    #
+    # @return [Hash]
     def export
       to_h.merge('&class' => self.class.to_s).stringify_keys
     end
 
+    # Imports data from an #export data set
+    #
+    # @param [Hash]
+    # @return [self]
     def import(data)
       dat = data['data']
       self[0] = dat[0, 4]
@@ -19,6 +29,7 @@ module Moon
       self
     end
 
+    #
     def self.load(data)
       new(*data['data'])
     end
