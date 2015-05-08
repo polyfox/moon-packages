@@ -1,5 +1,4 @@
 require 'std/core_ext/array'
-require 'std/core_ext/boolean'
 require 'std/core_ext/true_class'
 require 'std/core_ext/false_class'
 require 'std/core_ext/fixnum'

@@ -1,17 +1,6 @@
 require 'spec_helper'
-require 'std/core_ext/object'
-require 'std/core_ext/boolean'
 require 'std/core_ext/true_class'
 require 'std/core_ext/false_class'
-
-describe Boolean do
-  context '#to_bool' do
-    it 'should convert a object to a Boolean' do
-      expect(true.to_bool).to eq(true)
-      expect(false.to_bool).to eq(false)
-    end
-  end
-end
 
 describe FalseClass do
   it 'has no presence' do
