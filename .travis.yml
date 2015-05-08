@@ -1,7 +1,7 @@
 language: ruby
 addons:
   code_climate:
-    repo_token: 1aa9df8aaf02075a819e9b0006a0c60b8da050fe1b7cf34eb0ce68aafe9c6583
+    repo_token: 190bd6e20cb19f8f0d5e908a8b22dfab914602f1ac257c8cfdbd7322dd9a95db
 rvm:
 - 2.1
 - 2.2
