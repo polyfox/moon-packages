@@ -1,16 +1,6 @@
 class Object
   alias_method :public_send, :send unless method_defined?(:public_send)
 
-  # Attempts to duplicate the object, if the dup fails with a TypeError, self
-  # is returned instead.
-  #
-  # @return [Object, self]
-  def safe_dup
-    dup
-  rescue TypeError
-    self
-  end
-
   # Whether the object is valid or not, subclasses should overwrite this
   # method to denote their own `blank?` state.
   #

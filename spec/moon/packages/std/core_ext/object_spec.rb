@@ -27,14 +27,6 @@ module Fixtures
 end
 
 describe Object do
-  context '#safe_dup' do
-    it 'should safely duplicate an object' do
-      # numbers are not normally dup-able, so this should touch the rescue branch
-      expect(1.safe_dup).to eq(1)
-      expect('Foobar'.safe_dup).to eq('Foobar')
-    end
-  end
-
   context '#blank?' do
     it 'determines if an object is blank' do
       obj = Object.new
