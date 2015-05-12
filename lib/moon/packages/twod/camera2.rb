@@ -5,10 +5,10 @@ class Camera2 < CameraBase
 
   # @!attribute position
   #   @return [Moon::Vector2]
-  field :position, type: Moon::Vector2, default: proc{ |t| t.new }
+  field :position, type: Moon::Vector2, default: proc{ |t| t.model.new }
   # @!attribute tilesize
   #   @return [Moon::Vector2]
-  field :tilesize, type: Moon::Vector2, default: proc{ |t| t.new(32, 32) }
+  field :tilesize, type: Moon::Vector2, default: proc{ |t| t.model.new(32, 32) }
 
   ##
   # Returns the point offset in a 2D space

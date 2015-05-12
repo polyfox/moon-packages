@@ -5,5 +5,5 @@ class Cursor2 < Moon::DataModel::Metal
 
   # @!attribute position
   #   @return [Moon::Vector2]
-  field :position, type: Moon::Vector2, default: proc{ |t| t.new }
+  field :position, type: Moon::Vector2, default: proc{ |t| t.model.new }
 end
