@@ -14,7 +14,7 @@ class Camera3 < CameraBase
   # Returns the point offset in a 3D space
   #
   # @return [Moon::Vector3]
-  def view
+  def view_offset
     @position + @view.xyz
   end
 end

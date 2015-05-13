@@ -21,6 +21,8 @@ class CameraBase < Moon::DataModel::Metal
   # @abstract Subclass and overwrite using .field with a Moon::Vector* class
   abstract_attr_accessor :tilesize
 
+  abstract :view_offset
+
   ##
   # Camera should follow this object every update
   #
@@ -30,18 +32,21 @@ class CameraBase < Moon::DataModel::Metal
     puts "[Camera:follow] #{obj}"
   end
 
-  # @abstract
-  abstract :view
+  # @return [Vector]
+  def velocity(delta)
+    if @obj
+      (@obj.position * @tilesize - @position) * @speed * delta
+    else
+      0
+    end
+  end
 
-  ##
   # Frame update
   #
   # @param [Float] delta
   def update(delta)
     update_transitions delta
-    if @obj
-      @position += (@obj.position * @tilesize - @position) * @speed * delta
-    end
+    @position += velocity delta
     @ticks += 1
   end
 
@@ -49,20 +54,20 @@ class CameraBase < Moon::DataModel::Metal
   # @param [Moon::Vector2, Moon::Vector3] screen_pos
   # @return [Moon::Vector2, Moon::Vector3]
   def screen_to_world(screen_pos)
-    (view.floor + screen_pos) / @tilesize
+    (view_offset.floor + screen_pos) / @tilesize
   end
 
   ##
   # @param [Moon::Vector2, Moon::Vector3] screen_pos
   # @return [Moon::Vector2, Moon::Vector3]
   def screen_to_world_reduce(screen_pos)
-    screen_to_world(screen_pos).floor * @tilesize - view.floor
+    screen_to_world(screen_pos).floor * @tilesize - view_offset.floor
   end
 
   ##
   # @param [Moon::Vector2, Moon::Vector3] world_pos
   # @return [Moon::Vector2, Moon::Vector3]
   def world_to_screen(world_pos)
-    map_pos * @tilesize - view.floor
+    map_pos * @tilesize - view_offset.floor
   end
 end
