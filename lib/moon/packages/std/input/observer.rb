@@ -4,7 +4,7 @@ module Moon
       include Eventable
 
       def initialize
-        init_eventable
+        initialize_eventable
       end
 
       def clear

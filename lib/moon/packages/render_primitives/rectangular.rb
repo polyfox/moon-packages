@@ -109,7 +109,9 @@ module Moon
         #
       end
 
-      # Resize the object
+      # Resizes the container provided a w and h
+      # This will trigger a +ResizeEvent+.
+      #
       # @param [Integer] w  width
       # @param [Integer] h  height
       # @return [self]

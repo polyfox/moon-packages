@@ -111,6 +111,16 @@ module Moon
         # disable dragging
         @dragging = false if @draggable
       end
+
+      on Moon::MouseEvent do |event|
+        p = event.position
+        trigger MouseFocusedEvent.new(event, self, screen_bounds.contains?(p.x, p.y))
+      end
+
+      on Moon::MouseMoveEvent do |event|
+        p = event.position
+        trigger MouseHoverEvent.new(event, self, screen_bounds.contains?(p.x, p.y))
+      end
     end
 
     def on_resize(*attrs)
@@ -137,14 +147,15 @@ module Moon
       @w ||= compute_w
     end
 
-    ##
+    # Sets the containers w.
+    # This will trigger a +ResizeEvent+.
+    #
     # @param [Integer] w
     def w=(w)
       @w = w
       on_resize :w
     end
 
-    ##
     # @return [Integer]
     private def compute_h
       y = 0
@@ -158,13 +169,14 @@ module Moon
       y2 - y
     end
 
-    ##
     # @return [Integer]
     def h
       @h ||= compute_h
     end
 
-    ##
+    # Sets the containers h.
+    # This will trigger a +ResizeEvent+.
+    #
     # @param [Integer] h
     def h=(h)
       @h = h

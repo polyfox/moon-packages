@@ -28,7 +28,7 @@ module Moon
 
       init_from_options(options)
 
-      init_eventable
+      initialize_eventable
       init_content
       init_events
       init
@@ -36,6 +36,8 @@ module Moon
       if block_given?
         yield self
       end
+
+      puts "Created a #{self.class}"
     end
 
     private def init_members
@@ -107,20 +109,27 @@ module Moon
       update_transitions(delta)
     end
 
+    # Overwrite this method to define your own rendering, the coordinates
+    # provided are transformed to be the final position on screen.
+    #
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
-    # @abstract
-    private def render_content(x, y, z, options)
+    # @api public
+    def render_content(x, y, z, options)
       #
     end
 
+    # Renderable callback, this method applies the position_modifiers and
+    # finally cals {#render_content}
+    #
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
-    private def render_abs(x, y, z, options)
+    # @api private
+    def render_abs(x, y, z, options)
       px, py, pz = *apply_position_modifier(Moon::Vector3.new(x, y, z))
       render_content(px, py, pz, options)
       super

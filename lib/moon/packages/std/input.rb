@@ -33,7 +33,7 @@ module Moon
     end
 
     def on_mousemove(x, y)
-      trigger MouseMove.new(x, y, @engine.screen.rect)
+      trigger MouseMoveEvent.new(x, y, @engine.screen.rect)
     end
   end
 
