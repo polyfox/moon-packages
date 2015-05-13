@@ -38,8 +38,7 @@ module Moon
     end
 
     def refresh_size
-      self.w = @datasize.x * @tilesize.x
-      self.h = @datasize.y * @tilesize.y
+      resize @datasize.x * @tilesize.x, @datasize.y * @tilesize.y
     end
 
     def refresh_data
@@ -81,14 +80,14 @@ module Moon
       return unless @data
       return unless @tileset
 
-      cell_w  = @tilesize.x
+      cell_w = @tilesize.x
       cell_h = @tilesize.y
 
       dox = 0
       doy = 0
       doz = 0
-      w = @data.xsize
-      h = @data.ysize
+      cols = @data.xsize
+      rows = @data.ysize
       layers = @data.zsize
 
       vx  = nil
@@ -96,7 +95,8 @@ module Moon
       vy  = nil
       vy2 = nil
 
-      dox, doy, doz, w, h, layers = *@selection if @selection
+      dox, doy, doz, cols, rows, layers = *@selection if @selection
+
       if @view
         vx = @view.x
         vx2 = @view.x2
@@ -121,7 +121,7 @@ module Moon
         rnz = z
 
         # and then by row
-        h.times do |i|
+        rows.times do |i|
 
           dy = i + doy # offset data y index
           if @repeat_map
@@ -134,7 +134,7 @@ module Moon
           next if rny < vy || rny > vy2 if vy && vy2
 
           # and then render by cell
-          w.times do |j|
+          cols.times do |j|
 
             dx = j + dox # offset data x index
             if @repeat_map

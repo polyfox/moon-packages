@@ -103,13 +103,19 @@ module Moon
         self
       end
 
-      ##
+      # @param [Symbol] attrs  attributes modified
+      # @return [void]
+      def on_resize(*attrs)
+        #
+      end
+
       # Resize the object
-      # @param [Integer] w  w
-      # @param [Integer] h  h
+      # @param [Integer] w  width
+      # @param [Integer] h  height
       # @return [self]
       def resize(w, h)
         @w, @h = w, h
+        on_resize :w, :h
         self
       end
 

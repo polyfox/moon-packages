@@ -14,10 +14,6 @@ module Moon
     attr_accessor :align
     # @return [String]
     attr_reader   :string
-    # @return [Integer]
-    attr_reader   :w
-    # @return [Integer]
-    attr_reader   :h
     # @return [Float]
     attr_accessor :line_h
 
@@ -123,9 +119,9 @@ module Moon
           vec2.y += 2 # compensate for outline
           vec2
         end
-        @w, @h = *vec2.floor
+        resize(*vec2.floor)
       else
-        @w, @h = 0, 0
+        resize 0, 0
       end
     end
 

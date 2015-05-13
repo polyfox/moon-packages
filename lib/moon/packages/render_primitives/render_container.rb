@@ -7,7 +7,6 @@ module Moon
   # other RenderContainers or RenderContext objects, they serve the purpose
   # of constructing Render Trees
   class RenderContainer < RenderContext
-    include Enumerable
     # @return [Array<Moon::RenderContext>]
     attr_reader :elements
 
@@ -114,6 +113,10 @@ module Moon
       end
     end
 
+    def on_resize(*attrs)
+      trigger :resize
+    end
+
     ##
     # @return [Integer]
     private def compute_w
@@ -138,7 +141,7 @@ module Moon
     # @param [Integer] w
     def w=(w)
       @w = w
-      trigger :resize
+      on_resize :w
     end
 
     ##
@@ -165,7 +168,7 @@ module Moon
     # @param [Integer] h
     def h=(h)
       @h = h
-      trigger :resize
+      on_resize :h
     end
 
     ##
