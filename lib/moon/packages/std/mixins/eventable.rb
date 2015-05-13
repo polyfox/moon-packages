@@ -1,10 +1,14 @@
+require 'std/core_ext/array'
+require 'std/core_ext/symbolic'
+require 'std/event'
+
 module Moon
   module Eventable
     # Structure for holding event listener information.
     class Listener
-      # @!attribute [rw] event
-      #   @return [Class, Symbol] event
-      attr_accessor :event
+      # @!attribute [rw] type
+      #   @return [Class, Symbol] type
+      attr_accessor :type
 
       # @!attribute [rw] filter
       #   @return [Proc] used to determine if the event is valid.
@@ -14,14 +18,23 @@ module Moon
       #   @return [Proc] function to call when the Event is triggered
       attr_accessor :callback
 
-      # @param [Class] event
+      # @param [Class] type
       # @param [Proc] filter
       # @param [callback] callback
-      def initialize(event, filter, callback)
-        @event, @filter, @callback = event, filter, callback
+      def initialize(type, filter, callback)
+        @type, @filter, @callback = type, filter, callback
+      end
+
+      def invoke(event, obj)
+        return unless @filter.call(event)
+        @callback.call(event, obj)
       end
     end
 
+    # Creates a filter proc from the given args
+    #
+    # @param [Array] args
+    # @return [Proc]
     def self.filter_from_options(args)
       return ->(event) { true } if args.empty?
 
@@ -58,30 +71,87 @@ module Moon
       clear_events
     end
 
+    # Clears all event listeners
     def clear_events
       @typed_listeners = {}
       @classed_listeners = {}
     end
 
-    def each_listener
-      @typed_listeners.each do |key, value|
-        yield key, value
-      end
-      @classed_listeners.each do |klass, value|
-        yield klass, value
+    def each_typed_listener(type = nil, &block)
+      return to_enum(:each_typed_listener, type) unless block_given?
+      return if @typed_listeners.empty?
+      if type
+        if listeners = @typed_listeners[type]
+          listeners.each { |listener| block.call type, listener }
+        end
+      else
+        @typed_listeners.each do |key, listeners|
+          listeners.each { |listener| block.call key, listener }
+        end
       end
     end
 
-    # @param [Moon::Event] event
-    # @return [Boolean]
-    def allow_event?(event)
-      true
+    # @yieldparam [Symbol, Class, Event] event  event to filter with
+    # @yieldparam [Listener] listener
+    def each_listener(event = nil, &block)
+      return to_enum(:each_listener, event) unless block_given?
+      if event.is_a?(Event)
+        type = event.type
+      else
+        type = event
+        event = nil
+      end
+
+      each_typed_listener(type, &block)
+
+      unless @classed_listeners.empty?
+        @classed_listeners.each do |klass, listeners|
+          if event   then next unless klass === event
+          elsif type then next unless klass == type
+          end
+          listeners.each { |listener| block.call klass, listener }
+        end
+      end
+    end
+
+    # Used to retrieve the correct listeners for a event
+    # (either by Class or Symbol)
+    private def get_listeners_for_event(event)
+      if event.is_a?(Class)
+        @classed_listeners
+      else
+        @typed_listeners
+      end
+    end
+
+    # @param [Symbol] event
+    # @param [Hash] listener
+    # @return [Listener] listener
+    private def add_listener(event, listener)
+      listeners = get_listeners_for_event(event)
+      (listeners[event] ||= []).push(listener)
+      listener
+    end
+
+    # @!group Registration
+
+    # Removes the listeners listed
+    #
+    # @param [Array<Moon::Listener>] listeners
+    def off(*listeners)
+      listeners.each do |listener|
+        @classed_listeners.delete(listener.type)
+        @typed_listeners.delete(listener.type)
+      end
+      listeners
     end
 
     # Adds a new event listener.
     #
-    # @param [Symbol] keys The keys to listen for..
+    # @param [Symbol, Class<Event>] events  events to listen for
+    # @param [Object] args  extra options
     # @param [Proc] block The block we want to execute when we catch the type.
+    # @return [Listener]
     def on(events, *args, &block)
       filter = Eventable.filter_from_options(args)
 
@@ -97,57 +167,34 @@ module Moon
       listeners.singularize
     end
 
-    # Used to retrieve the correct listeners for a event
-    # (either by Class or Symbol)
-    private def get_listeners_for_event(event)
-      if event.is_a?(Class)
-        @classed_listeners
-      else
-        @typed_listeners
-      end
-    end
-
-    # @return [Symbol] event
-    # @return [Hash] listener
-    def add_listener(event, listener)
-      listeners = get_listeners_for_event(event)
-      (listeners[event] ||= []).push(listener)
-      listener
-    end
-
+    # Shortcut for `on :typing, &block`
+    #
+    # @return [Listener]
     def typing(&block)
       on(:typing, &block)
     end
+    # @!endgroup Registration
 
-    private def trigger_listeners(listeners, event)
-      listeners.each do |listener|
-        next unless listener.filter.call(event)
-        listener.callback.call(event, self)
-      end
-    end
-
-    private def trigger_typed_events(type, event)
-      return if @typed_listeners.empty?
-      (listeners = @typed_listeners[type]) && trigger_listeners(listeners, event)
-    end
-
-    private def trigger_classed_events(event)
-      return if @classed_listeners.empty?
-      @classed_listeners.each do |klass, listeners|
-        next unless klass === event
-        trigger_listeners(listeners, event)
-      end
-    end
-
-    private def trigger_event(type, event)
-      trigger_typed_events(type, event)
-      trigger_classed_events(event)
+    private def trigger_event(event)
+      each_listener(event) { |_, listener| listener.invoke(event, self) }
     end
 
     private def trigger_any(event)
-      trigger_event(:any, event)
+      each_typed_listener(:any) { |_, listener| listener.invoke(event, self) }
     end
 
+    # Does this Eventable allow the event?
+    #
+    # @param [Moon::Event] event
+    # @return [Boolean]
+    def allow_event?(event)
+      true
+    end
+
+    # Triggers an Event.
+    # For backwards compatability, trigger can also take a Symbol as an
+    # event, however, it will not trigger any Class based listeners.
+    #
     # @param [Event] event
     def trigger(event)
       event = Event.new(event) unless event.is_a?(Event)
@@ -155,7 +202,7 @@ module Moon
       return unless allow_event?(event)
 
       trigger_any(event)
-      trigger_event(event.type, event)
+      trigger_event(event)
     end
   end
 end

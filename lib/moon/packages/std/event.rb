@@ -48,15 +48,17 @@ module Moon
     #   @return [Integer] modifiers
     attr_accessor :mods
 
+    alias :button :key
+    alias :button= :key=
+
     # @param [Symbol] key
     # @param [Symbol] action
     # @param [Integer] mods
     def initialize(key, action, mods)
-      @action = action
+      super action
+      @type = @action = action
       @key = key
-
       @mods = mods
-      super @action
     end
 
     # Is the alt modifier active?
@@ -80,9 +82,15 @@ module Moon
     end
   end
 
+  # Common module for all Keyboard*Events
+  module KeyboardEvent
+  end
+
   class KeyboardTypingEvent < Event
+    include KeyboardEvent
+
+    attr_reader :action
     attr_accessor :char
-    attr_accessor :action
 
     def initialize(char)
       @char = char
@@ -91,10 +99,16 @@ module Moon
     end
   end
 
-  class KeyboardEvent < InputEvent
+  class KeyboardInputEvent < InputEvent
+    include KeyboardEvent
   end
 
-  class MouseEvent < InputEvent
+  module MouseEvent
+  end
+
+  class MouseInputEvent < InputEvent
+    include MouseEvent
+
     attr_accessor :action
     attr_accessor :position
     attr_accessor :relative
@@ -107,6 +121,8 @@ module Moon
   end
 
   class MouseMoveEvent < Event
+    include MouseEvent
+
     attr_accessor :screen_rect
     attr_accessor :position
     attr_accessor :relative
@@ -151,10 +167,10 @@ module Moon
     #   @return [Boolean] whether its hovering, or not
     attr_accessor :state
 
-    # @param [Event] event
-    # @param [RenderContainer] parent
-    # @param [Boolean] state
-    # @pa
+    # @param [Event] event  original event
+    # @param [RenderContainer] parent  parent object
+    # @param [Boolean] state  true or false
+    # @param [Symbol] type  the event type
     def initialize(event, parent, state, type)
       @state = state
       super event, parent, type
@@ -163,6 +179,8 @@ module Moon
 
   # Event triggered when the Mouse hovers over an Object.
   class MouseHoverEvent < WrappedStateEvent
+    include MouseEvent
+
     # @param [Event] event
     # @param [RenderContainer] parent
     # @param [Boolean] state  true if the mouse is hovering over the object,
@@ -174,6 +192,8 @@ module Moon
 
   # Event triggered when a Mouse click takes place inside an Object.
   class MouseFocusedEvent < WrappedStateEvent
+    include MouseEvent
+
     # @param [Event] event
     # @param [RenderContainer] parent
     # @param [Boolean] state  true if the mouse is focused on the object,

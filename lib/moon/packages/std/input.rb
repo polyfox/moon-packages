@@ -21,11 +21,11 @@ module Moon
     end
 
     def on_key(key, _, action, mods)
-      trigger KeyboardEvent.new(key, action, mods)
+      trigger KeyboardInputEvent.new(key, action, mods)
     end
 
     def on_button(button, action, mods)
-      trigger MouseEvent.new(button, action, mods, @mouse.position)
+      trigger MouseInputEvent.new(button, action, mods, @mouse.position)
     end
 
     def on_type(char)

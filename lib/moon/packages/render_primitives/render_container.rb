@@ -50,14 +50,14 @@ module Moon
       end
 
       on :mouseup do |event|
-        trigger :click if @last_mousedown_id == event.id
+        trigger MouseClickEvent.new if @last_mousedown_id == event.id
       end
 
       # double clicks (click distance was max 500ms)
       on :click do |event|
         now = Moon::Screen.uptime
         if now - @last_click_at < 0.500
-          trigger :dblclick
+          trigger MouseDoubleClickEvent.new
           # reset the distance, so we can't trigger
           #consecutive double clicks with a single click
           @last_click_at = 0.0
@@ -124,7 +124,7 @@ module Moon
     end
 
     def on_resize(*attrs)
-      trigger :resize
+      trigger ResizeEvent.new(self)
     end
 
     ##
