@@ -5,3 +5,4 @@ description: Moon standard entity system.
 require: _basalt.rb
 deps:
   - std
+  - data_model
