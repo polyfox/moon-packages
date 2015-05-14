@@ -52,17 +52,14 @@ module Moon
         # on the other hand, adv_events expected a Hash with key value pairs
         # to check against the event's attributes
 
+        if opts.is_a?(Hash)
+          # if the user provided an options hash, with a filter key, treat
+          # as the filter, otherwise, make a filter using the provided options
+          opts.fetch(:filter) { Event.make_filter(opts) }
         # if the user provided a Proc as the argument, then treat it as
         # the filter
-        if opts.is_a?(Proc)
-          opts
-        # if the user provided an options hash, with a filter key, treat
-        # as the filter
-        elsif f = opts[:filter]
-          f
-        # otherwise, make a filter using the provided options
         else
-          Event.make_filter(opts)
+          opts
         end
       end
     end
