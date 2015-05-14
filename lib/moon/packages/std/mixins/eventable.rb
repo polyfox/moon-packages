@@ -56,9 +56,8 @@ module Moon
           # if the user provided an options hash, with a filter key, treat
           # as the filter, otherwise, make a filter using the provided options
           opts.fetch(:filter) { Event.make_filter(opts) }
-        # if the user provided a Proc as the argument, then treat it as
-        # the filter
         else
+          # otherwise, the object is treated as something callable
           opts
         end
       end
