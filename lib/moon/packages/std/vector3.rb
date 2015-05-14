@@ -1,8 +1,8 @@
 module Moon
   class Vector3
     include Comparable
-    include Serializable
     include Serializable::Properties
+    include Serializable
 
     add_property :x
     add_property :y

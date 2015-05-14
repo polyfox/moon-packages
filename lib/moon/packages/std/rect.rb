@@ -28,8 +28,8 @@ module Moon
       end
     end
 
-    include Serializable
     include Serializable::Properties
+    include Serializable
 
     add_property :x
     add_property :y

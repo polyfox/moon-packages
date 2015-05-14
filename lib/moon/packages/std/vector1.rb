@@ -1,8 +1,8 @@
 module Moon
   class Vector1
     include Comparable
-    include Serializable
     include Serializable::Properties
+    include Serializable
 
     add_property :x
 
@@ -32,16 +32,6 @@ module Moon
     # @return [Hash<Symbol, Float>]
     def to_h
       { x: x }
-    end
-
-    # @return [Integer]
-    def to_i
-      x.to_i
-    end
-
-    # @return [Float]
-    def to_f
-      x.to_f
     end
 
     # @return [String]

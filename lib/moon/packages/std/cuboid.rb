@@ -40,8 +40,8 @@ module Moon
       end
     end
 
-    include Serializable
     include Serializable::Properties
+    include Serializable
 
     # @return [Integer]
     property_accessor :x

@@ -25,8 +25,8 @@ module Moon
     end
 
     include NData
-    include Serializable
     include Serializable::Properties
+    include Serializable
     include MatrixLike
 
     # @!group Properties
