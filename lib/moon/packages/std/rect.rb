@@ -130,17 +130,6 @@ module Moon
       { x: x, y: y, w: w, h: h }
     end
 
-    def property_get(key)
-      send key
-    end
-
-    #
-    # @param [String] key
-    # @param [Integer] value
-    def property_set(key, value)
-      send "#{key}=", value
-    end
-
     def x2
       x + w
     end

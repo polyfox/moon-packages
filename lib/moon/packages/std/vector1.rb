@@ -6,14 +6,6 @@ module Moon
 
     add_property :x
 
-    def property_set(key, value)
-      send "#{key}=", value
-    end
-
-    def property_get(key)
-      send key
-    end
-
     # @return [Float]
     def sum
       x
@@ -53,14 +45,6 @@ module Moon
       case index
       when :x, 'x', 0 then self.x = value
       end
-    end
-
-    def property_get(key)
-      send key
-    end
-
-    def property_set(key, value)
-      send "#{key}=", value
     end
   end
 end

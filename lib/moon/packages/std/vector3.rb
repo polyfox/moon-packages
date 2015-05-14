@@ -8,14 +8,6 @@ module Moon
     add_property :y
     add_property :z
 
-    def property_set(key, value)
-      send "#{key}=", value
-    end
-
-    def property_get(key)
-      send key
-    end
-
     # @return [Float]
     def sum
       x + y + z
