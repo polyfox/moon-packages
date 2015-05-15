@@ -30,23 +30,23 @@ module Moon
     include MatrixLike
 
     # @!group Properties
-    # @!attribute [r] xsize
+    # @!attribute xsize
     #   @return [Integer] number of columns in the matrix
-    property_reader :xsize
-    # @!attribute [r] ysize
+    property_accessor :xsize
+    # @!attribute ysize
     #   @return [Integer] number of rows in the matrix
-    property_reader :ysize
-    # @!attribute [r] zsize
+    property_accessor :ysize
+    # @!attribute zsize
     #   @return [Integer] number of layers in the matrix
-    property_reader :zsize
-    # @!attribute [r] size
+    property_accessor :zsize
+    # @!attribute size
     #   @return [Integer] xsize * ysize * zsize
-    property_reader :size
-    # @!attribute [r] data
+    property_accessor :size
+    # @!attribute data
     #   @return [Array<Integer>] underlaying Array of data
     #   @api
-    property_reader :data
-    # @!attribute [rw] default
+    property_accessor :data
+    # @!attribute default
     #   @return [Integer]
     property_accessor :default
     # @!endgroup

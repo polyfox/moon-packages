@@ -14,19 +14,19 @@ module Moon
     include Tabular
 
     # @!group Properties
-    # @attribute [r] xsize
+    # @attribute xsize
     #   @return [Integer]
-    property_reader :xsize
-    # @attribute [r] ysize
+    property_accessor :xsize
+    # @attribute ysize
     #   @return [Integer]
-    property_reader :ysize
-    # @attribute [r] size
+    property_accessor :ysize
+    # @attribute size
     #   @return [Integer]
-    property_reader :size
-    # @attribute [r] data
+    property_accessor :size
+    # @attribute data
     #   @return [Array<Integer>]
     # @api
-    property_reader :data
+    property_accessor :data
     # @attribute default
     #   @return [Integer]
     property_accessor :default
