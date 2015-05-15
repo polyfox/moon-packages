@@ -233,6 +233,10 @@ module MicroJSON
     class InvalidNumeric < ReadError
     end
 
+    def initialize(options)
+      @options = options
+    end
+
     # Skips all characters in the stream until a newline or the end
     # is encountered.
     #
@@ -280,6 +284,7 @@ module MicroJSON
         end
       end
       raise UnexpectedEnd, 'Unexpected end of string.' unless end_found
+      s = s.slice(1, s.length - 1).to_sym if @options[:symbols] && s.start_with?(':')
       s
     end
 
@@ -326,9 +331,10 @@ module MicroJSON
       base = 10
       n = ''
       f = false # is float
-      case c = cur.char
-      when '-', '+'
-        n << c
+      neg = false
+      if cur.char == '-' || cur.char == '+'
+        n << cur.char
+        cur.next
       end
       until cur.eos?
         case c = cur.char
