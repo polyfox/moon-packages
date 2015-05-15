@@ -1,3 +1,5 @@
+require 'std/mixins/transition_host'
+
 module Moon
   module Transitionable
     ### mixins

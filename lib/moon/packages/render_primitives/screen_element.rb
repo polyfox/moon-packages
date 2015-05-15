@@ -1,10 +1,11 @@
-# I can be shot for this afterwards...
+require 'render_primitives/rectangular'
+
 module Moon
   module RenderPrimitive
+    # I can be shot for this afterwards...
     module ScreenElement
       include Rectangular
 
-      ##
       # Convert a screen position to a relative position in the Container
       #
       # @overload screen_to_relative(x, y)
@@ -20,7 +21,6 @@ module Moon
         vec2
       end
 
-      ##
       # Convert a relative position in the Container to a screen position
       #
       # @overload relative_to_screen(x, y)
@@ -36,7 +36,6 @@ module Moon
         vec2
       end
 
-      ##
       # Determines if position is inside the Container
       #
       # @overload contains_pos?(x, y)
@@ -50,7 +49,6 @@ module Moon
         px.between?(x, x2) && py.between?(y, y2)
       end
 
-      ##
       # Determines if position is inside the Container relatively
       #
       # @overload contains_pos?(x, y)

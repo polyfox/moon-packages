@@ -1,3 +1,5 @@
+require 'std/core_ext/object'
+
 module Moon
   # Option is a container object for optional values, its main operation is map.
   class Option
@@ -24,7 +26,7 @@ module Moon
     def map(method_name = nil, *args, &block)
       return if blank?
       if method_name
-        @value = @value.send(method_name, *args, &block)
+        @value = @value.public_send(method_name, *args, &block)
       else
         @value = block.call @value
       end
