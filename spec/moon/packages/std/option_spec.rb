@@ -11,17 +11,23 @@ describe Moon::Option do
   end
 
   context '#map' do
-    it 'should eval and replace if it has a non-blank value' do
+    it 'evals and replaces if it has a non-blank value' do
       my_value = 'Hello World :3'
       opt = described_class.new(my_value)
       opt.map { |v| v.reverse }
       expect(opt.value).to eq(my_value.reverse)
     end
 
-    it 'should not replace, if it has a blank value' do
+    it 'does not replace if it has a blank value' do
       opt = described_class.new(nil)
       opt.map { |v| 'Egg' }
       expect(opt.value).to be_nil
+    end
+
+    it 'can accept a method_name instead of block' do
+      opt = described_class.new('I Am A Cow')
+      opt.map(:size)
+      expect(opt.value).to eq(10)
     end
   end
 

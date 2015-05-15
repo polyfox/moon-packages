@@ -21,24 +21,53 @@ describe Numeric do
   end
 
   context '#max' do
-    it 'should cap self at max' do
+    it 'caps self at max' do
       expect(1.max(0)).to eq(1)
       expect(2.max(3)).to eq(3)
     end
   end
 
   context '#min' do
-    it 'should cap self at min' do
+    it 'caps self at min' do
       expect(1.min(0)).to eq(0)
       expect(2.min(3)).to eq(2)
     end
   end
 
   context '#clamp' do
-    it 'should clamp values in range' do
+    it 'clamps values in range' do
       expect(12.clamp(0, 8)).to eq(8)
       expect(1.clamp(2, 8)).to eq(2)
       expect(3.clamp(2, 8)).to eq(3)
+    end
+  end
+
+  # vector methods
+  context '#to_vec1' do
+    it 'converts self to a Vector1' do
+      v = 1.to_vec1
+      expect(v).to be_instance_of(Moon::Vector1)
+    end
+  end
+
+  context '#to_vec2' do
+    it 'converts self to a Vector2' do
+      v = 1.to_vec2
+      expect(v).to be_instance_of(Moon::Vector2)
+    end
+  end
+
+  context '#to_vec3' do
+    it 'converts self to a Vector3' do
+      v = 1.to_vec3
+      expect(v).to be_instance_of(Moon::Vector3)
+    end
+  end
+
+  context '#to_vec4' do
+    it 'converts self to a Vector1' do
+      v = 1.to_vec4
+      expect(v).to be_instance_of(Moon::Vector4)
     end
   end
 end
