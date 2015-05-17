@@ -8,7 +8,7 @@ module Moon
 
     ##
     #
-    private def init_content
+    private def initialize_content
       super
       @horz = true
       @windowskin = nil

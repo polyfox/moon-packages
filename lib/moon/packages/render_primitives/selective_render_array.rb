@@ -7,7 +7,7 @@ module Moon
     #
     private def init
       super
-      init_index
+      initialize_index
     end
 
     ##

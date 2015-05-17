@@ -22,7 +22,7 @@ module Moon
 
     ##
     # :nodoc:
-    private def init_index
+    private def initialize_index
       @index = 0
     end
 

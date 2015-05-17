@@ -30,25 +30,33 @@ module Moon
     # @param [Hash<Symbol, Object>] options
     #   @optional
     def initialize(options = {})
-      init_data_attrs
+      pre_initialize
+      initialize_data_attrs
 
-      init_members
+      initialize_members
 
-      init_from_options(options)
+      initialize_from_options(options)
 
       initialize_eventable
-      init_content
-      init_events
+      initialize_content
+      initialize_events
       init
 
       if block_given?
         yield self
       end
 
+      post_initialize
       puts "Created a #{self.class}"
     end
 
-    private def init_members
+    def pre_initialize
+    end
+
+    def post_initialize
+    end
+
+    private def initialize_members
       @id = @@context_id += 1
 
       @w = 0
@@ -59,7 +67,7 @@ module Moon
     end
 
     # @param [Hash<Symbol, Object>] options
-    private def init_from_options(options)
+    private def initialize_from_options(options)
       @position = options.fetch(:position) { Vector3.new(0, 0, 0) }
       @visible  = options.fetch(:visible, true)
       @w    = options.fetch(:w,   0)
@@ -81,16 +89,16 @@ module Moon
 
     # @return [Boolean]
     def render?
-      @visible
+      visible?
     end
 
     # @abstract
-    private def init_content
+    private def initialize_content
       #
     end
 
     # @abstract
-    private def init_events
+    private def initialize_events
       #
     end
 

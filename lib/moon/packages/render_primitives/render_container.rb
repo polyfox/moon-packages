@@ -12,27 +12,27 @@ module Moon
 
     ##
     # @param [Hash<Symbol, Object>] options
-    private def init_from_options(options)
+    private def initialize_from_options(options)
       super
       @elements = options.fetch(:elements) { [] }
     end
 
     ##
     #
-    private def init_content
+    private def initialize_content
       super
-      init_elements
+      initialize_elements
     end
 
     ##
     # @abstract
-    private def init_elements
+    private def initialize_elements
       #
     end
 
     ##
     #
-    private def init_events
+    private def initialize_events
       super
       # generic event passing callback
       # this callback will trigger the passed event in the children elements
