@@ -28,14 +28,14 @@ class CameraBase < Moon::DataModel::Metal
   #
   # @param [#position] obj
   def follow(obj)
-    @obj = obj
+    self.obj = obj
     puts "[Camera:follow] #{obj}"
   end
 
   # @return [Vector]
   def velocity(delta)
-    if @obj
-      (@obj.position * @tilesize - @position) * @speed * delta
+    if obj
+      (obj.position * tilesize - position) * speed * delta
     else
       0
     end
@@ -46,28 +46,28 @@ class CameraBase < Moon::DataModel::Metal
   # @param [Float] delta
   def update(delta)
     update_transitions delta
-    @position += velocity delta
-    @ticks += 1
+    self.position += velocity delta
+    self.ticks += 1
   end
 
   ##
   # @param [Moon::Vector2, Moon::Vector3] screen_pos
   # @return [Moon::Vector2, Moon::Vector3]
   def screen_to_world(screen_pos)
-    (view_offset.floor + screen_pos) / @tilesize
+    (view_offset.floor + screen_pos) / tilesize
   end
 
   ##
   # @param [Moon::Vector2, Moon::Vector3] screen_pos
   # @return [Moon::Vector2, Moon::Vector3]
   def screen_to_world_reduce(screen_pos)
-    screen_to_world(screen_pos).floor * @tilesize - view_offset.floor
+    screen_to_world(screen_pos).floor * tilesize - view_offset.floor
   end
 
   ##
   # @param [Moon::Vector2, Moon::Vector3] world_pos
   # @return [Moon::Vector2, Moon::Vector3]
   def world_to_screen(world_pos)
-    map_pos * @tilesize - view_offset.floor
+    tilesize * world_pos - view_offset.floor
   end
 end
