@@ -73,6 +73,10 @@ module Moon
       @classed_listeners = {}
     end
 
+    # @param [Class, Symbol] type
+    # @yieldparam [Class, Symbol] type
+    # @yieldparam [Listener] listener
+    # @return [Enumerator] unless a block is given
     def each_typed_listener(type = nil, &block)
       return to_enum(:each_typed_listener, type) unless block_given?
       return if @typed_listeners.empty?
@@ -108,6 +112,11 @@ module Moon
           listeners.each { |listener| block.call klass, listener }
         end
       end
+    end
+
+    # @return [Boolean] are there any active event listeners?
+    def has_events?
+      !@classed_listeners.empty? || !@typed_listeners.empty?
     end
 
     # Used to retrieve the correct listeners for a event
@@ -192,7 +201,9 @@ module Moon
     # event, however, it will not trigger any Class based listeners.
     #
     # @param [Event] event
-    def trigger(event)
+    def trigger(event = nil)
+      return unless has_events?
+      event = yield self if block_given?
       event = Event.new(event) unless event.is_a?(Event)
 
       return unless allow_event?(event)
