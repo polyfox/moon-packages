@@ -1,3 +1,6 @@
+require 'std/mixins/activatable'
+require 'std/mixins/eventable'
+
 module Moon
   class Scheduler
     module Jobs
@@ -5,6 +8,7 @@ module Moon
       # for custom user jobs, as long as they implement the basic methods
       # for the job API, (#update, #done?).
       class Base
+        include Moon::Eventable
         include Moon::Activatable
 
         # @return [String]
