@@ -1,66 +1,41 @@
+require 'scheduler/jobs/timed_process'
+
 module Moon
-  class Transition
-    ### class variables
-    @@id = 0
-
+  class Transition < Scheduler::Jobs::TimedProcess
     ### instance attributes
-    attr_accessor :key
     attr_accessor :easer
-    attr_accessor :src
-    attr_accessor :dest
-    attr_reader :id
-    attr_reader :time
-    attr_reader :duration
 
-    ###
-    # initialize(src, dest, duration) { |value| transition_callback }
     # @param [Object] src
     # @param [Object] dest
-    # @param [Float] duration  in seconds
-    # @return [Void]
-    ###
-    def initialize(src, dest, duration, easer=Easing::Linear, &block)
-      @id = @@id += 1
-      @key = nil
+    # @param [String, Numeric] duration
+    # @param [#call] easer
+    def initialize(src, dest, duration, easer = Easing::Linear, &block)
+      super(duration, &block)
+      setup(src, dest, easer)
+    end
+
+    # @param [Object] src
+    # @param [Object] dest
+    # @param [#call] easer
+    # @return [self]
+    def setup(src, dest, easer = Easing::Linear)
       @src = src
       @dest = dest
-      @time = 0.0
-      @duration = TimeUtil.to_duration(duration)
       @easer = easer
-      @callback = block
+      self
     end
 
-    ###
-    # @return [Boolean]
-    ###
-    def done?
-      @time >= @duration
-    end
-
-    ###
-    # @return [Void]
-    ###
-    def refresh
-      @callback.call(@src + (@dest - @src) * @easer.call(@time / @duration))
-    end
-
-    ###
     # @param [Float] delta
-    # @return [Void]
-    ###
-    def update(delta)
-      return if done?
-      @time += delta
-      @time = @duration if @time > @duration
-      refresh
+    # @return [void]
+    def update_ease(delta)
+      time_inv = (@duration - @time).clamp(0, @duration)
+      @callback.call(@src + (@dest - @src) * @easer.call(time_inv / @duration))
     end
 
-    ###
-    # @return [Void]
-    ###
-    def finish
-      @time = @duration
-      refresh
+    # @param [Float] delta
+    # @return [void]
+    def update_job_step(delta)
+      update_ease delta
     end
   end
 end
