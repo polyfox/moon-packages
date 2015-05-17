@@ -2,14 +2,11 @@ module Moon
   # Mixin for marking objects as active, as to what active means, depends on the
   # object.
   module Activatable
-    # @return [Boolean] active  is the object active?
-    attr_accessor :active
-
     # Sets active to true
     #
     # @return [self]
     def activate
-      @active = true
+      self.active = true
       self
     end
 
@@ -17,10 +14,12 @@ module Moon
     #
     # @return [self]
     def deactivate
-      @active = false
+      self.active = false
       self
     end
 
-    alias :active? :active
+    def active?
+      !!active
+    end
   end
 end

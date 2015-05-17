@@ -7,12 +7,18 @@ module Moon
   class Scheduler
     include Moon::Activatable
 
+    # @!attribute [rw] active
+    # @return [Boolean] active  is the object active?
+    attr_accessor :active
+
     # @!attribute [rw] jobs
     #   @return [Array<Moon::Scheduler::Job::Base*>]
     attr_accessor :jobs
+
     # @!attribute [r] uptime
     #   @return [Float] uptime  how long the scheduler has been running in seconds.
     attr_reader :uptime
+
     # @!attribute [r] ticks
     #   @return [Integer] ticks  how many times has the scheduler updated.
     attr_reader :ticks

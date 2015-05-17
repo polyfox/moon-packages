@@ -11,6 +11,10 @@ module Moon
         include Moon::Eventable
         include Moon::Activatable
 
+        # @!attribute [rw] active
+        # @return [Boolean] active  is the object active?
+        attr_accessor :active
+
         # @return [String]
         attr_reader :id
 
