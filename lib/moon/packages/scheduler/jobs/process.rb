@@ -1,3 +1,5 @@
+require 'scheduler/jobs/base'
+
 module Moon
   class Scheduler
     module Jobs
@@ -7,8 +9,8 @@ module Moon
       # To stop a process, simply #kill it.
       class Process < Base
         # @param [Float] delta
-        def update_frame(delta)
-          trigger(delta, self)
+        def update_job(delta)
+          trigger_callback(delta, self)
         end
       end
     end

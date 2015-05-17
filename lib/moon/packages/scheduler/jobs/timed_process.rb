@@ -1,20 +1,24 @@
+require 'scheduler/jobs/time_base'
+
 module Moon
   class Scheduler
     module Jobs
       # TimedProcess jobs are similar to Processes, they will run over their
-      # provided duration, however, once complete they will execute their
-      # on_done callback.
+      # provided duration.
       class TimedProcess < TimeBase
-        attr_accessor :on_done
+        class DoneEvent < Moon::Event
+          def initialize
+            super :done
+          end
+        end
 
         def on_timeout
-          @on_done.call if @on_done
+          trigger DoneEvent.new
         end
 
         # @param [Float] delta
-        def update_frame(delta)
-          trigger(delta, self)
-          super
+        def update_job_step(delta)
+          trigger_callback delta, self
         end
       end
     end

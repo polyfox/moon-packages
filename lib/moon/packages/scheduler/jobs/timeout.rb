@@ -1,3 +1,5 @@
+require 'scheduler/jobs/time_base'
+
 module Moon
   class Scheduler
     module Jobs
@@ -12,12 +14,12 @@ module Moon
         #
         # @return [Boolean]
         def done?
-          @time <= 0 && @triggered
+          timeout? && @triggered
         end
 
         # When time reaches 0 or less
         def on_timeout
-          trigger
+          trigger_callback
           @triggered = true
           deactivate
         end

@@ -13,18 +13,24 @@ module Moon
 
         # @return [String]
         attr_reader :id
+
         # How long has this job been running?
         # @return [Float]
         attr_reader :uptime
+
         # @return [Boolean]
         attr_reader :killed
 
+        # @return [Object]
+        attr_accessor :key
+
         def initialize(&block)
+          @callback = block
           @id = Random.random.base64(16)
           @active = true
-          @callback = block
           @killed = false
           @uptime = 0.0
+          initialize_eventable
         end
 
         # Is this job done?
@@ -35,7 +41,7 @@ module Moon
         end
 
         # Calls the callback
-        def trigger(*args)
+        def trigger_callback(*args)
           @callback.call(*args) if @callback
         end
 
@@ -44,21 +50,27 @@ module Moon
         #
         # @param [Float] delta
         # @abstract
-        def update_frame(delta)
+        def update_job(delta)
           #
         end
 
         # @param [Float] delta
         def update(delta)
           return unless active?
-          update_frame(delta)
+          update_job(delta)
+          @uptime += delta
         end
 
         # Sets the killed flag
+        #
+        # @return [self]
         def kill
           @killed = true
+          self
         end
 
+        # Was the job killed?
+        #
         # @return [Boolean]
         def killed?
           @killed

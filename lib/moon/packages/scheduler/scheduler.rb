@@ -4,8 +4,6 @@ module Moon
   # a #done? and #update can be used.
   # Adding a new job is done via #add, when a job is #done?, it will be removed
   # from the list of jobs, no further operations are done on the done job.
-  # If you wish to have something like a on_done callback, implement it in
-  # the job.
   class Scheduler
     include Moon::Activatable
 
@@ -57,6 +55,14 @@ module Moon
     # @return [Object] the job removed
     def remove_by_id(id)
       @jobs.delete { |job| job.id == id }
+    end
+
+    # Removes jobs by key.
+    #
+    # @param [Object] key
+    # @return [Array] the jobs removed
+    def remove_by_key(key)
+      @jobs.reject! { |job| job.key == key }
     end
 
     # Kill all active jobs.

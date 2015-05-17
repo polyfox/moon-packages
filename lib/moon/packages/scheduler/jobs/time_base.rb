@@ -1,3 +1,5 @@
+require 'scheduler/jobs/base'
+
 module Moon
   class Scheduler
     module Jobs
@@ -5,18 +7,29 @@ module Moon
       class TimeBase < Base
         # @return [Float]
         attr_reader :time
+
         # @return [Float]
         attr_reader :duration
 
         # @param [Float, String] duration
         def initialize(duration, &block)
-          @time = @duration = TimeUtil.to_duration(duration)
+          @time = self.duration = TimeUtil.to_duration(duration)
           super(&block)
+        end
+
+        # @param [String, Numeric] dur  duration
+        def duration=(dur)
+          @duration = TimeUtil.to_duration(dur)
+        end
+
+        # @return [Boolean]
+        def timeout?
+          @time <= 0
         end
 
         # @return [Boolean]
         def done?
-          @killed || @time <= 0
+          killed? || timeout?
         end
 
         # @return [Float]
@@ -33,9 +46,13 @@ module Moon
         private :on_timeout
 
         # @param [Float] delta
-        def update_frame(delta)
-          super
+        def update_job_step(delta)
+        end
+
+        # @param [Float] delta
+        def update_job(delta)
           @time -= delta
+          update_job_step(delta)
           on_timeout if @time <= 0
         end
 
@@ -50,8 +67,9 @@ module Moon
           @time += @duration
         end
 
-        # Finish will force the job to stop, and call its callback,
-        # use #stop instead if you only wish to end the time only.
+        # Finish will force the job to stop, and call {#on_timeout},
+        # use {#stop} instead if you only wish to end the job only, without
+        # calling {#on_timeout}
         def finish
           stop
           on_timeout

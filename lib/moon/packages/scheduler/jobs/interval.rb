@@ -1,3 +1,5 @@
+require 'scheduler/jobs/time_base'
+
 module Moon
   class Scheduler
     module Jobs
@@ -7,19 +9,20 @@ module Moon
       class Interval < TimeBase
         # @return [Boolean]
         def done?
-          @killed
+          killed?
         end
 
         # When time reaches 0 or less
         def on_timeout
+          # since its possible that the timestep will be too large, it needs
+          # to re-trigger the callback until the @time is greater than 0
           until @time > 0
-            trigger
+            trigger_callback
             restart
           end
         end
 
-        # Force end the interval
-        # Intervals do nothing on #finish
+        # Force end the interval, intervals can't "finish"
         def finish
           #
         end
