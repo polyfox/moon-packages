@@ -169,7 +169,7 @@ module Moon
 
     # @return [self]
     def map_with_xyz
-      each_with_xyz do |n, x, y, z|
+      iter.each_with_xyz do |n, x, y, z|
         index = x + y * @xsize + z * @xsize * @ysize
         @data[index] = yield n, x, y, z
       end
