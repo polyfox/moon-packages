@@ -16,7 +16,7 @@ module Moon
 
     def trigger(event)
       channels.each do |channel|
-        channel.trigger event
+        channel.call event
       end
     end
 

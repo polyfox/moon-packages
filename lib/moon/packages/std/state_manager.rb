@@ -9,9 +9,15 @@ module Moon
     def initialize(engine)
       @engine = engine
       @states = []
+
+      setup_input
     end
 
-    ##
+    def setup_input
+      callback = ->(event) { current.input.trigger event if current }
+      @engine.input.register(callback)
+    end
+
     # Is the State in debug mode?
     def debug
       yield
@@ -22,7 +28,6 @@ module Moon
       @states.empty?
     end
 
-    ##
     # @return [State]
     def current
       @states.last
@@ -60,7 +65,7 @@ module Moon
     #
     # @return [State, nil]
     private def eject_last
-      if !@states.empty?
+      unless @states.empty?
         @states.last.terminate
         @states.pop
       end
