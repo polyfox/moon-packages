@@ -20,6 +20,9 @@ module Moon
     include RenderPrimitive::Rectangular                 # RenderPrimitive Core
     include RenderPrimitive::DataAttributes              # RenderPrimitive Core
 
+    # @return [Boolean]
+    attr_accessor :visible
+
     # @return [Integer] id counter
     @@context_id = 0
 

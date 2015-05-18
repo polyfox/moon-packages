@@ -1,14 +1,7 @@
-# :nodoc:
 module Moon
-  # :nodoc:
   module RenderPrimitive
-    ##
     # Visibility control
     module Visibility
-      # @return [Boolean]
-      attr_accessor :visible
-
-      ##
       # Is this visible?
       #
       # @return [Boolean]
@@ -16,7 +9,6 @@ module Moon
         !!@visible
       end
 
-      ##
       # Is this invisible?
       #
       # @return [Boolean]
@@ -24,7 +16,6 @@ module Moon
         !@visible
       end
 
-      ##
       # Sets visible to false
       #
       # @return [self]
@@ -33,7 +24,6 @@ module Moon
         self
       end
 
-      ##
       # Sets visible to true
       #
       # @return [self]
