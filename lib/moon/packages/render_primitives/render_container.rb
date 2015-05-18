@@ -113,12 +113,14 @@ module Moon
         @dragging = false if @draggable
       end
 
-      on Moon::MouseEvent do |event|
-        p = event.position
-        trigger MouseFocusedEvent.new(event, self, screen_bounds.contains?(p.x, p.y))
+      on :press, :repeat do |event|
+        if event.is_a?(MouseEvent)
+          p = event.position
+          trigger MouseFocusedEvent.new(event, self, screen_bounds.contains?(p.x, p.y))
+        end
       end
 
-      on Moon::MouseMoveEvent do |event|
+      on :mousemove do |event|
         p = event.position
         trigger MouseHoverEvent.new(event, self, screen_bounds.contains?(p.x, p.y))
       end
