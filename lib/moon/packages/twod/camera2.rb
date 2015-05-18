@@ -15,6 +15,6 @@ class Camera2 < CameraBase
   #
   # @return [Moon::Vector2]
   def view_offset
-    @position + @view.xy
+    @position + @view.position
   end
 end

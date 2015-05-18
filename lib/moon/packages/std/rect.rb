@@ -1,3 +1,6 @@
+require 'std/core_ext/array'
+require 'moon-serializable/load'
+
 module Moon
   class Rect
     module Cast
@@ -46,6 +49,7 @@ module Moon
     end
 
     # Splits the current rect into 4 sub rects of half size
+    #
     # @return [Array[4]<Moon::Rect>]
     def split
       sw = (w / 2.0).round
@@ -145,37 +149,17 @@ module Moon
     def position
       Vector2.new x, y
     end
-    alias :xy :position
 
     def position=(other)
       self.x, self.y = *Vector2.extract(other)
-    end
-    alias :xy= :position=
-
-    def xyz
-      Vector3.new x, y, 0
-    end
-
-    def xyz=(other)
-      self.x, self.y, _ = *Vector3.extract(other)
     end
 
     def resolution
       Vector2.new w, h
     end
-    alias :wh :resolution
 
     def resolution=(other)
       self.w, self.h = *Vector2.extract(other)
-    end
-    alias :wh= :resolution=
-
-    def whd
-      Vector3.new w, h, 0
-    end
-
-    def whd=(other)
-      self.w, self.h, _ = *Vector3.extract(other)
     end
 
     # Extracts Rect related arguments from the given Object (obj)
@@ -190,8 +174,5 @@ module Moon
       obj = objs.size == 1 ? objs.first : objs
       new(*extract(obj))
     end
-
-    alias :position :xy
-    alias :size :wh
   end
 end
