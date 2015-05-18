@@ -77,55 +77,56 @@ module Moon
       set(*args) unless args.empty?
     end
 
-    ##
+    def ==(other)
+      if other.is_a?(Cuboid)
+        return true if equal?(other)
+        x == other.x && y == other.y && z == other.z &&
+        w == other.w && h == other.h && d == other.d
+      else
+        false
+      end
+    end
+
     # @return [Integer]
     def x2
       @x + @w
     end
 
-    ##
     # @return [Integer]
     def y2
       @y + @h
     end
 
-    ##
     # @return [Integer]
     def z2
       @z + @d
     end
 
-    ##
     # @return [Array<Integer>[6]]
     def to_a
       return @x, @y, @z, @w, @h, @d
     end
 
-    ##
     # @return [Hash<Symbol, Integer>]
     def to_h
-      { x: @x, y: @y, z: @z, w: @w, h: @h, d: @d }
+      properties_to_h
     end
 
-    ##
     # @return [Rect]
     def to_rect_xy
       Moon::Rect.new(@x, @y, @w, @h)
     end
 
-    ##
     # @return [Rect]
     def to_rect_xz
       Moon::Rect.new(@x, @z, @w, @d)
     end
 
-    ##
     # @return [Rect]
     def to_rect_yz
       Moon::Rect.new(@y, @z, @h, @d)
     end
 
-    ##
     # @return [self]
     def clear
       @x, @y, @z, @w, @h, @d = 0, 0, 0, 0, 0, 0
@@ -155,7 +156,6 @@ module Moon
       self
     end
 
-    ##
     # @overload resize(vec3)
     #   @param [Vector3] vec3
     # @overload resize(w, h, d)
@@ -170,7 +170,6 @@ module Moon
       self
     end
 
-    ##
     # @overload contains?(vec3)
     #   @param [Vector3] vec3
     # @overload contains?(x, y, z)
@@ -185,61 +184,11 @@ module Moon
       z.between?(self.z, self.z2 - 1)
     end
 
-    ##
     # @return [Boolean]
     def empty?
       return w == 0 && h == 0 && d == 0
     end
 
-    ##
-    # @return [Vector2]
-    def xy
-      Vector2.new @x, @y
-    end
-
-    ##
-    # @param [Vector2] vec2
-    def xy=(vec2)
-      @x, @y = *Vector2.extract(vec2)
-    end
-
-    ##
-    # @return [Vector3]
-    def xyz
-      Vector3.new @x, @y, @z
-    end
-
-    ##
-    # @param [Vector3] vec3
-    def xyz=(vec3)
-      @x, @y, @z = *Vector3.extract(vec3)
-    end
-
-    ##
-    # @return [Vector2]
-    def wh
-      Vector2.new @w, @h
-    end
-
-    ##
-    # @param [Vector2] vec2
-    def wh=(vec2)
-      @w, @h = *Vector2.extract(vec2)
-    end
-
-    ##
-    # @return [Vector3]
-    def whd
-      Vector3.new @w, @h, @d
-    end
-
-    ##
-    # @param [Vector3] vec3
-    def whd=(vec3)
-      @w, @h, @d = *Vector3.extract(vec3)
-    end
-
-    ##
     # Converts a given Object to Cuboid array
     # @param [Object] obj
     # @return [Array<Numeric>] (x, y, z, w, h, d)
@@ -251,8 +200,5 @@ module Moon
       obj = objs.size == 1 ? objs.first : objs
       new(*extract(obj))
     end
-
-    alias :position :xyz
-    alias :size :whd
   end
 end
