@@ -46,5 +46,9 @@ module Moon
       when :x, 'x', 0 then self.x = value
       end
     end
+
+    def abs
+      Moon::Vector1.new x.abs
+    end
   end
 end
