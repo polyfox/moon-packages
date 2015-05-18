@@ -122,10 +122,6 @@ module Moon
       "#{x},#{y},#{w},#{h}"
     end
 
-    def to_a
-      [x, y, w, h]
-    end
-
     def to_h
       { x: x, y: y, w: w, h: h }
     end
