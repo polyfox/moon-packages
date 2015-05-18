@@ -32,7 +32,7 @@ module Moon
             if options.key?(key)
               send("#{key}=", options[key]) if options.key?(key)
             else
-              init_field(key)
+              initialize_field(key)
             end
           end
         end
@@ -59,6 +59,7 @@ module Moon
         mod.send :include, Moon::DataModel::Fields
         mod.extend         ClassMethods
         mod.send :include, InstanceMethods
+
         mod.register mod.to_s.demodulize.downcase.to_sym
       end
 
