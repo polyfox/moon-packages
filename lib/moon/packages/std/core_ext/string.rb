@@ -17,16 +17,10 @@ class String
     blank? ? nil : self
   end
 
+  # Returns an indented string
   #
-  def demodulize
-    path = self.to_s
-    if i = path.rindex('::')
-      path[(i + 2)..-1]
-    else
-      path
-    end
-  end
-
+  # @param [Integer] n
+  # @return [String]
   def indent(n)
     result = ''
     self.each_line do |line|
