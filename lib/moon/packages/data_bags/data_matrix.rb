@@ -83,6 +83,10 @@ module Moon
       map_with_xyz { |_, x, y, z| org.data[x + y * @xsize + z * @xsize * @ysize] }
     end
 
+    private def post_import
+      recalculate_size
+    end
+
     # @param [Integer] nxsize
     # @param [Integer] nysize
     # @param [Integer] nzsize
