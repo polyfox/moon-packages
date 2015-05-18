@@ -13,6 +13,12 @@ module Movable2
     true
   end
 
+  # @param [Moon::Vector2] position
+  # @return [Moon::Vector2]
+  def adjust_position(position)
+    position
+  end
+
   # @overload moveto(position)
   #   @param [Moon::Vector2] position
   # @overload moveto(x, y)
@@ -22,7 +28,7 @@ module Movable2
   def moveto(*args)
     return self unless movable?
     old_pos = position
-    self.position = Moon::Vector2[*args]
+    self.position = adjust_position(Moon::Vector2[*args])
     trigger { Moon::MovedEvent.new self, old_pos, position }
     self
   end
