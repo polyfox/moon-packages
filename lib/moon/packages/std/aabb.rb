@@ -1,10 +1,11 @@
-module Moon #:nodoc
+module Moon
   # http://studiofreya.com/3d-math-and-physics/simple-aabb-vs-aabb-collision-detection/
   class AABB
-    # center position
+    # @!attribute [r] cpos  center position
     # @return [Moon::Vector2]
     attr_reader :cpos
-    # radii
+
+    # @!attribute [r] rad  radii
     # @return [Moon::Vector2]
     attr_reader :rad
 

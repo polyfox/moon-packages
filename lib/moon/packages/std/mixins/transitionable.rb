@@ -10,6 +10,7 @@ module Moon
     #   @example "position.x"
     # @param [Object] value  target value
     # @param [Numeric] duration  in seconds
+    # @return [Transition]
     def transition(attribute, value, duration, easer = nil)
       easer ||= Easing::Linear
       src = dotsend(attribute)
@@ -28,6 +29,7 @@ module Moon
     #   @example "position.x"
     # @param [Object] value  target value
     # @param [Numeric] duration  in seconds
+    # @return [Transition]
     def key_transition(attribute, value, duration)
       @key_transition ||= {}
       if @key_transition.key?(attribute)

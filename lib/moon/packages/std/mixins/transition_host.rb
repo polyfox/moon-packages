@@ -1,37 +1,29 @@
 module Moon
   module TransitionHost
-    ###
     # @param [Object] src
     # @param [Object] dest
     # @param [String] duration
     # @return [Transition]
-    ###
     def add_transition(src, dest, duration, easer = Easing::Linear, &block)
       transition = Transition.new(src, dest, duration, easer, &block)
       (@transitions ||= []).push transition
       transition
     end
 
-    ###
     # @param [Transition] transition
-    # @return [Void]
-    ###
+    # @return [void]
     def remove_transition(transition)
       return unless @transitions
       @transitions.delete transition
     end
 
-    ###
     # @param [Array<Transition>] transitions
-    # @return [Void]
-    ###
+    # @return [void]
     def remove_transitions(transitions)
       @transitions -= transitions
     end
 
-    ###
     # @param [Float] delta
-    ###
     def update_transitions(delta)
       return unless @transitions
       return if @transitions.empty?
@@ -45,10 +37,8 @@ module Moon
       end
     end
 
-    ###
     # Force all transitions to finish.
     # @return [Void]
-    ###
     def finish_transitions
       return unless @transitions
       @transitions.each(&:finish)

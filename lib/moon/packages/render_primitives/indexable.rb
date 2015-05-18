@@ -1,8 +1,6 @@
 module Moon
-  ##
   # Mixin to achieve Indexable objects
   module Indexable
-    ##
     # Event triggered when an Indexable object changes its index,
     # note that this will be triggered EVEN if the index was the same
     class IndexEvent < Moon::Event
@@ -16,17 +14,13 @@ module Moon
       end
     end
 
-    ##
     # @return [Integer]
     attr_reader :index
 
-    ##
-    # :nodoc:
     private def initialize_index
       @index = 0
     end
 
-    ##
     # Modifies the incoming index, use this method for wrapping an index
     # around, or clamping.
     # @param [Integer] index
@@ -35,25 +29,21 @@ module Moon
       index
     end
 
-    ##
     # Callback triggered before a set_index
     private def pre_change_index
       trigger(IndexEvent.new(:pre_index, index))
     end
 
-    ##
     # Callback triggered after a set_index
     private def post_change_index
       trigger(IndexEvent.new(:post_index, index))
     end
 
-    ##
     # @param [Integer] index
     def set_index(index)
       @index = index
     end
 
-    ##
     # @param [Integer] index
     def change_index(index)
       pre_change_index
@@ -61,7 +51,6 @@ module Moon
       post_change_index
     end
 
-    ##
     # @param [Integer] index
     def index=(index)
       change_index(index)
