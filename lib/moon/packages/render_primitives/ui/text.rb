@@ -1,4 +1,5 @@
-# :nodoc:
+require 'render_primitives/render_context'
+
 module Moon
   # Renderer object for rendering Fonts
   class Text < RenderContext

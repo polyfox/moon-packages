@@ -1,3 +1,7 @@
+require 'moon-serializable/load'
+require 'data_bags/n_data'
+require 'data_bags/tabular/iterator_base'
+
 module Moon
   # A 2 dimensional array used normally for storing Tilemap data or any 2d grid
   # based data such hmaps, image data, passage data.

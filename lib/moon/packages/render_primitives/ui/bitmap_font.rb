@@ -1,8 +1,8 @@
-# :nodoc:
+require 'render_primitives/render_context'
+
 module Moon
-  ##
   # Renderer object, for rendering bitmap font Spritesheets
-  class BitmapFont < Moon::RenderContext
+  class BitmapFont < RenderContext
     # @return [String]
     attr_reader :string
     # @return [Boolean]
@@ -10,7 +10,6 @@ module Moon
     # @return [Moon::Vector4]
     attr_accessor :color
 
-    ##
     # @param [Moon::Spritesheet] spritesheet
     # @param [String] string initial ASCII string value
     # @param [Hash<Symbol, Object>] options
@@ -21,14 +20,12 @@ module Moon
       self.string = string
     end
 
-    ##
     # @param [String] string
     def string=(string)
       @string = (string && string.to_s) || nil
       refresh_size
     end
 
-    ##
     # Recalculate size
     private def refresh_size
       @cached_w = @string.size * @spritesheet.w
@@ -38,7 +35,6 @@ module Moon
       self.h = @cached_h
     end
 
-    ##
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z

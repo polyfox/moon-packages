@@ -1,3 +1,5 @@
+require 'data_painter/sampler3'
+
 module Moon
   class DataMatrix
     # Initializes and returns a sampler

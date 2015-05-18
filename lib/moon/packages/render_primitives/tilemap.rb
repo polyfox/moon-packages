@@ -1,3 +1,5 @@
+require 'render_primitives/render_context'
+
 module Moon
   # This may need to be rewritten in C/++
   class Tilemap < RenderContext

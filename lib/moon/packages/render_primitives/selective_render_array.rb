@@ -1,16 +1,14 @@
-# :nodoc:
+require 'render_primitives/render_array'
 module Moon
   class SelectiveRenderArray < RenderArray
     include Indexable
 
-    ##
     #
     private def init
       super
       initialize_index
     end
 
-    ##
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z

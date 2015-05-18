@@ -1,5 +1,6 @@
+require 'render_primitives/render_context'
+
 module Moon
-  ##
   # Inspired by
   # http://dev.chromium.org/developers/design-documents/aura
   #

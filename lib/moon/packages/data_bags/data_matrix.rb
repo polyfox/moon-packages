@@ -1,3 +1,7 @@
+require 'moon-serializable/load'
+require 'data_bags/n_data'
+require 'data_bags/matrix_like/iterator_base'
+
 module Moon
   #   aka. Table3
   class DataMatrix

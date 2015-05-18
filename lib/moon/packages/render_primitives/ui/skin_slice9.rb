@@ -1,4 +1,5 @@
-# :nodoc:
+require 'render_primitives/render_context'
+
 module Moon
   class SkinSlice9 < RenderContext
     # @return [Moon::Spritesheet]

@@ -1,5 +1,6 @@
+require 'std/mixins/activatable'
+
 module Moon
-  ##
   # A Scheduler is used to manage Job objects, any object that implements
   # a #done? and #update can be used.
   # Adding a new job is done via #add, when a job is #done?, it will be removed

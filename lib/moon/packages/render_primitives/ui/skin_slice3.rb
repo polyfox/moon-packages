@@ -1,4 +1,5 @@
-# :nodoc:
+require 'render_primitives/render_context'
+
 module Moon
   class SkinSlice3 < RenderContext
     # @return [Boolean]

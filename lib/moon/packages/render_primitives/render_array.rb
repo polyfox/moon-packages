@@ -1,3 +1,5 @@
+require 'render_primitives/render_container'
+
 module Moon
   class RenderArray < Moon::RenderContainer
     def initialize(size = nil)
