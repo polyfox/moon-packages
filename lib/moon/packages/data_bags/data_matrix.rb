@@ -72,12 +72,6 @@ module Moon
       @size = @xsize * @ysize * @zsize
     end
 
-    # Initializes the internal data
-    private def create_data
-      recalculate_size
-      @data = Array.new(@size, @default)
-    end
-
     # Ruby's copy initializer
     #
     # @param [DataMatrix] org
@@ -85,10 +79,6 @@ module Moon
       super org
       create_data
       map_with_xyz { |_, x, y, z| org.data[x + y * @xsize + z * @xsize * @ysize] }
-    end
-
-    private def post_import
-      recalculate_size
     end
 
     # @param [Integer] nxsize
@@ -152,7 +142,7 @@ module Moon
       y = y.to_i
       z = z.to_i
       return @default unless contains?(x, y, z)
-      @data[calc_index(x, y, z)]
+      @data[calc_index(x, y, z)] || @default
     end
 
     # @param [Integer] x
