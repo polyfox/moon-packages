@@ -145,7 +145,6 @@ module Moon
     # @param [Float] delta
     private def update_content(delta)
       update_elements(delta)
-      super
     end
 
     # @param [Integer] x
@@ -164,7 +163,6 @@ module Moon
     # @param [Hash<Symbol, Object>] options
     private def render_content(x, y, z, options)
       render_elements(x, y, z, options)
-      super
     end
   end
 end

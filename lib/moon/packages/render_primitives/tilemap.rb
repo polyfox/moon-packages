@@ -26,7 +26,7 @@ module Moon
 
     ##
     #
-    private def init
+    private def initialize_members
       super
       @tileset       = nil
       @data          = nil

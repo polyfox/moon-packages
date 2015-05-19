@@ -59,7 +59,6 @@ module Moon
           col += 1
         end
       end
-      super
     end
   end
 end

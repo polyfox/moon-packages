@@ -168,7 +168,6 @@ module Moon
                       line, rc, options)
         end
       end
-      super
     end
 
     #

@@ -43,7 +43,6 @@ module Moon
         @windowskin.render x, y + h - ch, z, 6
         @windowskin.render x + w - cw, y + h - ch, z, 8
       end
-      super
     end
   end
 end

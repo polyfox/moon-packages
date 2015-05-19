@@ -54,7 +54,6 @@ module Moon
       end
 
       post_initialize
-      puts "Created a #{self.class}"
     end
 
     def pre_initialize
@@ -218,7 +217,8 @@ module Moon
 
     # @param [Moon::Vector3, Numeric, Array] vec3
     # @return [Moon::Vector3]
-    def apply_position_modifier(vec3 = 0)
+    def apply_position_modifier(*vec3)
+      return @position if vec3.empty?
       @position + vec3
     end
 
@@ -256,9 +256,8 @@ module Moon
     # @param [Hash<Symbol, Object>] options
     # @api private
     def render_abs(x, y, z, options)
-      px, py, pz = *apply_position_modifier(Moon::Vector3.new(x, y, z))
+      px, py, pz = *apply_position_modifier(x, y, z)
       render_content(px, py, pz, options)
-      super
     end
   end
 end
