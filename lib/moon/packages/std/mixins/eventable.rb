@@ -74,7 +74,7 @@ module Moon
 
       return unless allow_event?(event)
 
-      each_listener(:any, event.type) { |_, listener| listener.call event }
+      each_listener(:any, event.type) { |_, listener| listener.call event, self }
     end
   end
 end

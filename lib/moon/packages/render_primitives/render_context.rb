@@ -1,5 +1,6 @@
 require 'std/mixins/transitionable'
 require 'std/mixins/eventable'
+require 'std/input/observer'
 require 'render_primitives/screen_element'
 require 'render_primitives/renderable'
 require 'render_primitives/visibility'
@@ -20,11 +21,14 @@ module Moon
     include RenderPrimitive::Rectangular                 # RenderPrimitive Core
     include RenderPrimitive::DataAttributes              # RenderPrimitive Core
 
+    # @return [Integer] id counter
+    @@context_id = 0
+
     # @return [Boolean]
     attr_accessor :visible
 
-    # @return [Integer] id counter
-    @@context_id = 0
+    # @return [Input::Observer]
+    attr_accessor :input
 
     # @return [Integer] RenderContext id
     attr_reader :id
@@ -67,14 +71,16 @@ module Moon
       @position = Vector3.new
       @visible  = true
       @parent   = nil
+      @tick = 0.0
+      @input = Moon::Input::Observer.new
     end
 
     # @param [Hash<Symbol, Object>] options
     private def initialize_from_options(options)
       @position = options.fetch(:position) { Vector3.new(0, 0, 0) }
       @visible  = options.fetch(:visible, true)
-      @w    = options.fetch(:w,   0)
-      @h   = options.fetch(:h,  0)
+      @w    = options.fetch(:w, 0)
+      @h   = options.fetch(:h, 0)
     end
 
     # @return [Moon::Vector3]
@@ -102,7 +108,107 @@ module Moon
 
     # @abstract
     private def initialize_events
-      #
+    end
+
+    def enable_default_events
+      input.on :any do |event|
+        trigger event
+      end
+
+      input.on :mousemove do |event|
+        p = event.position
+        trigger MouseHoverEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y))
+      end
+
+      # click event generation
+      input.on :press do |event|
+        if event.is_a?(MouseEvent) && event.button == :mouse_left
+          #@last_mousedown_id = event.id
+          p = event.position
+          if screen_bounds.contains?(p.x, p.y)
+            @expecting_release = true
+          end
+        end
+      end
+
+      input.on :release do |event|
+        if event.is_a?(MouseEvent) && event.button == :mouse_left
+          #if @last_mousedown_id == event.id # ids will never match
+          if @expecting_release
+            @expecting_release = false
+            p = event.position
+            if screen_bounds.contains?(p.x, p.y)
+              trigger ClickEvent.new(self, p)
+            end
+          end
+        end
+      end
+
+      # double clicks (click distance was max 500ms)
+      on :click do |event|
+        now = @tick
+        @last_click_at ||= 0.0
+        if (now - @last_click_at) < 0.500
+          trigger MouseDoubleClickEvent.new
+          # reset the distance, so we can't trigger
+          #consecutive double clicks with a single click
+          @last_click_at = 0.0
+        else
+          @last_click_at = now
+        end
+      end
+
+      # dragging support
+      @draggable = false
+
+      input.on :press do |event|
+        # bonus: be able to specify a drag rectangle:
+        # the area where the user can click to drag
+        # the window (useful if we only want it to
+        # drag by the titlebar)
+
+        # initiate dragging if @draggable = true
+        if event.button == :mouse_left && @draggable
+          @dragging = true
+
+          # store the relative offset of where the mouse
+          # was clicked on the object, so we can accurately
+          # set the new position
+          @offset_x = Moon::Input::Mouse.x - self.x
+          @offset_y = Moon::Input::Mouse.y - self.y
+        end
+      end
+
+      input.on :mousemove do |event|
+        # if draggable, and we are dragging (the mouse is pressed down)
+
+        # update the position, calculated off of
+        # the mouse position and the relative offset
+        # set on mousedown
+
+        # don't forget to update the widget positions
+        # too (refresh_position)
+        # NOTE: at the moment the widget position is
+        # updated in the update loop each cycle. Might
+        # not be the most efficient thing to do.
+
+        if @draggable && @dragging
+          self.x = Moon::Input::Mouse.x - @offset_x
+          self.y = Moon::Input::Mouse.y - @offset_y
+        end
+      end
+
+      input.on :release do |event|
+        # disable dragging
+        @dragging = false if event.button == :mouse_left && @draggable
+      end
+
+      input.on :press, :repeat do |event|
+        if event.is_a?(MouseEvent)
+          p = event.position
+          trigger MouseFocusedEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y))
+        end
+      end
     end
 
     # @abstract
@@ -126,6 +232,7 @@ module Moon
     def update(delta)
       update_content(delta)
       update_transitions(delta)
+      @tick += delta
     end
 
     # Overwrite this method to define your own rendering, the coordinates
