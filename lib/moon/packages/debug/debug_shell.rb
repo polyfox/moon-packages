@@ -1,6 +1,6 @@
 class DebugShell < Moon::RenderContainer
   class Caret < Moon::RenderContext
-    def initialize
+    def initialize_members
       super
       @index = 0
       @spritesheet = Moon::Spritesheet.new("resources/ui/caret_8x16_ffffffff.png", 8, 16)
@@ -20,11 +20,9 @@ class DebugShell < Moon::RenderContainer
       px, py, pz = *(@position + [x, y, z])
       @spritesheet.render(px, py, pz, @index)
       #@spritesheet.render(px, py, pz, @index, options.merge(opacity: @opacity))
-      super
     end
 
-    def update(delta)
-      super
+    def update_content(delta)
       #@opacity += 255 * @phase * delta
       #if @opacity < 0 || @opacity > 255
       #  @phase = -@phase
