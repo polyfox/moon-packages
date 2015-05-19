@@ -12,8 +12,8 @@ module Moon
 
     # @param [Symbol] type
     def initialize(type)
-      @type = type
       @id = @@id += 1
+      @type = type
     end
   end
 
@@ -36,8 +36,8 @@ module Moon
     # @param [Symbol] action
     # @param [Integer] mods
     def initialize(key, action, mods)
-      super action
-      @type = @action = action
+      @action = action
+      super @action
       @key = key
       @mods = mods
     end
@@ -93,8 +93,8 @@ module Moon
     attr_accessor :relative
 
     def initialize(button, action, mods, position)
-      @position = Vector2[position]
-      @relative = Vector2[position]
+      @position = position
+      @relative = position
       super button, action, mods
     end
   end
@@ -102,19 +102,40 @@ module Moon
   class MouseMoveEvent < Event
     include MouseEvent
 
+    attr_reader :x
+    attr_reader :y
     attr_accessor :screen_rect
-    attr_accessor :position
-    attr_accessor :relative
 
     def initialize(x, y, screen_rect)
       @screen_rect = screen_rect
-      @position = Vector2.new(x, y)
-      @relative = Vector2.new(x, y)
+      @x, @y = x, y
       super :mousemove
     end
 
+    def x=(x)
+      @x = x
+      @position = nil
+      @normalize_position = nil
+    end
+
+    def y=(y)
+      @y = y
+      @position = nil
+      @normalize_position = nil
+    end
+
+    def position
+      @position ||= Moon::Vector2.new(@x, @y)
+    end
+
+    def position=(pos)
+      @position = pos
+      @x, @y = *@position
+      @normalize_position = nil
+    end
+
     def normalize_position
-      @position / [@screen_rect.w, @screen_rect.h]
+      @normalize_position ||= position / [@screen_rect.w, @screen_rect.h]
     end
   end
 
