@@ -1,6 +1,5 @@
 module Moon
   class Vector2
-    include Comparable
     include Serializable::Properties
     include Serializable
 
@@ -15,11 +14,6 @@ module Moon
     # @return [Boolean] is the vector zero?
     def zero?
       x == 0.0 && y == 0.0
-    end
-
-    # @return [Integer]
-    def <=>(other)
-      [x, y] <=> Vector2.extract(other)
     end
 
     # @return [Moon::Vector2]

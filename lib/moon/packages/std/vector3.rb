@@ -1,6 +1,5 @@
 module Moon
   class Vector3
-    include Comparable
     include Serializable::Properties
     include Serializable
 
@@ -16,10 +15,6 @@ module Moon
     # @return [Boolean]
     def zero?
       x == 0 && y == 0 && z == 0
-    end
-
-    def <=>(other)
-      [x, y, z] <=> Vector3.extract(other)
     end
 
     def xy
