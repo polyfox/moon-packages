@@ -160,7 +160,7 @@ module Debug
           write_array obj, depth.succ
         when Hash
           write_hash obj, depth.succ
-        when Moon::DataModel::Model
+        when Moon::DataModel::Fields
           write_model obj, depth.succ
         else
           write obj.inspect
