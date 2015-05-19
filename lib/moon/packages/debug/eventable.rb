@@ -2,12 +2,12 @@ module Debug
   module Eventable
     def self.pretty_print(obj, depth = 0)
       last_key = nil
-      obj.each_listener do |key, listener|
+      obj.each_listener do |key, cb|
         if last_key != key
           puts Debug.format_depth("~ #{key}", depth)
           last_key = key
         end
-        puts Debug.format_depth("` <#{listener.class} @filter=#{listener.filter} @callback=#{listener.callback}>", depth + 1)
+        puts Debug.format_depth("` #{cb}", depth + 1)
       end
     end
   end
