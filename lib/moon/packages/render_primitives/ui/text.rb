@@ -132,6 +132,7 @@ module Moon
     def set(options)
       self.string = options.fetch(:string)
       self.align = options.fetch(:align, :left)
+      self.color = options.fetch(:color) { Moon::Vector4.new(1, 1, 1, 1) }
       if fon = options[:font]
         self.font = fon
       end
