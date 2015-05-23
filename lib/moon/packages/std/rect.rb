@@ -83,8 +83,10 @@ module Moon
       Rect.new nx, ny, [x2, other.x2].min - nx, [y2, other.y2].min - ny
     end
 
+    # @return [self]
     def set(*args)
       self.x, self.y, self.w, self.h = *Rect.extract(args.singularize)
+      self
     end
 
     # Creates a new Rect from the current translated by the given position
