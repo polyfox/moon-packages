@@ -137,7 +137,7 @@ module Moon
             @expecting_release = false
             p = event.position
             if screen_bounds.contains?(p.x, p.y)
-              trigger ClickEvent.new(self, p)
+              trigger ClickEvent.new(self, p, :click)
             end
           end
         end
@@ -148,7 +148,7 @@ module Moon
         now = @tick
         @last_click_at ||= 0.0
         if (now - @last_click_at) < 0.500
-          trigger MouseDoubleClickEvent.new
+          trigger ClickEvent.new(self, event.position, :double_click)
           # reset the distance, so we can't trigger
           #consecutive double clicks with a single click
           @last_click_at = 0.0

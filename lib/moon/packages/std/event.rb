@@ -143,10 +143,10 @@ module Moon
     attr_accessor :target
     attr_accessor :position
 
-    def initialize(target, position)
+    def initialize(target, position, type = :click)
       @target = target
       @position = position
-      super :click
+      super type
     end
   end
 
