@@ -15,7 +15,7 @@ end
 
 module Moon
   module Eventable
-    def ppd_ev(depth = 0)
+    def print_event_listeners(depth = 0)
       Debug::Eventable.pretty_print(self, depth)
       self
     end
