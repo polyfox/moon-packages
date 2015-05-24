@@ -40,7 +40,8 @@ module Moon
       self
     end
 
-    # @return [Moon::Rect]
+    # @param [Moon::Rect]
+    # @return [Integer]
     def get_index(rect)
       vert_mp = bounds.x + bounds.w / 2
       horz_mp = bounds.y + bounds.h / 2
@@ -65,7 +66,8 @@ module Moon
       -1
     end
 
-    # @return [Moon::Rect]
+    # @param [Moon::Rect]
+    # @return [void]
     def insert(rect)
       unless nodes.empty?
         index = get_index(rect)
@@ -91,7 +93,8 @@ module Moon
       end
     end
 
-    # @return [Moon::Rect]
+    # @param [Moon::Rect]
+    # @return [Array]
     def retrieve(rect)
       index = get_index(rect)
       result = [].concat(objects)
@@ -110,6 +113,8 @@ module Moon
     end
 
     # Clear the Quadtree
+    #
+    # @return [self]
     def clear
       objects.clear
       nodes.each do |node|
