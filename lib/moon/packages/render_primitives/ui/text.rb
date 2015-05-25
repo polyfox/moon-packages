@@ -41,9 +41,6 @@ module Moon
       end
     end
 
-    # @!attribute [rw] use_events
-    #   @return [Boolean]
-    attr_accessor :use_events
     # @return [Moon::Vector4]
     attr_reader   :color
     # @return [Moon::Font]
@@ -71,16 +68,6 @@ module Moon
       self.string = string
     end
 
-    # Enables events for this Text object
-    def enable_events
-      @use_events = true
-    end
-
-    # Disable events for this Text object
-    def disable_events
-      @use_events = false
-    end
-
     def on_opacity_changed(org, cur)
       refresh_opacity
     end
@@ -91,13 +78,13 @@ module Moon
 
     def on_font_changed(org, cur)
       refresh_size
-      trigger(FontChangedEvent.new(org, cur)) if @use_events
+      trigger { FontChangedEvent.new(org, cur) }
     end
 
     def on_string_changed(org, cur)
       @lines = @string.split("\n")
       refresh_size
-      trigger(StringChangedEvent.new(org, cur)) if @use_events
+      trigger { StringChangedEvent.new(org, cur) }
     end
 
     # @attribute [w] opacity
