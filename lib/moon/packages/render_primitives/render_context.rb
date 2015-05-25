@@ -31,52 +31,44 @@ module Moon
     # @return [Integer] RenderContext id
     attr_reader :id
 
-    ##
     # @param [Hash<Symbol, Object>] options
     #   @optional
     def initialize(options = {})
+      @id = @@context_id += 1
       pre_initialize
-
-      initialize_members
-
-      initialize_from_options(options)
-
-      initialize_eventable
-      initialize_content
-      initialize_events
-      init
-
-      if block_given?
-        yield self
-      end
-
+      initialize_eventable # Eventable
+      initialize_members   # initialize regular member variables
+      initialize_from_options(options) # initialize user options
+      initialize_content   # initialize other elements
+      initialize_events    # initialize events
+      yield self if block_given?
       post_initialize
     end
 
+    # Called before all other initializations
     def pre_initialize
     end
 
+    # Called after all other initializations
     def post_initialize
     end
 
     private def initialize_members
-      @id = @@context_id += 1
-
-      @w = 0
-      @h = 0
+      @w        = 0
+      @h        = 0
       @position = Vector3.new
       @visible  = true
       @parent   = nil
-      @tick = 0.0
-      @input = Moon::Input::Observer.new
+      @tick     = 0.0
+      @input    = Moon::Input::Observer.new
     end
 
     # @param [Hash<Symbol, Object>] options
     private def initialize_from_options(options)
-      @position = options.fetch(:position) { Vector3.new(0, 0, 0) }
-      @visible  = options.fetch(:visible, true)
-      @w    = options.fetch(:w, 0)
-      @h   = options.fetch(:h, 0)
+      @position = options[:position] || @position
+      @visible  = options.fetch(:visible, @visible)
+      @w        = options.fetch(:w, @w) # can be nil to invalidate.
+      @h        = options.fetch(:h, @h) # can be nil to invalidate.
     end
 
     # @return [Moon::Vector3]
@@ -205,11 +197,6 @@ module Moon
           trigger MouseFocusedEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y))
         end
       end
-    end
-
-    # @abstract
-    private def init
-      #
     end
 
     # @param [Moon::Vector3, Numeric, Array] vec3

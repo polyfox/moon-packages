@@ -99,7 +99,7 @@ class DebugShell < Moon::RenderContainer
     #
   end
 
-  def init
+  def initialize_content
     super
     font = FontCache.font('uni0553', 16)
     @input_background = Moon::SkinSlice9.new

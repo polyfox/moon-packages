@@ -1,10 +1,11 @@
 require 'render_primitives/render_array'
+
 module Moon
   class SelectiveRenderArray < RenderArray
     include Indexable
 
     #
-    private def init
+    private def initialize_members
       super
       initialize_index
     end
