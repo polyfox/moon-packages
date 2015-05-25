@@ -6,20 +6,18 @@ require 'render_primitives/renderable'
 require 'render_primitives/visibility'
 require 'render_primitives/containable'
 require 'render_primitives/rectangular'
-require 'render_primitives/data_attributes'
 
 # RenderContext classes are bare bone Renderable objects, they do nothing
 # on their own, and serve as a base class for other Renderable objects
 module Moon
   class RenderContext
-    include Transitionable                               # Moon::Core
-    include Eventable                                    # Moon::Core
+    include Transitionable                               # Moon Core
+    include Eventable                                    # Moon Core
     include RenderPrimitive::ScreenElement               # RenderPrimitive Core
     include RenderPrimitive::Renderable                  # RenderPrimitive Core
     include RenderPrimitive::Visibility                  # RenderPrimitive Core
     include RenderPrimitive::Containable                 # RenderPrimitive Core
     include RenderPrimitive::Rectangular                 # RenderPrimitive Core
-    include RenderPrimitive::DataAttributes              # RenderPrimitive Core
 
     # @return [Integer] id counter
     @@context_id = 0
@@ -38,7 +36,6 @@ module Moon
     #   @optional
     def initialize(options = {})
       pre_initialize
-      initialize_data_attrs
 
       initialize_members
 

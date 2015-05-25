@@ -5,7 +5,6 @@ require 'render_primitives/containable'       # Interface
 require 'render_primitives/visibility'        # Interface
 require 'render_primitives/rectangular'       # Behaviour
 require 'render_primitives/screen_element'    # Behaviour
-require 'render_primitives/data_attributes'   # Extension
 # Primitives
 require 'render_primitives/render_context'
 require 'render_primitives/render_container'
