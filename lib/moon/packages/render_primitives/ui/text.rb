@@ -43,15 +43,25 @@ module Moon
 
     # @return [Moon::Vector4]
     attr_reader   :color
+
+    # @return [Numeric] outline  outline size, 0 or less is disabled
+    attr_reader   :outline
+
+    # @return [Moon::Vector4]
+    attr_accessor :outline_color
+
     # @return [Moon::Font]
     attr_reader   :font
+
     # @return [Float]
     attr_reader   :opacity
-    # @return [Symbol]
-    #   @enum [:left, :right, :center]
+
+    # @return [Symbol] position options are :left, :right, or :center
     attr_accessor :align
+
     # @return [String]
     attr_reader   :string
+
     # @return [Float]
     attr_accessor :line_h
 
@@ -61,6 +71,8 @@ module Moon
       @lines = []
       @font = font
       @align = align
+      @outline = 0
+      @outline_color = Vector4.new(0.0, 0.0, 0.0, 0.0)
       @line_h = 1.2
       @opacity = 1.0
       super()
@@ -74,6 +86,10 @@ module Moon
 
     def on_color_changed(org, cur)
       refresh_color
+    end
+
+    def on_outline_changed(org, cur)
+      refresh_size
     end
 
     def on_font_changed(org, cur)
@@ -92,6 +108,13 @@ module Moon
       old = @opacity
       @opacity = opacity
       on_opacity_changed old, @opacity
+    end
+
+    # @attribute [w] outline
+    def outline=(outline)
+      old = @outline
+      @outline = outline
+      on_outline_changed old, @outline
     end
 
     # @attribute [w] color
@@ -148,12 +171,15 @@ module Moon
           end
 
           rc = @render_color
-          if op = options[:opacity]
+          if op = options.delete(:opacity)
             rc = rc.dup
             rc.a *= op
           end
           font.render(x, y + index * font_line_h, z,
-                      line, rc, options)
+                      line, rc, {
+                        outline: @outline,
+                        outline_color: @outline_color
+                      }.merge(options))
         end
       end
     end
@@ -167,7 +193,7 @@ module Moon
           vec2.x = bounds[0] if vec2.x < bounds[0]
           vec2.y = bounds[1] if vec2.y < bounds[1]
           vec2.y += [font_line_h, bounds[1]].max
-          vec2.y += 2 # compensate for outline
+          vec2.y += @outline # compensate for outline
           vec2
         end
         resize(*vec2.floor)
