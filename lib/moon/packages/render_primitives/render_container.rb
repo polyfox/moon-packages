@@ -11,10 +11,9 @@ module Moon
     # @return [Array<Moon::RenderContext>]
     attr_reader :elements
 
-    # @param [Hash<Symbol, Object>] options
-    private def initialize_from_options(options)
+    private def initialize_members
       super
-      @elements = options.fetch(:elements) { [] }
+      @elements = []
     end
 
     #
@@ -102,8 +101,7 @@ module Moon
 
     #
     private def refresh_size
-      self.w = nil
-      self.h = nil
+      resize nil, nil
     end
 
     # @yield
