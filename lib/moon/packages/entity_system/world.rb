@@ -128,10 +128,21 @@ module Moon
       end
 
       # Update the internal systems
+      #
       # @return [self]
       def update(delta)
-        @systems.each { |s| s.update delta }
-        self
+        for system in @systems
+          system.update delta
+        end
+      end
+
+      # Renders the internal systems
+      #
+      # @return [self]
+      def render(x = 0, y = 0, z = 0, options = {})
+        for system in @systems
+          system.render x, y, z, options
+        end
       end
 
       # @return [Hash<Symbol, Object>]
