@@ -33,7 +33,7 @@ module Moon
           #
         end
 
-        def process(delta, entity)
+        def render(x = 0, y = 0, z = 0, options = {})
           #
         end
 
