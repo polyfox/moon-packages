@@ -5,43 +5,57 @@ class State
   # @!attribute [r] ticks
   #   @return [Integer]
   attr_reader :ticks
+
   # @!attribute [r] engine
   #   @return [Void]
   attr_reader :engine
+
   # @!attribute [rw] state_manager
   #   @return [Moon::StateManager]
   attr_accessor :state_manager
 
-  ##
   # @param [Void] engine
   def initialize(engine)
     @engine = engine
     @started = false
     @state_manager = nil
+    post_initialize
+  end
+
+  # Callback after a State has been initialized
+  def post_initialize
+    #
   end
 
   # Alias for engine.screen
+  #
   # @return [Moon::Screen]
   def screen
     @engine.screen
   end
 
-  ##
-  # Used when the State is just added to the Stack
+  # Called when the State is added to a stack, commonly by a state_manager
   def invoke
     reset
   end
 
-  ##
+  # Called when the State is to be removed from the stack
+  def revoke
+    if @inited
+      terminate
+      @inited = false
+    end
+  end
+
   # @return [self]
   def reset
     @ticks = 0
     @started = false
     init
+    @inited = true
     self
   end
 
-  ##
   # @param [Float] delta
   def step(delta)
     unless @started
@@ -56,7 +70,6 @@ class State
     @ticks += 1
   end
 
-  ##
   # @param [Float] delta
   private def update_step(delta)
     pre_update delta
@@ -64,7 +77,6 @@ class State
     post_update delta
   end
 
-  ##
   #
   private def render_step
     pre_render
@@ -72,7 +84,6 @@ class State
     post_render
   end
 
-  ##
   # Init
   # use this instead to initialize a State
   # @return [Void]
@@ -80,38 +91,32 @@ class State
     #
   end
 
-  ##
   # start
   def start
     #
   end
 
-  ##
   # Gets called when we close the state
   def terminate
     #
   end
 
-  ##
   # Gets called when the state is put on pause and a
   # new state is loaded on top of it
   def pause
     #
   end
 
-  ##
   # Gets called when the state resumes
   def resume
     #
   end
 
-  ##
   # @param [Float] delta
   def pre_update(delta)
     #
   end
 
-  ##
   # Per frame update function, called by moon
   # @param [Float] delta
   # @return [Void]
@@ -119,19 +124,16 @@ class State
     #
   end
 
-  ##
   # @param [Float] delta
   def post_update(delta)
     #
   end
 
-  ##
   # @return [Void]
   def pre_render
     #
   end
 
-  ##
   # Per frame render function, called by moon
   # called when the state is intended to be rendered to screen
   # @return [Void]
@@ -139,7 +141,6 @@ class State
     #
   end
 
-  ##
   # @return [Void]
   def post_render
     #

@@ -68,7 +68,7 @@ module Moon
     # @return [State, nil]
     private def eject_last
       unless @states.empty?
-        @states.last.terminate
+        @states.last.revoke
         @states.pop
       end
     end
@@ -83,7 +83,7 @@ module Moon
 
     #
     def pop
-      @states.last.terminate
+      @states.last.revoke
       last_state = @states.pop
 
       debug { puts "[#{self.class}] POP #{last_state.class} > #{@states.last.class}" }
