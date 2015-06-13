@@ -1,5 +1,6 @@
 require 'std/mixins/transitionable'
 require 'std/mixins/eventable'
+require 'std/mixins/taggable'
 require 'std/input/observer'
 require 'render_primitives/screen_element'
 require 'render_primitives/renderable'
@@ -13,6 +14,7 @@ module Moon
   class RenderContext
     include Transitionable                               # Moon Core
     include Eventable                                    # Moon Core
+    include Taggable
     include RenderPrimitive::ScreenElement               # RenderPrimitive Core
     include RenderPrimitive::Renderable                  # RenderPrimitive Core
     include RenderPrimitive::Visibility                  # RenderPrimitive Core
@@ -22,14 +24,21 @@ module Moon
     # @return [Integer] id counter
     @@context_id = 0
 
-    # @return [Boolean]
+    # @!attribute visible
+    #   @return [Boolean] Is this context visible for rendering?
     attr_accessor :visible
 
-    # @return [Input::Observer]
+    # @!attribute input
+    #   @return [Input::Observer] input observer
     attr_accessor :input
 
-    # @return [Integer] RenderContext id
+    # @!attribute [r] id
+    #   @return [Integer] RenderContext id
     attr_reader :id
+
+    # @!attribute tags
+    #   @return [Array<String>] tags
+    attr_accessor :tags
 
     # @param [Hash<Symbol, Object>] options
     #   @optional
@@ -60,6 +69,7 @@ module Moon
       @visible  = true
       @parent   = nil
       @tick     = 0.0
+      @tags     = []
       @input    = Moon::Input::Observer.new
     end
 
