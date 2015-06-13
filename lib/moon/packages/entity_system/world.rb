@@ -1,12 +1,10 @@
 module Moon
   module EntitySystem
     class World
-      EMPTY_HASH = {}
-      EMPTY_ARRAY = []
-
       # @!attribute [r] entities
       #   @return [Array<Entity>]
       attr_reader :entities
+
       # @!attribute [r] random
       #   @return [Random] the random number generator for the world.
       attr_reader :random
@@ -36,8 +34,8 @@ module Moon
       # Adds a new Entity to the world, an optional prefab can be provided,
       # in which the entity will inherit from.
       #
-      # @param [Prefab, Entity] prefab
-      # @return [Entity]
+      # @param [Entity] prefab  an entity instance to generate from
+      # @return [Entity] a new entity
       def spawn(prefab = nil)
         entity = Entity.new(self)
         entity.inherit prefab if prefab
@@ -54,63 +52,45 @@ module Moon
       # Get Entities for each component and intersect
       #
       # @param [Symbol] syms
-      # @yieldparam [Entity]
+      # @yieldparam [Entity] entity
       def filter(*syms, &block)
+        return to_enum(:filter, *syms) unless block_given?
         return if syms.empty?
-        if syms.size == 1
-          (@components[syms.first] || EMPTY_HASH).each_key(&block)
-        else
-          sym = syms.shift
-          result = (@components[sym] || EMPTY_HASH)
-          return if result.empty?
-          result = result.keys
-          if syms.empty?
-            result.each(&block)
-          else
-            result.each do |e|
-              yield e if syms.all? { |s| (l = @components[s]) && l.key?(e) }
+        # retrieve the first list of components, this will be used as the
+        # reference list for the remaining symbols.
+        sym = syms.shift
+        if result = @components[sym].presence
+          result.each_key do |e|
+            if syms.all? { |s| (l = @components[s]) && l.key?(e) }
+              yield e
             end
           end
         end
       end
 
-      ##
       # Get Entities for each component and intersect
+      #
       # @param [Symbol] syms
       # @return [Array<Entity>]
-      def [](*syms, &block)
-        return EMPTY_ARRAY if syms.empty?
-        if syms.size == 1
-          (@components[syms.first] || EMPTY_HASH).keys
-        else
-          sym = syms.shift
-          result = (@components[sym] || EMPTY_HASH)
-          return EMPTY_ARRAY if result.empty?
-          syms.each_with_object(result.keys) do |sym, r|
-            r &= @components[sym].keys
-          end
-        end
+      def [](*syms)
+        filter(*syms).to_a
       end
 
-      ##
       # @param [Entity] entity
       # @param [Symbol] component_sym
       # @param [Component] component
       # @return [Component]
       private def set_component(entity, component_sym, component)
-        #(@components[component_sym][entity] ||= []) << component
         @components[component_sym][entity] = component
         component
       end
 
-      ##
+      # Retrieves an Entity's component by component name
+      #
       # @param [Entity] entity
       # @param [Symbol] component_sym
       # @return [Component]
-      def get_component(entity, component_sym) # component is class here
-        # .first is a hack? return first element, always
-        # will be hard when we have more than one component
-        # of the same type
+      def get_component(entity, component_sym)
         @components[component_sym][entity]
       end
 
@@ -127,12 +107,13 @@ module Moon
         end
       end
 
-      ##
+      # Adds a component for the given entity
+      #
       # @param [Entity] entity
       # @param [Component] component
       def add_component(entity, component)
         component_sym = component.class.registered
-        set_component(entity, component_sym, component)
+        set_component entity, component_sym, component
       end
 
       ## Systems
