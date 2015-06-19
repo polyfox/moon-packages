@@ -22,10 +22,11 @@ module Moon
 
         def initialize(world)
           @world = world
-          init
+          post_initialize
         end
 
-        def init
+        # Called after initialization
+        def post_initialize
           #
         end
 
