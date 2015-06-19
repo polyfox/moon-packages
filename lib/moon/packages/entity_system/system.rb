@@ -10,6 +10,7 @@ module Moon
       module ClassMethods
         attr_reader :registered
 
+        # @param [Symbol] sym
         def register(sym)
           System.manager.remove(@registered) if @registered
           @registered = sym
@@ -20,6 +21,7 @@ module Moon
       module InstanceMethods
         attr_reader :world
 
+        # @param [EntitySystem::World] world
         def initialize(world)
           @world = world
           post_initialize
@@ -30,10 +32,15 @@ module Moon
           #
         end
 
+        # @param [Float] delta
         def update(delta)
           #
         end
 
+        # @param [Integer] x
+        # @param [Integer] y
+        # @param [Integer] z
+        # @param [Hash] options
         def render(x = 0, y = 0, z = 0, options = {})
           #
         end
@@ -44,10 +51,12 @@ module Moon
           }
         end
 
+        # Serializable
         def export
           to_h.stringify_keys
         end
 
+        # Serializable
         def import(data)
           self
         end
@@ -60,7 +69,7 @@ module Moon
       end
 
       def self.load(data)
-        Object.const_get(data["&class"])
+        Object.const_get data["&class"]
       end
     end
   end
