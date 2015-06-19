@@ -28,4 +28,7 @@ class String
     end
     result
   end
+
+  alias :tr :gsub
+  alias :tr! :gsub!
 end
