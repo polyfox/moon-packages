@@ -70,13 +70,11 @@ module Moon
   class KeyboardTypingEvent < Event
     include KeyboardEvent
 
-    attr_reader :action
     attr_accessor :char
 
     def initialize(char)
       @char = char
-      @action = :typing
-      super @action
+      super :typing
     end
   end
 
