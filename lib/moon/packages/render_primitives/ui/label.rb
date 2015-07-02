@@ -2,7 +2,7 @@ require 'render_primitives/render_context'
 
 module Moon
   # Renderer object for rendering Fonts
-  class Text < RenderContext
+  class Label < RenderContext
     # A StringChangedEvent is triggered when the Text#string changes, note
     # this event will trigger even if the String's value is the same.
     class StringChangedEvent < Event

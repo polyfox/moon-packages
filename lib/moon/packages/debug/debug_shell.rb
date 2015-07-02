@@ -113,8 +113,8 @@ class DebugShell < Moon::RenderContainer
     @history = []
     @history_index = 0
     @contents = []
-    @input_text = Moon::Text.new("", font)
-    @log_text = Moon::Text.new("", font)
+    @input_text = Moon::Label.new("", font)
+    @log_text = Moon::Label.new("", font)
     @log_text.line_h = 1
     @context = DebugContext.new
 
