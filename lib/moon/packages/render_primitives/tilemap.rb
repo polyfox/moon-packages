@@ -54,7 +54,7 @@ module Moon
 
     def refresh_tileset
       if @tileset
-        @tilesize = Vector2.new(@tileset.cell_w, @tileset.cell_h)
+        @tilesize = Vector2.new(@tileset.w, @tileset.h)
       else
         @tilesize = Vector2.new
       end
