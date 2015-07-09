@@ -68,7 +68,9 @@ module Moon
     # @param [Array<Object>] listeners
     def off(*listeners)
       @listeners.each do |_, ary|
-        listeners.each { |cb| ary.delete(cb) }
+        listeners.each do |cb|
+          ary.reject! { |l| l[0] == cb }
+        end
       end
     end
 
