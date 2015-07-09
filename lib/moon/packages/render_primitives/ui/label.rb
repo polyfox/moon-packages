@@ -84,6 +84,11 @@ module Moon
       refresh_color
     end
 
+    def opacity=(opacity)
+      @opacity = opacity
+      refresh_color
+    end
+
     def outline_color
       @text.outline_color
     end
