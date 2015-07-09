@@ -76,7 +76,7 @@ module Moon
 
     # Adds a new event listener.
     #
-    # @param [Symbol] types  event types to listen for
+    # @param [Symbol, Array<Symbol>] types  event types to listen for
     # @param [Proc] reducer  Reducer to execute on the event stream before the callback.
     # @param [Proc] block  The block we want to execute when we catch the event.
     # @return [#call] the block passed in
@@ -105,10 +105,13 @@ module Moon
       return unless allow_event?(event)
 
       # TODO: support :any
-      @listeners[event.type].each do |block, reducer|
-        # we can do buffering in the future
-        transduce(reducer, :<<.to_proc, [], [event]).each do |e|
-          block.call(e) # e, self?
+      [:any, event.type].each do |type|
+        @listeners[type].each do |pair|
+          block, reducer = *pair
+          # we can do buffering in the future
+          transduce(reducer, :<<.to_proc, [], [event]).each do |e|
+            block.call(e) # e, self?
+          end
         end
       end
     end
