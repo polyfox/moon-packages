@@ -11,6 +11,6 @@ require 'render_primitives/render_container'
 require 'render_primitives/render_array'
 require 'render_primitives/selective_render_array'
 # Specialized
-require 'render_primitives/tilemap'
+require 'render_primitives/spritesheetmap'
 # UI
 require 'render_primitives/ui'

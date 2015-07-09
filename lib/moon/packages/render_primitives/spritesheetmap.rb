@@ -2,7 +2,7 @@ require 'render_primitives/render_context'
 
 module Moon
   # This may need to be rewritten in C/++
-  class Tilemap < RenderContext
+  class Spritesheetmap < RenderContext
     # @return [Moon::Spritesheet]
     attr_accessor :tileset
     # @return [Moon::DataMatrix]
