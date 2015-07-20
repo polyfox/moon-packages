@@ -137,14 +137,7 @@ module Moon
 
   class MouseMoveEvent < Event
     include MouseEvent
-
-    # @!attribute [r] x
-    #   @return [Numeric]
-    attr_reader :x
-
-    # @!attribute [r] y
-    #   @return [Numeric]
-    attr_reader :y
+    include PositionedEvent
 
     # @!attribute screen_rect
     #   @return [Rect]
@@ -155,33 +148,25 @@ module Moon
     # @param [Moon::Rect] screen_rect
     def initialize(x, y, screen_rect)
       @screen_rect = screen_rect
-      @x, @y = x, y
+      @position = Vector2.new(x, y)
       super :mousemove
     end
 
     # @param [Numeric] x
     def x=(x)
-      @x = x
-      @position.x = @x if @position
+      super
       @normalize_position = nil
     end
 
     # @param [Numeric] y
     def y=(y)
-      @y = y
-      @position.y = @y if @position
+      super
       @normalize_position = nil
-    end
-
-    # @return [Vector2]
-    def position
-      @position ||= Moon::Vector2.new(@x, @y)
     end
 
     # @param [Vector2] pos
     def position=(pos)
-      @position = pos
-      @x, @y = *@position
+      super
       @normalize_position = nil
     end
 
