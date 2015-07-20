@@ -105,8 +105,8 @@ class DebugShell < Moon::RenderContainer
     @input_background = Moon::SkinSlice9.new
     @input_background.windowskin = Moon::Spritesheet.new("resources/ui/console_windowskin_dark_16x16.png", 16, 16)
 
-    @seperator = Moon::SkinSlice3.new
-    @seperator.windowskin = Moon::Spritesheet.new("resources/ui/line_96x1_ff777777.png", 32, 1)
+    @separator = Moon::SkinSlice3.new
+    @separator.windowskin = Moon::Spritesheet.new("resources/ui/line_96x1_ff777777.png", 32, 1)
 
     @caret = Caret.new
 
@@ -124,17 +124,17 @@ class DebugShell < Moon::RenderContainer
     on :resize do
       @input_background.w = w
       @input_background.h = h
-      @seperator.w = w
-      @seperator.h = 1
+      @separator.w = w
+      @separator.h = 1
 
       @log_text.position.set(4, -4, 0)
       @input_text.position.set(4, h - @input_text.font.size - 8, 0)
-      @seperator.position.set(0, @input_text.y, 0)
+      @separator.position.set(0, @input_text.y, 0)
       @caret.position.set(@input_text.x, @input_text.position.y + 2, 0)
     end
 
     add @input_background
-    add @seperator
+    add @separator
     add @input_text
     add @log_text
     add @caret
