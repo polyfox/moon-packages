@@ -1,5 +1,5 @@
 class DebugShell < Moon::RenderContainer
-  class Caret < Moon::RenderContainer
+  class Caret < Moon::RenderContext
     def initialize
       super
       @index = 0
@@ -16,7 +16,7 @@ class DebugShell < Moon::RenderContainer
       @h ||= @spritesheet.cell_h
     end
 
-    def render(x=0, y=0, z=0, options={})
+    def render_content(x, y, z, options)
       px, py, pz = *(@position + [x, y, z])
       @spritesheet.render(px, py, pz, @index)
       #@spritesheet.render(px, py, pz, @index, options.merge(opacity: @opacity))
@@ -37,8 +37,13 @@ class DebugShell < Moon::RenderContainer
     #
   end
 
-  def initialize(font)
+  attr_reader :input
+
+  def initialize_members(font)
     super()
+    @input = Moon::Input::Observer.new
+    register_input
+
     self.w = Moon::Screen.w
     self.h = 16 * 6
 
@@ -71,11 +76,32 @@ class DebugShell < Moon::RenderContainer
     @seperator.position.set(0, @input_text.y, 0)
     @caret.position.set(@input_text.x, @input_text.position.y+2, 0)
 
-    add(@input_background)
-    add(@seperator)
-    add(@input_text)
-    add(@log_text)
-    add(@caret)
+    add @input_background
+    add @seperator
+    add @input_text
+    add @log_text
+    add @caret
+  end
+
+  def register_input
+    input.typing do |e|
+      insert e.char if @debug_shell
+    end
+
+    input.on :press, :repeat do |e|
+      erase if e.key == :backspace
+    end
+
+    input.on :press do |e|
+      case e.key
+      when :enter
+        exec
+      when :up
+        history_prev
+      when :down
+        history_next
+      end
+    end
   end
 
   def add_log(str)

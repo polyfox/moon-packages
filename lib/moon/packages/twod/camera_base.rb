@@ -23,7 +23,11 @@ class CameraBase < Moon::DataModel::Metal
 
   abstract :view_offset
 
-  ##
+  # @param [Moon::Vector2, Moon::Vector3] point
+  def focus_on(point)
+    self.position.set point
+  end
+
   # Camera should follow this object every update
   #
   # @param [#position] obj

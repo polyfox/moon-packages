@@ -1,6 +1,5 @@
 module Moon
   class Vector1
-    include Comparable
     include Serializable::Properties
     include Serializable
 
@@ -14,11 +13,6 @@ module Moon
     # @return [Boolean]
     def zero?
       x == 0
-    end
-
-    # @return [Integer]
-    def <=>(other)
-      [x] <=> Vector1.extract(other)
     end
 
     # @return [Hash<Symbol, Float>]

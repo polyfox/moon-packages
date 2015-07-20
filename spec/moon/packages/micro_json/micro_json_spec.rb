@@ -53,20 +53,16 @@ describe MicroJSON do
 
     context 'failure conditions' do
       it 'fails if given hex-values in a non-hex number' do
-        expect { described_class.load('1A') }.to raise_error
+        expect { described_class.load('1A') }.to raise_error(MicroJSON::Decoder::UnexpectedChar)
       end
 
       it 'fails if given hex-values in a float number' do
-        expect { described_class.load('1.AF') }.to raise_error
+        expect { described_class.load('1.AF') }.to raise_error(MicroJSON::Decoder::UnexpectedChar)
       end
 
       it 'fails if given floating point in a hex number' do
-        expect { described_class.load('0x12.A') }.to raise_error
+        expect { described_class.load('0x12.A') }.to raise_error(MicroJSON::Decoder::InvalidNumeric)
       end
-
-      #it 'fails if given a word, which is not a keyword' do
-      #  expect { described_class.load('iamakeyword') }.to raise_error
-      #end
     end
   end
 end

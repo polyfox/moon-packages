@@ -17,6 +17,10 @@ module Moon
         if @on_exception
           @on_exception.call(exc, backtrace)
         else
+          puts 'Input Error occured: ' << exc.inspect
+          backtrace.each do |line|
+            puts "\t#{line}"
+          end
           raise exc
         end
       end

@@ -1,6 +1,5 @@
 module Moon
   class Vector4
-    include Comparable
     include Serializable::Properties
     include Serializable
 
@@ -16,10 +15,6 @@ module Moon
 
     def zero?
       x == 0 && y == 0 && z == 0 && w == 0
-    end
-
-    def <=>(other)
-      [x, y, z, w] <=> Vector4.extract(other)
     end
 
     def xy

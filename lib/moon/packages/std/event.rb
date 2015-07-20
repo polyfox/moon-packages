@@ -15,25 +15,6 @@ module Moon
       @type = type
       @id = @@id += 1
     end
-
-    # Creates a filter proc for handling extra options from an Eventable#on
-    #
-    # @param [Hash<Symbol, Object>] options  used for filter.
-    # @return [Proc]
-    def self.make_filter(options)
-      lambda do |event|
-        # Checks that all pairs in the options match the event's properties.
-        #
-        # @example KeyboardEvent with key
-        #   # this will filter KeyboardEvents with the :press action and :a key.
-        #   on Moon::KeyboardEvent, action: :press, key: :a do |ev|
-        #     do_action ev
-        #   end
-        options.all? do |k, v|
-          event.send(k) == v
-        end
-      end
-    end
   end
 
   # Base class for Input related events.
@@ -89,13 +70,11 @@ module Moon
   class KeyboardTypingEvent < Event
     include KeyboardEvent
 
-    attr_reader :action
     attr_accessor :char
 
     def initialize(char)
       @char = char
-      @action = :typing
-      super @action
+      super :typing
     end
   end
 
@@ -139,6 +118,17 @@ module Moon
     end
   end
 
+  class ClickEvent < Event
+    attr_accessor :target
+    attr_accessor :position
+
+    def initialize(target, position)
+      @target = target
+      @position = position
+      super :click
+    end
+  end
+
   # Event used for wrapping other events.
   # This is not used on its own and is normally subclassed.
   # @abstract
@@ -160,46 +150,43 @@ module Moon
     end
   end
 
-  # Base event for stateful events.
+  # Base event for stateful mouse events.
   # @abstract
-  class WrappedStateEvent < WrappedEvent
-    # @!attribute [r] state
+  class MouseWrappedStateEvent < WrappedEvent
+    include MouseEvent
+
+    # @!attribute state
     #   @return [Boolean] whether its hovering, or not
     attr_accessor :state
 
-    # @param [Event] event  original event
-    # @param [RenderContainer] parent  parent object
-    # @param [Boolean] state  true or false
+    # @!attribute position
+    #   @return [Vector2] position
+    attr_accessor :position
+
+    # @param [Event] event
+    # @param [RenderContainer] parent
+    # @param [Vector2] position
+    # @param [Boolean] state  true if the mouse is hovering over the object,
+    #                         false otherwise
     # @param [Symbol] type  the event type
-    def initialize(event, parent, state, type)
+    def initialize(event, parent, position, state, type)
+      @position = Moon::Vector2[position]
       @state = state
       super event, parent, type
     end
   end
 
   # Event triggered when the Mouse hovers over an Object.
-  class MouseHoverEvent < WrappedStateEvent
-    include MouseEvent
-
-    # @param [Event] event
-    # @param [RenderContainer] parent
-    # @param [Boolean] state  true if the mouse is hovering over the object,
-    #                         false otherwise
-    def initialize(event, parent, state)
-      super event, parent, state, :mousehover
+  class MouseHoverEvent < MouseWrappedStateEvent
+    def initialize(event, parent, position, state)
+      super event, parent, position, state, :mousehover
     end
   end
 
   # Event triggered when a Mouse click takes place inside an Object.
-  class MouseFocusedEvent < WrappedStateEvent
-    include MouseEvent
-
-    # @param [Event] event
-    # @param [RenderContainer] parent
-    # @param [Boolean] state  true if the mouse is focused on the object,
-    #                         false otherwise
-    def initialize(event, parent, state)
-      super event, parent, state, :mousefocus
+  class MouseFocusedEvent < MouseWrappedStateEvent
+    def initialize(event, parent, position, state)
+      super event, parent, position, state, :mousefocus
     end
   end
 
