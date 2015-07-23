@@ -69,14 +69,7 @@ module Moon
       #
       # @param [Array<Component, Symbol>] components
       def remove(*components)
-        components.each do |component|
-          case component
-          when Component
-            @world.remove_component(self, component)
-          when Symbol
-            @world.remove_component_by_symbol(self, component)
-          end
-        end
+        components.each { |component| @world.remove_component(self, component) }
       end
 
       # Retrieves a component by key

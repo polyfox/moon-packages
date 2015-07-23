@@ -126,7 +126,8 @@ module Moon
       # @param [Entity] entity
       # @param [Component] component
       def remove_component(entity, component)
-        remove_component_by_symbol(entity, component.symbol)
+        component = component.symbol if component.is_a?(Component)
+        remove_component_by_symbol(entity, component)
       end
 
       # Removes all components associated with the entity
