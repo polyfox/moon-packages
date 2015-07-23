@@ -1,11 +1,77 @@
+class TextInput
+  attr_reader :input
+  attr_accessor :index
+  attr_accessor :mode
+
+  def initialize(target)
+    @target = target
+    @index = target.string.size
+    @mode = :append
+    @input = Moon::Input::Observer.new
+
+    @input.typing do |e|
+      insert e.char
+    end
+
+    @input.on :press, :repeat do |e|
+      case e.key
+      when :backspace
+        erase
+      when :insert
+        @mode = @mode == :insert ? :append : :insert
+      when :left
+        cursor_prev
+      when :right
+        cursor_next
+      end
+    end
+  end
+
+  def index=(inx)
+    @index = inx.clamp(0, @target.string.size)
+  end
+
+  def cursor_prev
+    self.index = @index.pred
+    @target.string = @target.string
+  end
+
+  def cursor_next
+    self.index = @index.succ
+    @target.string = @target.string
+  end
+
+  def erase
+    src = @target.string
+    src = (src.slice(0...(@index - 1)) || '') +
+          (src.slice(@index..src.size) || '')
+    @index = @index.pred.clamp(0, src.size)
+    @target.string = src
+  end
+
+  def insert(str)
+    src = @target.string
+    case @mode
+    when :append
+      src = (src.slice(0, @index) || '') +
+        str +
+        (src.slice(@index..src.size) || '')
+    when :insert
+      src[@index] = str
+    end
+    @index = (@index + str.size).clamp(0, src.size)
+    @target.string = src
+  end
+end
+
 class DebugShell < Moon::RenderContainer
   class Caret < Moon::RenderContext
-    def initialize
+    def initialize_members
       super
       @index = 0
       @spritesheet = Moon::Spritesheet.new("resources/ui/caret_8x16_ffffffff.png", 8, 16)
-      #@phase = -1
-      #@opacity = 255
+      @phase = -1
+      @opacity = 1.0
     end
 
     def w
@@ -17,19 +83,15 @@ class DebugShell < Moon::RenderContainer
     end
 
     def render_content(x, y, z, options)
-      px, py, pz = *(@position + [x, y, z])
-      @spritesheet.render(px, py, pz, @index)
-      #@spritesheet.render(px, py, pz, @index, options.merge(opacity: @opacity))
-      super
+      @spritesheet.render(x, y, z, @index, options.merge(opacity: @opacity))
     end
 
-    def update(delta)
-      super
-      #@opacity += 255 * @phase * delta
-      #if @opacity < 0 || @opacity > 255
-      #  @phase = -@phase
-      #  @opacity = [[@opacity, 0].max, 255].min
-      #end
+    def update_content(delta)
+      @opacity += @phase * delta
+      if @opacity < 0 || @opacity > 1
+        @phase = -@phase
+        @opacity = @opacity.clamp(0, 1)
+      end
     end
   end
 
@@ -37,59 +99,67 @@ class DebugShell < Moon::RenderContainer
     #
   end
 
-  attr_reader :input
-
-  def initialize_members(font)
-    super()
-    @input = Moon::Input::Observer.new
-    register_input
-
-    self.w = Moon::Screen.w
-    self.h = 16 * 6
-
+  def initialize_content
+    super
+    font = FontCache.font('uni0553', 16)
     @input_background = Moon::SkinSlice9.new
     @input_background.windowskin = Moon::Spritesheet.new("resources/ui/console_windowskin_dark_16x16.png", 16, 16)
 
-    @seperator = Moon::SkinSlice3.new
-    @seperator.windowskin = Moon::Spritesheet.new("resources/ui/line_96x1_ff777777.png", 32, 1)
+    @separator = Moon::SkinSlice3.new
+    @separator.windowskin = Moon::Spritesheet.new("resources/ui/line_96x1_ff777777.png", 32, 1)
 
     @caret = Caret.new
 
     @history = []
     @history_index = 0
     @contents = []
-    @input_text = Moon::Text.new("", font)
-    @log_text = Moon::Text.new("", font)
+    @input_text = Moon::Label.new("", font)
+    @log_text = Moon::Label.new("", font)
     @log_text.line_h = 1
     @context = DebugContext.new
 
     @input_text.color = Moon::Vector4.new(1, 1, 1, 1)
     @log_text.color = Moon::Vector4.new(1, 1, 1, 1)
 
-    @input_background.w = w
-    @input_background.h = h
-    @seperator.w = w
-    @seperator.h = 1
+    on :resize do
+      @input_background.w = w
+      @input_background.h = h
+      @separator.w = w
+      @separator.h = 1
 
-    @log_text.position.set(4, 4-8, 0)
-    @input_text.position.set(4,5*h/6+4-8, 0)
-    @seperator.position.set(0, @input_text.y, 0)
-    @caret.position.set(@input_text.x, @input_text.position.y+2, 0)
+      @log_text.position.set(4, -4, 0)
+      @input_text.position.set(4, h - @input_text.font.size - 8, 0)
+      @separator.position.set(0, @input_text.y, 0)
+      @caret.position.set(@input_text.x, @input_text.position.y + 2, 0)
+    end
 
     add @input_background
-    add @seperator
+    add @separator
     add @input_text
     add @log_text
     add @caret
+
+    self.w = 400
+    self.h = 16 * 6
+
+    @text_comp = TextInput.new self
+    register_input
+  end
+
+  def string
+    @input_text.string
+  end
+
+  def string=(str)
+    @input_text.string = str[0, @text_comp.index]
+    @caret.position.x = @input_text.x + @input_text.w + 4
+    @input_text.string = str
+    @input_text.color.set(1, 1, 1, 1)
   end
 
   def register_input
-    input.typing do |e|
-      insert e.char if @debug_shell
-    end
-
-    input.on :press, :repeat do |e|
-      erase if e.key == :backspace
+    input.on :any do |e|
+      @text_comp.input.trigger e
     end
 
     input.on :press do |e|
@@ -121,32 +191,6 @@ class DebugShell < Moon::RenderContainer
   def history_next
     @history_index = (@history_index + 1).min(@history.size)
     self.string = @history[@history_index]
-  end
-
-  def cursor_prev
-    #
-  end
-
-  def cursor_next
-    #
-  end
-
-  def erase
-    self.string = string.chop
-  end
-
-  def insert(str)
-    self.string += str
-  end
-
-  def string
-    @input_text.string
-  end
-
-  def string=(string)
-    @input_text.string = string
-    @input_text.color.set(1, 1, 1, 1)
-    @caret.position.x = @input_text.x + @input_text.w + 2
   end
 
   def exec

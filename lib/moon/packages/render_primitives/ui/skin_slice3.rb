@@ -21,24 +21,22 @@ module Moon
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
     private def render_content(x, y, z, options)
-      if @windowskin
-        cw, ch = @windowskin.cell_w, @windowskin.cell_h
+      return unless @windowskin
+      cw, ch = @windowskin.cell_w, @windowskin.cell_h
 
-        if @horz
-          @windowskin.render x, y, z, 0
-          ((w / cw).to_i - 2).times do |w|
-            @windowskin.render x + (w + 1) * cw, y, z, 1
-          end
-          @windowskin.render x + w - cw, y, z, 2
-        else
-          @windowskin.render x, y, z, 0
-          ((h / ch).to_i - 2).times do |h|
-            @windowskin.render x, y + (h + 1) * ch, z, 1
-          end
-          @windowskin.render x, y + h - ch, z, 2
+      if @horz
+        @windowskin.render x, y, z, 0
+        ((w / cw).to_i - 2).times do |w|
+          @windowskin.render x + (w + 1) * cw, y, z, 1
         end
+        @windowskin.render x + w - cw, y, z, 2
+      else
+        @windowskin.render x, y, z, 0
+        ((h / ch).to_i - 2).times do |h|
+          @windowskin.render x, y + (h + 1) * ch, z, 1
+        end
+        @windowskin.render x, y + h - ch, z, 2
       end
-      super
     end
   end
 end

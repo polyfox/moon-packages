@@ -29,12 +29,12 @@ module Moon
       index
     end
 
-    # Callback triggered before a set_index
+    # Callback triggered before a change_index
     private def pre_change_index
       trigger(IndexEvent.new(:pre_index, index))
     end
 
-    # Callback triggered after a set_index
+    # Callback triggered after a change_index
     private def post_change_index
       trigger(IndexEvent.new(:post_index, index))
     end

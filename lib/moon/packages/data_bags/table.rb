@@ -40,7 +40,6 @@ module Moon
     # @param [Integer] ysize
     # @param [Hash<Symbol, Object>] options
     # @option options [Integer] :default  (0) default value also used as the :fill
-    # @option options [Integer] :fill  (:default) value used to fill the data
     # @option options [Boolean] :unitialized  (false) used in place of .alloc (API)
     # @option options [Array<Integer>] :data  data to use for table
     def initialize(xsize, ysize, options = {})
@@ -48,11 +47,7 @@ module Moon
       @xsize = xsize.to_i
       @ysize = ysize.to_i
       @default = options.fetch(:default, 0)
-      if options.key?(:data)
-        @data = options.fetch(:data).dup
-      else
-        create_data(options.fetch(:fill, @default))
-      end
+      create_data
       yield self if block_given?
     end
 
@@ -61,21 +56,11 @@ module Moon
       @size = @xsize * @ysize
     end
 
-    # @api
-    private def create_data(fill = @default)
-      recalculate_size
-      @data = Array.new(@size, fill)
-    end
-
     # @param [Moon::Table] org
     def initialize_copy(org)
       super org
       create_data
       map_with_xy { |_, x, y| org.data[x + y * @xsize] }
-    end
-
-    private def post_import
-      recalculate_size
     end
 
     # @param [Array<Integer>] data_p
@@ -123,7 +108,7 @@ module Moon
       x = x.to_i
       y = y.to_i
       return @default unless contains?(x, y)
-      @data[calc_index(x, y)]
+      @data[calc_index(x, y)] || @default
     end
 
     # Retrieve a value from the internal data at (index)

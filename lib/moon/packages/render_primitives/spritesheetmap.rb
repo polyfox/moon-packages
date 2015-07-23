@@ -2,7 +2,7 @@ require 'render_primitives/render_context'
 
 module Moon
   # This may need to be rewritten in C/++
-  class Tilemap < RenderContext
+  class Spritesheetmap < RenderContext
     # @return [Moon::Spritesheet]
     attr_accessor :tileset
     # @return [Moon::DataMatrix]
@@ -26,7 +26,7 @@ module Moon
 
     ##
     #
-    private def init
+    private def initialize_members
       super
       @tileset       = nil
       @data          = nil
@@ -54,7 +54,7 @@ module Moon
 
     def refresh_tileset
       if @tileset
-        @tilesize = Vector2.new(@tileset.cell_w, @tileset.cell_h)
+        @tilesize = Vector2.new(@tileset.w, @tileset.h)
       else
         @tilesize = Vector2.new
       end

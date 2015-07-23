@@ -40,26 +40,27 @@ module Moon
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
     private def render_content(x, y, z, options)
-      if @string
-        offset = @bold ? 256 : 0
-        row = 0
-        col = 0
+      return unless @string
+      offset = @bold ? 256 : 0
+      row = 0
+      col = 0
 
-        @string.each_byte do |byte|
-          if byte.chr == "\n"
-            col = 0
-            row += 1
-            next
-          end
-          @spritesheet.render x + col * @cell_size[0],
-                              y + row * @cell_size[1],
-                              z,
-                              byte + offset,
-                              color: @color
-          col += 1
+      row_size = @cell_size[1]
+      row_y = y + row * row_size
+      @string.each_byte do |byte|
+        if byte.chr == 10 # \n
+          col = 0
+          row += 1
+          row_y = y + row * row_size
+          next
         end
+        @spritesheet.render x + col * @cell_size[0],
+                            row_y,
+                            z,
+                            byte + offset,
+                            color: @color
+        col += 1
       end
-      super
     end
   end
 end

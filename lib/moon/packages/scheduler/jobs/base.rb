@@ -1,5 +1,6 @@
 require 'std/mixins/activatable'
 require 'std/mixins/eventable'
+require 'std/mixins/taggable'
 
 module Moon
   class Scheduler
@@ -10,6 +11,7 @@ module Moon
       class Base
         include Moon::Eventable
         include Moon::Activatable
+        include Moon::Taggable
 
         # @!attribute [rw] active
         # @return [Boolean] active  is the object active?
@@ -28,12 +30,17 @@ module Moon
         # @return [Object]
         attr_accessor :key
 
+        # @!attribute tags
+        #   @return [Array<String>] tags
+        attr_accessor :tags
+
         def initialize(&block)
-          @callback = block
           @id = Random.random.base64(16)
+          @callback = block
           @active = true
           @killed = false
           @uptime = 0.0
+          @tags   = []
           initialize_eventable
         end
 

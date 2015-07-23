@@ -17,6 +17,13 @@ module Moon #:nodoc
       @children = []
     end
 
+    # Clears all children in the tree
+    #
+    # @return [self]
+    def clear_children
+      @children.clear
+    end
+
     # Yields each child tree object
     #
     # @yieldparam [Tree] child

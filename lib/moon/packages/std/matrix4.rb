@@ -1,6 +1,6 @@
 module Moon
-  class Transform
-    # Converts the Transform to a Hash.
+  class Matrix4
+    # Converts the Matrix4 to a Hash.
     #
     # @return [Hash]
     def to_h

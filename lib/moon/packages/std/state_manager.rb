@@ -2,10 +2,12 @@ module Moon
   class StateManager
     # @return [Moon::Engine]
     attr_reader :engine
+
     # List of all States on the stack
     # @return [Array<State>]
     attr_reader :states
 
+    # @param [Moon::Engine] engine
     def initialize(engine)
       @engine = engine
       @states = []
@@ -18,7 +20,7 @@ module Moon
       @engine.input.register(callback)
     end
 
-    # Is the State in debug mode?
+    # Yields a debug context
     def debug
       yield
     end
@@ -38,8 +40,8 @@ module Moon
       @states.clear
     end
 
-    ##
     # Steps the current state
+    #
     # @param [Float] delta
     def step(delta)
       return unless current
@@ -61,17 +63,16 @@ module Moon
       state
     end
 
-    # terminates and returns the last state, if any
+    # Terminates and returns the last state, if any
     #
     # @return [State, nil]
     private def eject_last
       unless @states.empty?
-        @states.last.terminate
+        @states.last.revoke
         @states.pop
       end
     end
 
-    ##
     # @param [State] state
     def change(state)
       last_state = eject_last
@@ -80,10 +81,9 @@ module Moon
       @states.last.invoke
     end
 
-    ##
     #
     def pop
-      @states.last.terminate
+      @states.last.revoke
       last_state = @states.pop
 
       debug { puts "[#{self.class}] POP #{last_state.class} > #{@states.last.class}" }
@@ -91,7 +91,6 @@ module Moon
       debug { puts "--#{self.class} now empty--" }
     end
 
-    ##
     # @param [State] state
     def push(state)
       last_state = @states.last

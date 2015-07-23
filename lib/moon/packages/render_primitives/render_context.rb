@@ -1,86 +1,84 @@
 require 'std/mixins/transitionable'
 require 'std/mixins/eventable'
+require 'std/mixins/taggable'
 require 'std/input/observer'
 require 'render_primitives/screen_element'
 require 'render_primitives/renderable'
 require 'render_primitives/visibility'
 require 'render_primitives/containable'
 require 'render_primitives/rectangular'
-require 'render_primitives/data_attributes'
 
 # RenderContext classes are bare bone Renderable objects, they do nothing
 # on their own, and serve as a base class for other Renderable objects
 module Moon
   class RenderContext
-    include Transitionable                               # Moon::Core
-    include Eventable                                    # Moon::Core
+    include Transitionable                               # Moon Core
+    include Eventable                                    # Moon Core
+    include Taggable
     include RenderPrimitive::ScreenElement               # RenderPrimitive Core
     include RenderPrimitive::Renderable                  # RenderPrimitive Core
     include RenderPrimitive::Visibility                  # RenderPrimitive Core
     include RenderPrimitive::Containable                 # RenderPrimitive Core
     include RenderPrimitive::Rectangular                 # RenderPrimitive Core
-    include RenderPrimitive::DataAttributes              # RenderPrimitive Core
 
     # @return [Integer] id counter
     @@context_id = 0
 
-    # @return [Boolean]
+    # @!attribute visible
+    #   @return [Boolean] Is this context visible for rendering?
     attr_accessor :visible
 
-    # @return [Input::Observer]
+    # @!attribute input
+    #   @return [Input::Observer] input observer
     attr_accessor :input
 
-    # @return [Integer] RenderContext id
+    # @!attribute [r] id
+    #   @return [Integer] RenderContext id
     attr_reader :id
 
-    ##
+    # @!attribute tags
+    #   @return [Array<String>] tags
+    attr_accessor :tags
+
     # @param [Hash<Symbol, Object>] options
     #   @optional
     def initialize(options = {})
+      @id = @@context_id += 1
       pre_initialize
-      initialize_data_attrs
-
-      initialize_members
-
-      initialize_from_options(options)
-
-      initialize_eventable
-      initialize_content
-      initialize_events
-      init
-
-      if block_given?
-        yield self
-      end
-
+      initialize_eventable # Eventable
+      initialize_members   # initialize regular member variables
+      initialize_from_options(options) # initialize user options
+      initialize_content   # initialize other elements
+      initialize_events    # initialize events
+      yield self if block_given?
       post_initialize
-      puts "Created a #{self.class}"
     end
 
+    # Called before all other initializations
     def pre_initialize
     end
 
+    # Called after all other initializations
     def post_initialize
     end
 
     private def initialize_members
-      @id = @@context_id += 1
-
-      @w = 0
-      @h = 0
+      @w        = 0
+      @h        = 0
       @position = Vector3.new
       @visible  = true
       @parent   = nil
-      @tick = 0.0
-      @input = Moon::Input::Observer.new
+      @tick     = 0.0
+      @tags     = []
+      @input    = Moon::Input::Observer.new
     end
 
     # @param [Hash<Symbol, Object>] options
     private def initialize_from_options(options)
-      @position = options.fetch(:position) { Vector3.new(0, 0, 0) }
-      @visible  = options.fetch(:visible, true)
-      @w    = options.fetch(:w, 0)
-      @h   = options.fetch(:h, 0)
+      @position = options[:position] || @position
+      @visible  = options.fetch(:visible, @visible)
+      @w        = options.fetch(:w, @w) # can be nil to invalidate.
+      @h        = options.fetch(:h, @h) # can be nil to invalidate.
     end
 
     # @return [Moon::Vector3]
@@ -138,7 +136,7 @@ module Moon
             @expecting_release = false
             p = event.position
             if screen_bounds.contains?(p.x, p.y)
-              trigger ClickEvent.new(self, p)
+              trigger ClickEvent.new(self, p, :click)
             end
           end
         end
@@ -149,7 +147,7 @@ module Moon
         now = @tick
         @last_click_at ||= 0.0
         if (now - @last_click_at) < 0.500
-          trigger MouseDoubleClickEvent.new
+          trigger ClickEvent.new(self, event.position, :double_click)
           # reset the distance, so we can't trigger
           #consecutive double clicks with a single click
           @last_click_at = 0.0
@@ -211,14 +209,10 @@ module Moon
       end
     end
 
-    # @abstract
-    private def init
-      #
-    end
-
     # @param [Moon::Vector3, Numeric, Array] vec3
     # @return [Moon::Vector3]
-    def apply_position_modifier(vec3 = 0)
+    def apply_position_modifier(*vec3)
+      return @position if vec3.empty?
       @position + vec3
     end
 
@@ -256,9 +250,8 @@ module Moon
     # @param [Hash<Symbol, Object>] options
     # @api private
     def render_abs(x, y, z, options)
-      px, py, pz = *apply_position_modifier(Moon::Vector3.new(x, y, z))
+      px, py, pz = *apply_position_modifier(x, y, z)
       render_content(px, py, pz, options)
-      super
     end
   end
 end

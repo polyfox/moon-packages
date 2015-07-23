@@ -3,6 +3,6 @@ class Numeric
   #
   # @return [String]
   def to_json
-    JSON.dump(self)
+    JSON.dump self
   end
 end

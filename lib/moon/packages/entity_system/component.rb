@@ -20,21 +20,11 @@ module Moon
 
       module InstanceMethods
         def initialize(options = {})
-          setup(options)
+          initialize_fields(options)
         end
 
         def symbol
           self.class.registered
-        end
-
-        private def setup(options = {})
-          each_field do |key, field|
-            if options.key?(key)
-              send("#{key}=", options[key]) if options.key?(key)
-            else
-              initialize_field(key)
-            end
-          end
         end
 
         def to_h

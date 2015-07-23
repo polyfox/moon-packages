@@ -1,3 +1,4 @@
+require 'std/core_ext/enumerable'
 require 'std/core_ext/array'
 require 'std/core_ext/true_class'
 require 'std/core_ext/false_class'
