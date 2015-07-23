@@ -230,18 +230,14 @@ module Moon
       #
       # @return [self]
       def update(delta)
-        for system in @systems
-          system.update delta
-        end
+        @systems.each { |system| system.update delta }
       end
 
       # Renders the internal systems
       #
       # @return [self]
       def render(x = 0, y = 0, z = 0, options = {})
-        for system in @systems
-          system.render x, y, z, options
-        end
+        @systems.each { |system| system.render x, y, z, options }
       end
 
       # @return [Hash<Symbol, Object>]
