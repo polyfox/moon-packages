@@ -18,14 +18,11 @@ require 'std/vector1'
 require 'std/vector2'
 require 'std/vector3'
 require 'std/vector4'
-require 'std/screen'
 require 'std/matrix4'
 # addon
 require 'std/cache_base'
 require 'std/animation'
 require 'std/palette_parser'
-# timing
-require 'std/clock'
 # data
 require 'std/tree'
 # state
