@@ -66,8 +66,9 @@ module Moon
     end
 
     def font=(font)
+      org = @text.font
       @text.font = font
-      trigger { FontChangedEvent.new(org, cur) }
+      trigger { FontChangedEvent.new(org, @text.font) }
     end
 
     def string
@@ -75,8 +76,9 @@ module Moon
     end
 
     def string=(string)
+      org = @text.string
       @text.string = string
-      trigger { StringChangedEvent.new(org, cur) }
+      trigger { StringChangedEvent.new(org, @text.string) }
     end
 
     def color=(color)
@@ -111,8 +113,9 @@ module Moon
     end
 
     def align=(align)
+      org = @text.align
       @text.align = align
-      trigger { FontChangedEvent.new(org, cur) }
+      trigger { FontChangedEvent.new(org, @text.align) }
     end
 
     def line_height
