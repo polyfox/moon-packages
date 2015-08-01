@@ -19,7 +19,7 @@ module Moon
     # @param [Hash<Symbol, Object>] options
     private def render_content(x, y, z, options)
       return unless @windowskin
-      cw, ch = @windowskin.cell_w, @windowskin.cell_h
+      cw, ch = @windowskin.w, @windowskin.h
 
       # render the windowskin (background)
       (w / cw).to_i.times do |w|
