@@ -13,7 +13,7 @@ class TextInput
       insert e.char
     end
 
-    @input.on :press, :repeat do |e|
+    @input.on [:press, :repeat] do |e|
       case e.key
       when :backspace
         erase
@@ -75,11 +75,11 @@ class DebugShell < Moon::RenderContainer
     end
 
     def w
-      @w ||= @spritesheet.cell_w
+      @w ||= @spritesheet.w
     end
 
     def h
-      @h ||= @spritesheet.cell_h
+      @h ||= @spritesheet.h
     end
 
     def render_content(x, y, z, options)

@@ -201,7 +201,7 @@ module Moon
         @dragging = false if event.button == :mouse_left && @draggable
       end
 
-      input.on :press, :repeat do |event|
+      input.on [:press, :repeat] do |event|
         if event.is_a?(MouseEvent)
           p = event.position
           trigger MouseFocusedEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y))
