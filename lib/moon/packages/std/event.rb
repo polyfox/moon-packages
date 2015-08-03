@@ -139,40 +139,11 @@ module Moon
     include MouseEvent
     include PositionedEvent
 
-    # @!attribute screen_rect
-    #   @return [Rect]
-    attr_accessor :screen_rect
-
     # @param [Numeric] x
     # @param [Numeric] y
-    # @param [Moon::Rect] screen_rect
-    def initialize(x, y, screen_rect)
-      @screen_rect = screen_rect
+    def initialize(x, y)
       @position = Vector2.new(x, y)
       super :mousemove
-    end
-
-    # @param [Numeric] x
-    def x=(x)
-      super
-      @normalize_position = nil
-    end
-
-    # @param [Numeric] y
-    def y=(y)
-      super
-      @normalize_position = nil
-    end
-
-    # @param [Vector2] pos
-    def position=(pos)
-      super
-      @normalize_position = nil
-    end
-
-    # @return [Vector2] normalized position against the screen_rect
-    def normalize_position
-      @normalize_position ||= position / [@screen_rect.w, @screen_rect.h]
     end
   end
 
