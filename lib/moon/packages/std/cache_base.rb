@@ -42,7 +42,9 @@ module Moon #:nodoc
       alias_method "load_#{method_name}", method_name
 
       define_method(method_name) do |*args|
-        (@cache[method_name] ||= {})[args] ||= send("load_#{method_name}", *args)
+        key = args.join(',') # hack until Hash is fixed I suppose
+        branch = @cache[method_name] ||= {}
+        branch[key] ||= send("load_#{method_name}", *args)
       end
     end
 
