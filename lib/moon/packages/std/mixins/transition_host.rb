@@ -4,8 +4,17 @@ module Moon
     # @param [Object] dest
     # @param [String] duration
     # @return [Transition]
-    def add_transition(src, dest, duration, easer = Easing::Linear, &block)
-      transition = Transition.new(src, dest, duration, easer, &block)
+    def create_transition(src, dest, duration, easer = Easing::Linear, &block)
+      Transition.new(src, dest, duration, easer, &block)
+    end
+
+    # (see #create_transition)
+    def add_transition(*args, &block)
+      transition = if args.first.is_a?(Transition)
+        args.first
+      else
+        create_transition(*args, &block)
+      end
       (@transitions ||= []).push transition
       transition
     end
