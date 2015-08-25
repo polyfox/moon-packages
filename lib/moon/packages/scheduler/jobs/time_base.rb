@@ -34,7 +34,7 @@ module Moon
 
         # @return [Float]
         def rate
-          @time / @duration
+          @time.to_f / @duration
         end
 
         # Called when a job's time has reached 0 or less
