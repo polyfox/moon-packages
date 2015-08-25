@@ -215,9 +215,14 @@ module Moon
 
       ## Systems
 
+      # @param [System]
+      def on_system_added(system)
+      end
+
       # Registers a new system, by name or Class
       #
       # @param [Symbol, Class] system_klass
+      # @return [System]
       def register(system_klass)
         if system_klass.is_a?(Symbol)
           system = System.manager.fetch(system_klass).new(self)
@@ -225,6 +230,8 @@ module Moon
           system = system_klass.new(self)
         end
         @systems << system
+        on_system_added system
+        system
       end
 
       # Update the internal systems
