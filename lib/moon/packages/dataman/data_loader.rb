@@ -28,8 +28,10 @@ module Moon
     #
     # @param [String] filename
     def self.file(filename)
-      STDERR.puts "[#{self}] .file(#{filename})"
-      string raw_file(filename)
+      STDERR.print "[#{self}] loading file(#{filename})"
+      data = string raw_file(filename)
+      STDERR.puts " LOADED"
+      data
     end
   end
 end
