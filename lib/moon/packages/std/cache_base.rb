@@ -2,6 +2,9 @@ module Moon #:nodoc
   # General purspose cache.
   # Simply create new branches (loaders) and the cache will do the rest.
   class CacheBase
+    attr_reader :name
+    attr_reader :cache
+
     # @param [String] name
     def initialize(name = nil)
       @name = name || self.class.to_s
