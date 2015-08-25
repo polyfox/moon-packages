@@ -88,7 +88,6 @@ module Moon
 
       debug { puts "[#{self.class}] POP #{last_state.class} > #{@states.last.class}" }
       @states.last.resume if !@states.empty?
-      debug { puts "--#{self.class} now empty--" }
     end
 
     # @param [State] state
