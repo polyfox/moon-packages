@@ -42,7 +42,7 @@ module Moon
     end
 
     def xyzw
-      dup
+      self
     end
 
     def xyzw=(other)

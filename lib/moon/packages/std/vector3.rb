@@ -26,7 +26,7 @@ module Moon
     end
 
     def xyz
-      dup
+      self
     end
 
     def xyz=(other)

@@ -18,7 +18,7 @@ module Moon
 
     # @return [Moon::Vector2]
     def xy
-      dup
+      self
     end
 
     # @param [Moon::Vector2] other
