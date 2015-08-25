@@ -61,6 +61,14 @@ module Moon
       @text.color = @render_color
     end
 
+    def w
+      @w ||= @text.w
+    end
+
+    def h
+      @h ||= @text.h
+    end
+
     def font
       @text.font
     end
@@ -68,6 +76,7 @@ module Moon
     def font=(font)
       org = @text.font
       @text.font = font
+      resize nil, nil
       trigger { FontChangedEvent.new(org, @text.font) }
     end
 
@@ -78,6 +87,7 @@ module Moon
     def string=(string)
       org = @text.string
       @text.string = string
+      resize nil, nil
       trigger { StringChangedEvent.new(org, @text.string) }
     end
 
@@ -105,6 +115,7 @@ module Moon
 
     def outline=(outline)
       @text.outline = outline
+      resize nil, nil
     end
 
     # @return [Symbol] position options are :left, :right, or :center
@@ -124,6 +135,7 @@ module Moon
 
     def line_height=(line_height)
       @text.line_height = line_height
+      resize nil, nil
     end
 
     def render_content(x, y, z, options)
