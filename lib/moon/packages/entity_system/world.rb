@@ -67,20 +67,6 @@ module Moon
         @components.replace(components)
       end
 
-      # Callback when an entity is added to the World.
-      #
-      # @param [Entity] entity
-      def on_entity_added(entity)
-        #
-      end
-
-      # Callback when an entity is removed from the World.
-      #
-      # @param [Entity] entity
-      def on_entity_removed(entity)
-        #
-      end
-
       # Sets a component, if given nil, the component is removed instead.
       #
       # @param [Entity] entity
@@ -161,7 +147,6 @@ module Moon
       # @return [Entity] Returns the added entity
       private def add_entity(entity)
         @entities << entity
-        on_entity_added entity
         entity
       end
 
@@ -177,7 +162,6 @@ module Moon
       def remove_entity(entity)
         if e = @entities.delete(entity)
           remove_entity_components e
-          on_entity_removed e
           e
         end
       end
