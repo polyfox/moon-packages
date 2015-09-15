@@ -24,6 +24,14 @@ module Moon
           @registered = sym.to_sym
           Component.manager[@registered] = self
         end
+
+        # Registers the system using its class name
+        #
+        # @return [self]
+        def autoregister
+          register to_s.demodulize.downcase.to_sym
+          self
+        end
       end
 
       module InstanceMethods
@@ -58,7 +66,7 @@ module Moon
         mod.extend         ClassMethods
         mod.send :include, InstanceMethods
 
-        mod.register mod.to_s.demodulize.downcase.to_sym
+        mod.autoregister
       end
 
       def self.load(data)

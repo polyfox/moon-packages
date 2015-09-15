@@ -21,6 +21,14 @@ module Moon
           System.manager[@registered] = self
           self
         end
+
+        # Registers the system using its class name
+        #
+        # @return [self]
+        def autoregister
+          register to_s.demodulize.downcase.to_sym
+          self
+        end
       end
 
       module InstanceMethods
@@ -67,10 +75,11 @@ module Moon
         end
       end
 
+      # @param [Module] mod  module that included this
       def self.included(mod)
         mod.extend         ClassMethods
         mod.send :include, InstanceMethods
-        mod.register mod.to_s.demodulize.downcase.to_sym
+        mod.autoregister
       end
 
       def self.load(data)
