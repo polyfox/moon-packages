@@ -26,13 +26,14 @@ module Debug
       end
 
       def self.object_type(type)
-        case type
+        content = type.content || type.model
+        case content
         when Array
-          array_type(type)
+          array_type(content)
         when Hash
-          hash_type(type)
+          hash_type(content)
         else
-          type.inspect
+          content.inspect
         end
       end
     end
@@ -48,7 +49,7 @@ module Debug
         @stream = stream
         @indent_level = 0
         @comment_delimiter = '#'
-        @indent_delimiter = "\s\s"
+        @indent_delimiter = "\t"
         @list_delimiter = ','
         if from
           @comment_delimiter = from.comment_delimiter
@@ -146,7 +147,7 @@ module Debug
           hash.each do |key, value|
             write_object key, depth.succ
             write ' => '
-            write_object obj, depth.succ
+            write_object value, depth.succ
             write @list_delimiter
             write_endl depth.succ
           end
@@ -163,7 +164,7 @@ module Debug
         when Moon::DataModel::Fields
           write_model obj, depth.succ
         else
-          write obj.inspect
+          write_indented obj.inspect
         end
       end
     end
@@ -178,10 +179,12 @@ end
 
 module Moon
   module DataModel
-    module Model
-      def pretty_print_model(depth = 0)
-        Debug::DataModel.pretty_print(self, depth)
-        self
+    module Fields
+      module InstanceMethods
+        def pretty_print_model(depth = 0)
+          Debug::DataModel.pretty_print(self, depth)
+          self
+        end
       end
     end
   end
