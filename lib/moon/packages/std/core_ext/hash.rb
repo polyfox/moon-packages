@@ -26,7 +26,9 @@ class Hash
   # @param [Object] keys  keys to copy from the Hash
   # @return [Hash] hash slice
   def slice(*keys)
-    keys.each_with_object({}) { |key, hsh| hsh[key] = self[key] }
+    keys.each_with_object({}) do |key, dest|
+      dest[key] = self[key]
+    end
   end
 
   # Similar to #values_of, uses #fetch instead to retrieve the values.
