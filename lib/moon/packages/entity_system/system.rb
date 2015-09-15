@@ -58,18 +58,25 @@ module Moon
           #
         end
 
+        # Overwrite this method in your base class to add serializable
+        # properties
+        #
+        # @return [Hash<Symbol, Object>]
         def to_h
-          {
-            :"&class" => to_s
-          }
+          {}
         end
 
-        # Serializable
+        # Serializable interface, use this method to dump a system state
+        #
+        # @return [Hash<String, Object>]
         def export
-          to_h.stringify_keys
+          to_h.merge(system_name: self.class.registered.to_s).stringify_keys
         end
 
-        # Serializable
+        # Serializable interface, use this method to reload a system state
+        #
+        # @param [Hash<String, Object>]
+        # @return [self]
         def import(data)
           self
         end
@@ -82,8 +89,17 @@ module Moon
         mod.autoregister
       end
 
-      def self.load(data)
-        Object.const_get data["&class"]
+      # Creates a new System, the system is taken from its marshalled
+      # system_name
+      #
+      # @param [Moon::EntitySystem::World] world
+      # @param [Hash<String, Object>] data
+      # @return [Moon::EntitySystem::System]
+      def self.new(world, data)
+        system_name = data['system_name'].to_sym
+        manager.fetch(system_name).new(world).tap do |sys|
+          sys.import(data.symbolize_keys)
+        end
       end
     end
   end

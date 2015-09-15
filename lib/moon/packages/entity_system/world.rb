@@ -1,6 +1,14 @@
+require 'entity_system/entity'
+require 'entity_system/system'
+require 'entity_system/component'
+
 module Moon
   module EntitySystem
     class World
+      # @!attribute [r] components
+      #   @return [Hash<Symbol, Hash<Entity, Array<Component>>>]
+      attr_reader :components
+
       # @!attribute [r] entities
       #   @return [Array<Entity>]
       attr_reader :entities
@@ -19,35 +27,42 @@ module Moon
         @systems = []
       end
 
+      # Initializes a copy of the world
+      #
+      # @param [World] other
+      # @return [self]
+      def initialize_copy(other)
+        @components = @components.dup
+        @entities = @entities.dup
+        @systems = @systems.dup
+        import(other.export)
+        self
+      end
+
       # Recreates the random generator from the existing one.
       private def reset_random
         @random = Random.new @random.seed
       end
 
-      # Clears all entities, compontents and systems, skips callbacks.
-      def clear!
-        reset_random
-        @components.clear
-        @entities.clear
-        @systems.clear
-      end
-
-      # Same as {#clear!}, however callbacks are invoked.
+      # Clears all entities, components and systems, skips callbacks.
+      #
+      # @return [self]
       def clear
         reset_random
-        @entities.dup.each do |entity|
-          remove_entity entity
-        end
-        @entities.clear
         @components.clear
+        @entities.clear
         @systems.clear
+        self
       end
 
       # Synchronizes components and entities, this removes zombie components.
       def refresh
         components = {}
-        @components.each_pair do |key, comps|
-          components[key] = comps.slice(@entities)
+        @components.each_pair do |component_name, comps|
+          rehashed = @entities.each_with_object({}) do |entity, dest|
+            dest[entity] = comps[entity]
+          end
+          components[component_name] = rehashed
         end
         @components.replace(components)
       end
@@ -97,7 +112,7 @@ module Moon
       # @return [Array<Component>]  components
       def get_components(entity)
         @components.each_with_object([]) do |pair, acc|
-          (_, entities) = *pair
+          _, entities = *pair
           if comp = entities[entity]
             acc.push(comp)
           end
@@ -263,8 +278,6 @@ module Moon
           component_sym, comps = *d
           entities = comps.each_with_object({}) do |a, hsh|
             eid, comp = *a
-            # entities are exported using their ids
-            #hsh[eid.id] = comp.map { |c| c.export }
             hsh[eid.id] = comp.export
           end
           comp_hash[component_sym.to_s] = entities
@@ -281,27 +294,29 @@ module Moon
       # @param [Hash<String, Object>] data
       # @return [self]
       def import(data)
+        clear
         @random = Random.load(data["random"])
 
-        @entities.replace(data["entities"].map do |d|
-          Entity.new(self).import(d)
-        end)
+        data["entities"].each do |d|
+          @entities << Entity.new(self).import(d)
+        end
 
         entity_table = @entities.each_with_object({}) { |e, h| h[e.id] = e }
-        @components.replace(data["components"].each_with_object({}) do |d, comp_hash|
-          component_sym, comps = *d
-          entities = comps.each_with_object({}) do |a, hsh|
-            eid, comp = *a
-            # entities are imported from their ids and then remaped
-            #hsh[entity_table[eid]] = comp.map { |c| Component.load(c) }
-            hsh[entity_table[eid]] = Component.load(comp)
+        data["components"].each_pair do |component_name, comps|
+          comp_entities = {}
+          comps.each_pair do |entity_id, component|
+            if entity = entity_table[entity_id]
+              comp_entities[entity] = Moon::EntitySystem::Component.new(component)
+            else
+              puts "WARN: missing entity (#{entity_id}) present in components"
+            end
           end
-          comp_hash[component_sym.to_sym] = entities
-        end)
+          @components[component_name.to_sym] = comp_entities
+        end
 
-        @systems.replace(data["systems"].map do |d|
-          System.load(d)
-        end)
+        data["systems"].map do |d|
+          @systems << Moon::EntitySystem::System.new(self, d)
+        end
 
         refresh
 

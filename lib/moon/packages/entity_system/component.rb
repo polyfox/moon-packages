@@ -48,7 +48,7 @@ module Moon
         end
 
         def export
-          to_h.merge(component_type: symbol).stringify_keys
+          to_h.merge(component_name: symbol.to_s).stringify_keys
         end
 
         def import(data)
@@ -69,8 +69,14 @@ module Moon
         mod.autoregister
       end
 
-      def self.load(data)
-        self[data['component_type'].to_sym].new(data.symbolize_keys)
+      # Creates a Component from the given data, the component
+      # is inferred from the `component_name`
+      #
+      # @param [Hash<String, Object>] data
+      # @return [Component]
+      def self.new(data)
+        klass = manager.fetch(data['component_name'].to_sym)
+        klass.new(data.exclude('component_name').symbolize_keys)
       end
     end
   end
