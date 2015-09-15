@@ -204,14 +204,6 @@ module Moon
         end
       end
 
-      # Get Entities for each component and intersect
-      #
-      # @param [Symbol] syms
-      # @return [Array<Entity>]
-      def [](*syms)
-        filter(*syms).to_a
-      end
-
       ## Systems
 
       # @param [System]

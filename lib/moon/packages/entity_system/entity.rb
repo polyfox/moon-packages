@@ -81,14 +81,6 @@ module Moon
       end
       alias :[] :get
 
-      # Sets a component by key
-      #
-      # @param [Symbol] key
-      # @param [Component] component
-      def []=(key, component)
-        @world.set_component(self, key, component)
-      end
-
       # Yields components under the given keys, if any of the components are
       # missing, nothing is yielded.
       #
