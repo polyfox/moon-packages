@@ -1,9 +1,13 @@
+require 'data_model/fields'
+require 'std/core_ext/hash'
+
 # Component as mixin
 module Moon
   module EntitySystem
     module Component
-      @@manager = Manager.new
+      @@manager = {}
 
+      # @return [Hash<Symbol, Class<Component>>]
       def self.manager
         @@manager
       end
@@ -11,10 +15,14 @@ module Moon
       module ClassMethods
         attr_reader :registered
 
+        # Registers the component under (name)
+        #
+        # @param [Symbol] name
+        # @return [self]
         def register(sym)
-          Component.manager.remove(@registered) if @registered
-          @registered = sym
-          Component.manager.set(@registered, self)
+          Component.manager.delete(@registered) if @registered
+          @registered = sym.to_sym
+          Component.manager[@registered] = self
         end
       end
 

@@ -1,8 +1,9 @@
 module Moon
   module EntitySystem
     module System
-      @@manager = Manager.new
+      @@manager = {}
 
+      # @return [Hash<Symbol, Class<System>>]
       def self.manager
         @@manager
       end
@@ -10,11 +11,15 @@ module Moon
       module ClassMethods
         attr_reader :registered
 
-        # @param [Symbol] sym
-        def register(sym)
-          System.manager.remove(@registered) if @registered
-          @registered = sym
-          System.manager.set(@registered, self)
+        # Registers the system under (name)
+        #
+        # @param [Symbol] name
+        # @return [self]
+        def register(name)
+          System.manager.delete(@registered) if @registered
+          @registered = name.to_sym
+          System.manager[@registered] = self
+          self
         end
       end
 
