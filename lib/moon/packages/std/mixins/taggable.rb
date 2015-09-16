@@ -1,3 +1,5 @@
+require 'std/core_ext/enumerable'
+
 module Moon
   # Module for adding tagging capabilities to Objects, the object in question
   # must implement a tags accessor, which is normally an Array of Strings.
@@ -6,7 +8,7 @@ module Moon
     #
     # @param [String] tgs
     def tag(*tgs)
-      tags.concat tgs
+      self.tags |= tgs
     end
 
     # Removes tags from the object
