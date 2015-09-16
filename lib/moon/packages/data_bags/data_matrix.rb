@@ -13,7 +13,7 @@ module Moon
       end
 
       def each(&block)
-        src.data.each(&block)
+        src.blob.each(&block)
       end
 
       # @return [self]
@@ -21,7 +21,7 @@ module Moon
         src.zsize.times do |z|
           src.ysize.times do |y|
             src.xsize.times do |x|
-              yield src.data[x + y * src.xsize + z * src.xsize * src.ysize], x, y, z
+              yield src.blob[x + y * src.xsize + z * src.xsize * src.ysize], x, y, z
             end
           end
         end
@@ -78,7 +78,9 @@ module Moon
     def initialize_copy(org)
       super org
       create_data
-      map_with_xyz { |_, x, y, z| org.data[x + y * @xsize + z * @xsize * @ysize] }
+      map_with_xyz do |_, x, y, z|
+        org.blob[x + y * @xsize + z * @xsize * @ysize]
+      end
     end
 
     # @param [Integer] nxsize
@@ -178,7 +180,7 @@ module Moon
       result = ''
       @zsize.times do |z|
         @ysize.times do |y|
-          result.concat(@data[y * @xsize + z * @xsize * @ysize, @xsize].join(', '))
+          result.concat(blob[y * @xsize + z * @xsize * @ysize, @xsize].join(', '))
           result.concat("\n")
         end
         result.concat("\n")
