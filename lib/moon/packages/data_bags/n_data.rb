@@ -11,10 +11,16 @@ module Moon
       if @data.size != @size
         index = @data.size
         @data[@size - 1] ||= @default # resize
-        index.upto(@size) do |i|
+        @size.times do |i|
           @data[i] ||= @default
         end
       end
+    end
+
+    # @return [Array]
+    def blob
+      pre_export
+      @data
     end
 
     # Initializes the internal data
