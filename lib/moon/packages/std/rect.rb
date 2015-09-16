@@ -39,15 +39,6 @@ module Moon
     add_property :w
     add_property :h
 
-    alias :initialize_xywh :initialize
-    def initialize(*args)
-      if args.empty?
-        initialize_xywh 0, 0, 0, 0
-      else
-        initialize_xywh(*args)
-      end
-    end
-
     # Splits the current rect into 4 sub rects of half size
     #
     # @return [Array[4]<Moon::Rect>]
