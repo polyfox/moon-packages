@@ -100,7 +100,7 @@ module Moon
       ox, oy, ow, oh = *other
       nx  = [x, ox].max
       ny  = [y, oy].max
-      Rect.new nx, ny, [x2, ox2].min - nx, [y2, oy2].min - ny
+      Rect.new nx, ny, [x2, ox + ow].min - nx, [y2, oy + oh].min - ny
     end
 
     # Sets the Rect's properties from the given args
