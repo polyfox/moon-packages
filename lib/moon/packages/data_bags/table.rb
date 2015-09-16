@@ -12,9 +12,9 @@ module Moon
     class Iterator < Tabular::IteratorBase
     end
 
-    include NData
     include Serializable::Properties
     include Serializable
+    include NData
     include Tabular
 
     # @!group Properties
@@ -57,20 +57,12 @@ module Moon
     end
 
     # @param [Moon::Table] org
+    # @return [self]
     def initialize_copy(org)
       super org
       create_data
-      map_with_xy { |_, x, y| org.data[x + y * @xsize] }
-    end
-
-    # @param [Array<Integer>] data_p
-    # @param [Integer] xsize
-    # @param [Integer] ysize
-    # @api
-    def change_data(data_p, xsize, ysize)
-      @xsize = xsize
-      @ysize = ysize
-      @data  = data_p
+      map_with_xy { |_, x, y| org.blob[x + y * @xsize] }
+      self
     end
 
     # Resizes the dataset
@@ -117,7 +109,7 @@ module Moon
     # @return [Integer] value Value at index
     def get_by_index(index)
       return @default if index < 0 || index >= size
-      @data[index]
+      @data[index] || @default
     end
 
     # @param [Integer] x
@@ -138,7 +130,7 @@ module Moon
     # @param [Integer] value
     def set_by_index(index, value)
       return if index < 0 || index >= size
-      @data[index] = value
+      blob[index] = value
     end
 
     # Initializes and returns an Iterator
@@ -151,7 +143,7 @@ module Moon
     # @return [String]
     def to_s
       @ysize.times.map do |y|
-        @data[y * @xsize, @xsize].join(', ')
+        blob[y * @xsize, @xsize].join(', ')
       end.join("\n")
     end
 
