@@ -51,13 +51,13 @@ module Moon
 
       if rect.x < vert_mp && rect.x + rect.w < vert_mp
         if top_quadrant
-          return 1
+          return 0
         elsif bot_quadrant
           return 2
         end
       elsif rect.x > vert_mp
         if top_quadrant
-          return 0
+          return 1
         elsif bot_quadrant
           return 3
         end
