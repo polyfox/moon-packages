@@ -30,7 +30,7 @@ module Moon
 
     # @return [String]
     def to_s
-      "#{x}, #{y}"
+      "#{x},#{y}"
     end
 
     # @return [Hash<Symbol, Float>]
