@@ -18,7 +18,7 @@ module Moon
         when 4 then obj.to_a
         else
           raise ArgumentError,
-                "wrong Array size #{obj.size} (expected 1, 2 or 4)"
+                "wrong Array size #{obj.size} (expected 2 or 4)"
         end
       end
 
