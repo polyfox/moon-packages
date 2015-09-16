@@ -4,7 +4,6 @@ module Moon #:nodoc
     attr_reader :cpos # Vector3  center position
     attr_reader :rad  # Vector3  radii
 
-    ##
     # @param [Moon::Vector3] cpos
     # @param [Moon::Vector3] rad
     def initialize(cpos, rad)
@@ -12,7 +11,8 @@ module Moon #:nodoc
       @rad = Vector3[rad]
     end
 
-    ##
+    # Does the given AABBCC intersect with this?
+    #
     # @param [Moon::AABBCC] other
     # @return [Boolean]
     def intersect?(other)
@@ -22,7 +22,8 @@ module Moon #:nodoc
       true
     end
 
-    ##
+    # Creates an intersected AABBCC from the given (other)
+    #
     # @param [Moon::AABBCC] other
     # @return [Moon::AABBCC]
     def &(other)
