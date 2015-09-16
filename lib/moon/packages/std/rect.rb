@@ -69,8 +69,8 @@ module Moon
     def split
       sw = (w / 2.0).round
       sh = (h / 2.0).round
-      return Rect.new(x + sw, y, sw, sh),
-        Rect.new(x, y, sw, sh),
+      return Rect.new(x, y, sw, sh),
+        Rect.new(x + sw, y, sw, sh),
         Rect.new(x, y + sh, sw, sh),
         Rect.new(x + sw, y + sh, sw, sh)
     end
