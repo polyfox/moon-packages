@@ -27,11 +27,12 @@ module Moon #:nodoc
     # @param [Moon::AABBCC] other
     # @return [Moon::AABBCC]
     def &(other)
-      rx = (@cpos.x - other.cpos.x)
-      ry = (@cpos.y - other.cpos.y)
-      rz = (@cpos.z - other.cpos.z)
-      self.class.new(Vector3.new(@cpos.x + rx/2, @cpos.y + ry/2, @cpos.z + rz/2),
-                     Vector3.new(rx, ry, rz))
+      return nil unless intersect?(other)
+      rx = other.cpos.x - @cpos.x
+      ry = other.cpos.y - @cpos.y
+      rz = other.cpos.z - @cpos.z
+      AABBCC.new(Vector3.new(@cpos.x + rx/2, @cpos.y + ry/2, @cpos.z + rz/2),
+                 Vector3.new(rx.abs, ry.abs, rz.abs))
     end
   end
 end

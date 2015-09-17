@@ -27,10 +27,11 @@ module Moon
     # @param [Moon::AABB] other
     # @return [Moon::AABB]
     def &(other)
-      rx = (@cpos.x - other.cpos.x)
-      ry = (@cpos.y - other.cpos.y)
-      self.class.new(Vector2.new(@cpos.x + rx/2, @cpos.y + ry/2),
-                     Vector2.new(rx, ry))
+      return nil unless intersect?(other)
+      rx = other.cpos.x - @cpos.x
+      ry = other.cpos.y - @cpos.y
+      AABB.new(Vector2.new(@cpos.x + rx/2, @cpos.y + ry/2),
+               Vector2.new(rx.abs, ry.abs))
     end
 
     # Creates a bounding box from the given AABBs
