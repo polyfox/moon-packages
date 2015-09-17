@@ -21,8 +21,8 @@ describe Moon::AABBCC do
       a = described_class.new([0, 0, 0], 14)
       b = described_class.new([3, 7, 0], 14)
       c = a & b
-      expect(c.rad).to eq(Moon::Vector3[-3, -7, 0])
-      expect(c.cpos).to eq(Moon::Vector3[-1.5, -3.5, 0])
+      expect(c.rad).to eq(Moon::Vector3[3, 7, 0])
+      expect(c.cpos).to eq(Moon::Vector3[1.5, 3.5, 0])
     end
   end
 end
