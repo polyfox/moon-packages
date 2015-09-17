@@ -1,4 +1,5 @@
 require 'scheduler/jobs/base'
+require 'scheduler/time_util'
 
 module Moon
   class Scheduler
