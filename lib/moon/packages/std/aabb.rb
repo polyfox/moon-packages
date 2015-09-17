@@ -33,13 +33,43 @@ module Moon
                      Vector2.new(rx, ry))
     end
 
-    # @todo
-    def self.create_encompassing(aabbs)
-      cpos = Vector2.zero
-      rad = Vector2.zero
+    # Creates a bounding box from the given AABBs
+    #
+    # @param [Array<AABB>] aabbs
+    # @return [Array<Float>] bounding box
+    def self.bb_from(aabbs)
+      x1, y1, x2, y2 = nil, nil, nil, nil
       aabbs.each do |aabb|
-        #
+        p1 = aabb.cpos - aabb.rad
+        p2 = aabb.cpos + aabb.rad
+
+        x1 ||= p1.x
+        y1 ||= p1.y
+        x2 ||= p2.x
+        y2 ||= p2.y
+
+        x1 = p1.x if p1.x < x1
+        y1 = p1.y if p1.y < y1
+
+        x2 = p2.x if p2.x > x2
+        y2 = p2.y if p2.y > y2
       end
+
+      return x1, y1, x2, y2
+    end
+
+    # Creates an encompasing AABB from the given AABBs
+    #
+    # @param [Array<AABB>] aabbs
+    # @return [AABB]
+    def self.create_encompassing(aabbs)
+      return new 0, 0 if aabbs.empty?
+
+      x1, y1, x2, y2 = bb_from(aabbs)
+
+      cpos = Vector2.new(x1 + (x2 - x1) / 2, y1 + (y2 - y1) / 2)
+      rad = Vector2.new((x2 - x1) / 2, (y2 - y1) / 2)
+
       new cpos, rad
     end
   end
