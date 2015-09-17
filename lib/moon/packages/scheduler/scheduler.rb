@@ -1,4 +1,5 @@
 require 'std/mixins/activatable'
+require 'scheduler/jobs'
 
 module Moon
   # A Scheduler is used to manage Job objects, any object that implements
