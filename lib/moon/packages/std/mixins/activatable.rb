@@ -18,8 +18,18 @@ module Moon
       self
     end
 
+    # Is the object active?
+    #
+    # @return [Boolean]
     def active?
       !!active
+    end
+
+    # Is the object inactive?
+    #
+    # @return [Boolean]
+    def inactive?
+      !active?
     end
   end
 end
