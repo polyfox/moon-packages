@@ -78,7 +78,7 @@ module Moon
     # @param [String] id
     # @return [Object] the job removed
     def remove_by_id(id)
-      @jobs.delete { |job| job.id == id }
+      @jobs.reject! { |job| job.id == id }
     end
 
     # Removes jobs by tags
