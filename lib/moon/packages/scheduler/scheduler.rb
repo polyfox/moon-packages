@@ -31,6 +31,21 @@ module Moon
       @uptime = 0.0
     end
 
+    # Determines if the Scheduler is awake, if it has jobs and is active
+    #
+    # @return [Boolean]
+    def awake?
+      return false unless active?
+      !@jobs.empty?
+    end
+
+    # Determins if the Scheduler is asleep, or idle
+    #
+    # @return [Boolean]
+    def asleep?
+      !awake?
+    end
+
     # Add a job to the Scheduler
     #
     # @param [Moon::Scheduler::Jobs::Base] job
@@ -115,7 +130,7 @@ module Moon
     #
     # @param [Float] delta
     def update(delta)
-      return unless active?
+      return unless awake?
       dead = []
       @jobs.each do |job|
         if job.done?
