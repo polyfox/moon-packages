@@ -25,6 +25,8 @@ module Moon
     attr_reader :ticks
 
     def initialize
+      # temporary variable used for removing dead jobs
+      @_dead = []
       @jobs = []
       @active = true
       @ticks = 0
@@ -131,15 +133,18 @@ module Moon
     # @param [Float] delta
     def update(delta)
       return unless awake?
-      dead = []
+
       @jobs.each do |job|
         if job.done?
-          dead << job
+          @_dead << job
           next
         end
         job.update delta
       end
-      @jobs -= dead unless dead.empty?
+      unless @_dead.empty?
+        @jobs -= @_dead
+        @_dead.clear
+      end
       @uptime += delta
       @ticks += 1
     end
