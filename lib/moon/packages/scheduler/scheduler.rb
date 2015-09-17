@@ -81,12 +81,13 @@ module Moon
       @jobs.delete { |job| job.id == id }
     end
 
-    # Removes jobs by key.
+    # Removes jobs by tags
     #
-    # @param [Object] key
+    # @param [Array<String>] tags
     # @return [Array] the jobs removed
-    def remove_by_key(key)
-      @jobs.reject! { |job| job.key == key }
+    def remove_by_tags(*tags)
+      tags = tags.flatten
+      @jobs.reject! { |job| job.tagged?(*tags) }
     end
 
     # Kill all active jobs.

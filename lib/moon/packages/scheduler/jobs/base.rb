@@ -24,11 +24,9 @@ module Moon
         # @return [Float]
         attr_reader :uptime
 
-        # @return [Boolean]
+        # @!attribute [r] killed
+        #   @return [Boolean] Was the job killed?
         attr_reader :killed
-
-        # @return [Object]
-        attr_accessor :key
 
         # @!attribute tags
         #   @return [Array<String>] tags
