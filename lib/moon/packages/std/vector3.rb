@@ -38,7 +38,7 @@ module Moon
 
     # @return [String]
     def to_s
-      "#{x}, #{y}, #{z}"
+      "#{x},#{y},#{z}"
     end
 
     def to_h
