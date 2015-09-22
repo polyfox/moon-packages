@@ -1,7 +1,8 @@
 require 'render_primitives/render_context'
 
 module Moon
-  # This may need to be rewritten in C/++
+  # Legacy Tilemap implementation, please use the Moon::Tilemap instead for
+  # performance usage.
   class Spritesheetmap < RenderContext
     # @return [Moon::Spritesheet]
     attr_accessor :tileset
@@ -16,7 +17,7 @@ module Moon
     # restricts rendering inside view
     # @return [Moon::Rect]
     attr_accessor :view
-    # selects a section of the map_data to render
+    # A selection of the data to render
     # @return [Moon::Cuboid]
     attr_accessor :selection
     # @return [Vector2]
@@ -24,7 +25,6 @@ module Moon
     # @return [Vector2]
     attr_reader :datasize
 
-    ##
     #
     private def initialize_members
       super
@@ -39,11 +39,11 @@ module Moon
       @datasize      = Vector2.new(0, 0)
     end
 
-    def refresh_size
+    private def refresh_size
       resize @datasize.x * @tilesize.x, @datasize.y * @tilesize.y
     end
 
-    def refresh_data
+    private def refresh_data
       if @data
         @datasize = Vector2.new(@data.xsize, @data.ysize)
       else
@@ -52,7 +52,7 @@ module Moon
       refresh_size
     end
 
-    def refresh_tileset
+    private def refresh_tileset
       if @tileset
         @tilesize = Vector2.new(@tileset.w, @tileset.h)
       else
@@ -73,7 +73,6 @@ module Moon
       refresh_tileset
     end
 
-    ##
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
