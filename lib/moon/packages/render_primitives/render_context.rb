@@ -62,7 +62,7 @@ module Moon
     def post_initialize
     end
 
-    private def initialize_members
+    protected def initialize_members
       @w        = 0
       @h        = 0
       @position = Vector3.new
@@ -74,7 +74,7 @@ module Moon
     end
 
     # @param [Hash<Symbol, Object>] options
-    private def initialize_from_options(options)
+    protected def initialize_from_options(options)
       @position = options[:position] || @position
       @visible  = options.fetch(:visible, @visible)
       @w        = options.fetch(:w, @w) # can be nil to invalidate.
@@ -100,12 +100,12 @@ module Moon
     end
 
     # @abstract
-    private def initialize_content
+    protected def initialize_content
       #
     end
 
     # @abstract
-    private def initialize_events
+    protected def initialize_events
     end
 
     def enable_default_events

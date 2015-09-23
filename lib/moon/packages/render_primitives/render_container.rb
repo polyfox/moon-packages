@@ -11,24 +11,24 @@ module Moon
     # @return [Array<Moon::RenderContext>]
     attr_reader :elements
 
-    private def initialize_members
+    protected def initialize_members
       super
       @elements = []
     end
 
     #
-    private def initialize_content
+    protected def initialize_content
       super
       initialize_elements
     end
 
     # @abstract
-    private def initialize_elements
+    protected def initialize_elements
       #
     end
 
     #
-    private def initialize_events
+    protected def initialize_events
       super
       # generic event passing callback
       # this callback will trigger the passed event in the children elements
@@ -149,7 +149,7 @@ module Moon
     # @param [Integer] y
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
-    private def render_elements(x, y, z, options)
+    protected def render_elements(x, y, z, options)
       @elements.each do |e|
         e.render x, y, z, options
       end
@@ -159,7 +159,7 @@ module Moon
     # @param [Integer] y
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
-    private def render_content(x, y, z, options)
+    protected def render_content(x, y, z, options)
       render_elements(x, y, z, options)
     end
   end

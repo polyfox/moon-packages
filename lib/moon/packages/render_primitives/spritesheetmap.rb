@@ -26,7 +26,7 @@ module Moon
     attr_reader :datasize
 
     #
-    private def initialize_members
+    protected def initialize_members
       super
       @tileset       = nil
       @data          = nil
@@ -77,7 +77,7 @@ module Moon
     # @param [Integer] y
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
-    private def render_content(x, y, z, options)
+    protected def render_content(x, y, z, options)
       return unless @data
       return unless @tileset
 

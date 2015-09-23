@@ -39,7 +39,7 @@ module Moon
     # @param [Integer] y
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
-    private def render_content(x, y, z, options)
+    protected def render_content(x, y, z, options)
       return unless @string
       offset = @bold ? 256 : 0
       row = 0

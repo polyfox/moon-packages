@@ -9,7 +9,7 @@ module Moon
 
     ##
     #
-    private def initialize_content
+    protected def initialize_content
       super
       @horz = true
       @windowskin = nil
@@ -20,7 +20,7 @@ module Moon
     # @param [Integer] y
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
-    private def render_content(x, y, z, options)
+    protected def render_content(x, y, z, options)
       return unless @windowskin
       cw, ch = @windowskin.w, @windowskin.h
 
