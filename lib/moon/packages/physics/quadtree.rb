@@ -40,7 +40,7 @@ module Moon
       self
     end
 
-    # @param [Moon::Rect]
+    # @param [Moon::Rect] rect
     # @return [Integer]
     def get_index(rect)
       vert_mp = bounds.x + bounds.w / 2
@@ -66,7 +66,7 @@ module Moon
       -1
     end
 
-    # @param [Moon::Rect]
+    # @param [Moon::Rect] rect
     # @return [void]
     def insert(rect)
       unless nodes.empty?
@@ -93,7 +93,7 @@ module Moon
       end
     end
 
-    # @param [Moon::Rect]
+    # @param [Moon::Rect] rect
     # @return [Array]
     def retrieve(rect)
       index = get_index(rect)

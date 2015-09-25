@@ -18,7 +18,7 @@ module Moon
 
     # Imports data from an #export data set
     #
-    # @param [Hash]
+    # @param [Hash] data
     # @return [self]
     def import(data)
       dat = data['data']
@@ -29,7 +29,7 @@ module Moon
       self
     end
 
-    #
+    # @param [Hash] data
     def self.load(data)
       new(*data['data'])
     end
