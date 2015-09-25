@@ -8,9 +8,9 @@ require 'render_primitives/visibility'
 require 'render_primitives/containable'
 require 'render_primitives/rectangular'
 
-# RenderContext classes are bare bone Renderable objects, they do nothing
-# on their own, and serve as a base class for other Renderable objects
 module Moon
+  # RenderContext classes are bare bone Renderable objects, they do nothing
+  # on their own, and serve as a base class for other Renderable objects
   class RenderContext
     include Transitionable                               # Moon Core
     include Eventable                                    # Moon Core
@@ -21,21 +21,32 @@ module Moon
     include RenderPrimitive::Containable                 # RenderPrimitive Core
     include RenderPrimitive::Rectangular                 # RenderPrimitive Core
 
+    # Global context incremented id, do not touch this, it used by the
+    # contexts on initialize for their id
+    #
     # @return [Integer] id counter
+    # @api private
     @@context_id = 0
 
+    # Controls whether or not the context is rendered,
+    # (see Moon::RenderPrimitive::Visiblity) for more info
     # @!attribute visible
     #   @return [Boolean] Is this context visible for rendering?
     attr_accessor :visible
 
+    # Push input events to this observer instead of directly on the context
     # @!attribute input
     #   @return [Input::Observer] input observer
     attr_accessor :input
 
+    # A unique id for the context
     # @!attribute [r] id
-    #   @return [Integer] RenderContext id
+    #   @return [Integer] id
     attr_reader :id
 
+    # A set of tags for identifying or labelling the context, see the
+    # (see Moon::Taggable) for more info
+    #
     # @!attribute tags
     #   @return [Array<String>] tags
     attr_accessor :tags
@@ -55,13 +66,24 @@ module Moon
     end
 
     # Called before all other initializations
+    # Use this method pre tune your object, however most cases you will
+    # use the other initializers and post_initialize
+    #
+    # @abstract
     protected def pre_initialize
     end
 
     # Called after all other initializations
+    # Use this to finalize the the context, such as generating buffers or
+    # resizing the context
+    #
+    # @abstract
     protected def post_initialize
     end
 
+    # Extend this method to initialize data objects, such as integers, vectors
+    # and so forth, if you need to initailzie renderables use
+    # {#initialize_content} instead
     protected def initialize_members
       @w        = 0
       @h        = 0
@@ -73,7 +95,13 @@ module Moon
       @input    = Moon::Input::Observer.new
     end
 
+    # Extend this method to initialize your object from given options
+    #
     # @param [Hash<Symbol, Object>] options
+    # @option options [Moon::Vector3] :position
+    # @option options [Boolean] :visible
+    # @option options [Integer] :w
+    # @option options [Integer] :h
     protected def initialize_from_options(options)
       @position = options[:position] || @position
       @visible  = options.fetch(:visible, @visible)
@@ -81,6 +109,9 @@ module Moon
       @h        = options.fetch(:h, @h) # can be nil to invalidate.
     end
 
+    # Returns the absolute position that this object would appear on the
+    # screen, assuming its top most parent is renderered at 0, 0, 0
+    #
     # @return [Moon::Vector3]
     def screen_position
       pos = apply_position_modifier
@@ -88,22 +119,33 @@ module Moon
       pos + parent.screen_position
     end
 
+    # Returns the absolute rect this object would appear in, the position is
+    # taken from {#screen_position}
+    #
     # @return [Moon::Rect]
     def screen_bounds
       x, y = *screen_position
       Moon::Rect.new(x, y, w, h)
     end
 
+    # Should the context be renderered?
+    #
     # @return [Boolean]
     def render?
       visible?
     end
 
+    # Overwrite this method to initialize other renderable objects, if you need
+    # to initailze some data, use {#initialize_members} instead, be sure to
+    # call its super method.
+    #
     # @abstract
     protected def initialize_content
       #
     end
 
+    # Overwrite this method to initialize event handlers
+    #
     # @abstract
     protected def initialize_events
     end
@@ -216,12 +258,16 @@ module Moon
       @position + vec3
     end
 
+    # Overwrite this method to define your own updating routine
+    #
     # @param [Float] delta
     # @abstract
     protected def update_content(delta)
       #
     end
 
+    # Method called every frame, updates the internals
+    #
     # @param [Float] delta
     def update(delta)
       update_content(delta)
@@ -241,7 +287,7 @@ module Moon
     end
 
     # Renderable callback, this method applies the position_modifiers and
-    # finally cals {#render_content}
+    # finally calls {#render_content}, do not mess with this.
     #
     # @param [Integer] x
     # @param [Integer] y
