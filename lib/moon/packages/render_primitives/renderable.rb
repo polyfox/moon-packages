@@ -13,7 +13,7 @@ module Moon
       # @param [Integer] z
       # @param [Hash<Symbol, Object>] options
       # @abstract
-      private def render_abs(x, y, z, options)
+      protected def render_abs(x, y, z, options)
         #
       end
 
