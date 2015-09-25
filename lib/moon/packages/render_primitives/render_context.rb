@@ -55,11 +55,11 @@ module Moon
     end
 
     # Called before all other initializations
-    def pre_initialize
+    protected def pre_initialize
     end
 
     # Called after all other initializations
-    def post_initialize
+    protected def post_initialize
     end
 
     protected def initialize_members
@@ -218,7 +218,7 @@ module Moon
 
     # @param [Float] delta
     # @abstract
-    private def update_content(delta)
+    protected def update_content(delta)
       #
     end
 
@@ -236,8 +236,7 @@ module Moon
     # @param [Integer] y
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
-    # @api public
-    def render_content(x, y, z, options)
+    protected def render_content(x, y, z, options)
       #
     end
 
@@ -248,8 +247,8 @@ module Moon
     # @param [Integer] y
     # @param [Integer] z
     # @param [Hash<Symbol, Object>] options
-    # @api private
-    def render_abs(x, y, z, options)
+    # @api protected
+    protected def render_abs(x, y, z, options)
       px, py, pz = *apply_position_modifier(x, y, z)
       render_content(px, py, pz, options)
     end
