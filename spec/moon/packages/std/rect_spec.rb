@@ -7,6 +7,14 @@ module Fixtures
       Moon::Rect.new(2, 4, 6, 8)
     end
   end
+
+  class RectLikeObject
+    attr_accessor :x, :y, :w, :h
+
+    def initialize(x, y, w, h)
+      @x, @y, @w, @h = x, y, w, h
+    end
+  end
 end
 
 describe Moon::Rect do
@@ -164,6 +172,19 @@ describe Moon::Rect do
 
     it 'will not convert an object' do
       expect { described_class[Object.new] }.to raise_error(TypeError)
+    end
+  end
+
+  context '.bb_for' do
+    it 'calculates the bounding box from given objects' do
+      objs = [
+        Moon::Rect.new(0, 0, 32, 32),
+        Fixtures::RectLikeObject.new(-32, -32, 8, 8),
+        Fixtures::RectLikeObject.new(32, 32, 8, 8),
+      ]
+      result = described_class.bb_for(objs)
+
+      expect(result).to eq([-32, -32, 40, 40])
     end
   end
 end
