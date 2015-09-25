@@ -229,5 +229,24 @@ module Moon
         new(*extract(obj))
       end
     end
+
+    # Calculates a bounding box for the given rectangular objects +rects+
+    #
+    # @param [Array<[#x, #y, #w, #h]>] rects
+    # @return [Array<Integer>] x, y, x2, y2
+    def self.bb_for(rects)
+      x, y, x2, y2 = 0, 0, 0, 0
+      rects.each do |e|
+        ex = e.x
+        ex2 = ex + e.w
+        x = ex if ex < x
+        x2 = ex2 if ex2 > x2
+        ey = e.y
+        ey2 = ey + e.h
+        y = ey if ey < y
+        y2 = ey2 if ey2 > y2
+      end
+      return x, y, x2, y2
+    end
   end
 end
