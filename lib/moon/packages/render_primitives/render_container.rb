@@ -8,8 +8,18 @@ module Moon
   # other RenderContainers or RenderContext objects, they serve the purpose
   # of constructing Render Trees
   class RenderContainer < RenderContext
+    include RenderPrimitive::Containable::Parent
+
     # @return [Array<Moon::RenderContext>]
     attr_reader :elements
+
+    protected def on_child_adopt(child)
+      @elements.push child
+    end
+
+    protected def on_child_disown(child)
+      @elements.delete child
+    end
 
     protected def initialize_members
       super
@@ -96,22 +106,18 @@ module Moon
     end
 
     # @param [Moon::RenderContext] element
+    # @return [Moon::RenderContext] element
     def add(element)
-      @elements.push(element)
-      element.parent = self
-
+      adopt element
       refresh_size
-
       element
     end
 
     # @param [Moon::RenderContext] element
+    # @return [Moon::RenderContext] element
     def remove(element)
-      @elements.delete(element)
-      element.parent = nil
-
+      disown element
       refresh_size
-
       element
     end
 
@@ -119,6 +125,7 @@ module Moon
     def clear_elements
       @elements.clear
       refresh_size
+      self
     end
 
     # @param [Float] delta
