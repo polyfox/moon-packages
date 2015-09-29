@@ -229,9 +229,14 @@ module Moon
     #   @return [RenderContainer] parent render context of this event
     attr_accessor :parent
 
+    # @!attribute [r] parent
+    #   @return [RenderContainer] parent render context of this event
+    attr_accessor :attrs
+
     # @param [RenderContainer] parent
-    def initialize(parent)
+    def initialize(parent, attrs)
       @parent = parent
+      @attrs = attrs
       super :resize
     end
   end
