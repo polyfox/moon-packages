@@ -66,15 +66,6 @@ module Moon
       @w ||= compute_w
     end
 
-    # Sets the containers w.
-    # This will trigger a +ResizeEvent+.
-    #
-    # @param [Integer] w
-    def w=(w)
-      @w = w
-      on_resize :w
-    end
-
     # @return [Integer]
     private def compute_h
       _, y, _, y2 = *Moon::Rect.bb_for(@elements)
@@ -84,15 +75,6 @@ module Moon
     # @return [Integer]
     def h
       @h ||= compute_h
-    end
-
-    # Sets the containers h.
-    # This will trigger a +ResizeEvent+.
-    #
-    # @param [Integer] h
-    def h=(h)
-      @h = h
-      on_resize :h
     end
 
     #

@@ -3,96 +3,77 @@ module Moon
     module Rectangular
       # @return [Moon::Vector3]
       attr_accessor :position
-      # @return [Integer]
-      attr_accessor :w
-      # @return [Integer]
-      attr_accessor :h
 
-      ##
       # @return [Integer]
       def x
         @position.x
       end
 
-      ##
       # @param [Integer] x
       def x=(x)
         @position.x = x
       end
 
-      ##
       # @return [Integer]
       def y
         @position.y
       end
 
-      ##
       # @param [Integer] y
       def y=(y)
         @position.y = y
       end
 
-      ##
       # @return [Integer]
       def z
         @position.z
       end
 
-      ##
       # @param [Integer] z
       def z=(z)
         @position.z = z
       end
 
-      ##
       # @return [Integer]
       def x2
         x + w
       end
 
-      ##
       # @param [Integer] x2
       def x2=(x2)
         @position.x = x2 - w
       end
 
-      ##
       # @return [Integer]
       def y2
         y + h
       end
 
-      ##
       # @param [Integer] y2
       def y2=(y2)
         @position.y = y2 - h
       end
 
-      ##
       # @return [Integer]
       def cx
         x + w / 2
       end
 
-      ##
       # @return [Integer]
       def cy
         y + h / 2
       end
 
-      ##
       # @param [Integer] cx
       def cx=(cx)
         self.x = cx - w / 2
       end
 
-      ##
       # @param [Integer] cy
       def cy=(cy)
         self.y = cy - h / 2
       end
 
-      ##
       # @param [Integer] x
       # @param [Integer] y
       # @param [Integer] z
@@ -121,7 +102,28 @@ module Moon
         self
       end
 
-      ##
+      # @return [Integer]
+      attr_reader :w
+      # Sets the containers w.
+      # This will trigger a +ResizeEvent+.
+      #
+      # @param [Integer] w
+      def w=(w)
+        @w = w
+        on_resize :w
+      end
+
+      # @return [Integer]
+      attr_reader :h
+      # Sets the containers h.
+      # This will trigger a +ResizeEvent+.
+      #
+      # @param [Integer] h
+      def h=(h)
+        @h = h
+        on_resize :h
+      end
+
       # @param [String] command
       # @param [Moon::RenderPrimitive::Rectangular] rect
       private def align_command!(command, rect)
@@ -144,7 +146,6 @@ module Moon
         end
       end
 
-      ##
       # @param [String] str  alignment commands, space seperated words
       # @param [Moon::RenderPrimitive::Rectangular] rect  Object to align against
       # @return [self]
@@ -155,19 +156,16 @@ module Moon
         self
       end
 
-      ##
       # @return [Moon::Rect] bounds
       def bounds
         Moon::Rect.new(x, y, w, h)
       end
 
-      ##
       # @return [Moon::Rect] rect
       def to_rect
-        Moon::Rect.new(x, y, w, h)
+        bounds
       end
 
-      ##
       # @return [Boolean] is the position inside the rectanagle?
       def contains?(cx, cy)
         cx.between?(x, x2 - 1) && cy.between?(y, y2 - 1)
