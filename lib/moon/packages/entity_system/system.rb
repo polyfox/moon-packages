@@ -53,8 +53,7 @@ module Moon
         # @param [Integer] x
         # @param [Integer] y
         # @param [Integer] z
-        # @param [Hash] options
-        def render(x = 0, y = 0, z = 0, options = {})
+        def render(x = 0, y = 0, z = 0)
           #
         end
 

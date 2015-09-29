@@ -76,8 +76,7 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
-    protected def render_content(x, y, z, options)
+    protected def render_content(x, y, z)
       return unless @data
       return unless @tileset
 
@@ -116,7 +115,6 @@ module Moon
         end
 
         opacity = @layer_opacity ? @layer_opacity[dz] : 1.0
-        opacity *= options.fetch(:opacity, 1.0)
         render_ops = options.merge(opacity: opacity)
 
         rnz = z

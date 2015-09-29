@@ -14,9 +14,9 @@ module Moon
       # @param [Integer] x
       # @param [Integer] y
       # @param [Integer] z
-      # @param [Hash<Symbol, Object>] options
+      # @param [Hash<Symbol, Object>]
       # @abstract
-      protected def render_abs(x, y, z, options)
+      protected def render_abs(x, y, z)
         #
       end
 
@@ -25,10 +25,9 @@ module Moon
       # @param [Integer] x
       # @param [Integer] y
       # @param [Integer] z
-      # @param [Hash<Symbol, Object>] options
       # @api public
-      def render(x = 0, y = 0, z = 0, options = {})
-        render_abs(x, y, z, options) if render?
+      def render(x = 0, y = 0, z = 0)
+        render_abs(x, y, z) if render?
       end
     end
   end

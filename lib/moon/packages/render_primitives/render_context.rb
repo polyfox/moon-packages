@@ -281,8 +281,7 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
-    protected def render_content(x, y, z, options)
+    protected def render_content(x, y, z)
       #
     end
 
@@ -292,11 +291,10 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
     # @api protected
-    protected def render_abs(x, y, z, options)
+    protected def render_abs(x, y, z)
       px, py, pz = *apply_position_modifier(x, y, z)
-      render_content(px, py, pz, options)
+      render_content(px, py, pz)
     end
   end
 end

@@ -19,8 +19,7 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
-    protected def render_content(x, y, z, options)
+    protected def render_content(x, y, z)
       return unless @windowskin
       cw, ch = @windowskin.w, @windowskin.h
 

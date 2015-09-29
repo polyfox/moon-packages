@@ -123,19 +123,17 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
-    protected def render_elements(x, y, z, options)
+    protected def render_elements(x, y, z)
       @elements.each do |e|
-        e.render x, y, z, options
+        e.render x, y, z
       end
     end
 
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
-    protected def render_content(x, y, z, options)
-      render_elements(x, y, z, options)
+    protected def render_content(x, y, z)
+      render_elements(x, y, z)
     end
   end
 end
