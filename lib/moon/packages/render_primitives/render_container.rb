@@ -42,7 +42,7 @@ module Moon
     end
 
     def on_resize(*attrs)
-      trigger ResizeEvent.new(self)
+      trigger { ResizeEvent.new(self, attrs) }
     end
 
     # @return [Integer]

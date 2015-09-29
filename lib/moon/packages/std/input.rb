@@ -14,26 +14,28 @@ module Moon
       channels.delete channel
     end
 
-    def trigger(event)
+    def trigger(event = nil)
+      return if channels.empty?
+      event = yield if block_given?
       channels.each do |channel|
         channel.call event
       end
     end
 
     def on_key(key, _, action, mods)
-      trigger KeyboardInputEvent.new(key, action, mods)
+      trigger { KeyboardInputEvent.new(key, action, mods) }
     end
 
     def on_button(button, action, mods)
-      trigger MouseInputEvent.new(button, action, mods, @mouse.position)
+      trigger { MouseInputEvent.new(button, action, mods, @mouse.position) }
     end
 
     def on_type(char)
-      trigger KeyboardTypingEvent.new(char)
+      trigger { KeyboardTypingEvent.new(char) }
     end
 
     def on_mousemove(x, y)
-      trigger MouseMoveEvent.new(x, y)
+      trigger { MouseMoveEvent.new(x, y) }
     end
   end
 

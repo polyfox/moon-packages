@@ -157,7 +157,7 @@ module Moon
 
       input.on :mousemove do |event|
         p = event.position
-        trigger MouseHoverEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y))
+        trigger { MouseHoverEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y)) }
       end
 
       # click event generation
@@ -178,7 +178,7 @@ module Moon
             @expecting_release = false
             p = event.position
             if screen_bounds.contains?(p.x, p.y)
-              trigger ClickEvent.new(self, p, :click)
+              trigger { ClickEvent.new(self, p, :click) }
             end
           end
         end
@@ -189,7 +189,7 @@ module Moon
         now = @tick
         @last_click_at ||= 0.0
         if (now - @last_click_at) < 0.500
-          trigger ClickEvent.new(self, event.position, :double_click)
+          trigger { ClickEvent.new(self, event.position, :double_click) }
           # reset the distance, so we can't trigger
           #consecutive double clicks with a single click
           @last_click_at = 0.0
@@ -246,7 +246,7 @@ module Moon
       input.on [:press, :repeat] do |event|
         if event.is_a?(MouseEvent)
           p = event.position
-          trigger MouseFocusedEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y))
+          trigger { MouseFocusedEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y)) }
         end
       end
     end
