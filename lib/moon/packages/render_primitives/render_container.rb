@@ -15,10 +15,12 @@ module Moon
 
     protected def on_child_adopt(child)
       @elements.push child
+      refresh_size
     end
 
     protected def on_child_disown(child)
       @elements.delete child
+      refresh_size
     end
 
     protected def initialize_members
@@ -52,6 +54,7 @@ module Moon
     end
 
     def on_resize(*attrs)
+      super
       trigger { ResizeEvent.new(self, attrs) }
     end
 
@@ -91,7 +94,6 @@ module Moon
     # @return [Moon::RenderContext] element
     def add(element)
       adopt element
-      refresh_size
       element
     end
 
@@ -99,7 +101,6 @@ module Moon
     # @return [Moon::RenderContext] element
     def remove(element)
       disown element
-      refresh_size
       element
     end
 
