@@ -81,6 +81,11 @@ module Moon
     protected def post_initialize
     end
 
+    # Initializes an input observer
+    protected def initialize_input
+      @input = Moon::Input::Observer.new
+    end
+
     # Extend this method to initialize data objects, such as integers, vectors
     # and so forth, if you need to initailzie renderables use
     # {#initialize_content} instead
@@ -92,7 +97,7 @@ module Moon
       @parent   = nil
       @tick     = 0.0
       @tags     = []
-      @input    = Moon::Input::Observer.new
+      initialize_input
     end
 
     # Extend this method to initialize your object from given options
