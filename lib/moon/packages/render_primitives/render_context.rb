@@ -108,7 +108,7 @@ module Moon
     # @option options [Integer] :w
     # @option options [Integer] :h
     protected def initialize_from_options(options)
-      @position = options[:position] || @position
+      @position.set(options.fetch(:position, @position))
       @visible  = options.fetch(:visible, @visible)
       @w        = options.fetch(:w, @w) # can be nil to invalidate.
       @h        = options.fetch(:h, @h) # can be nil to invalidate.
