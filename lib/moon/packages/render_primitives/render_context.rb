@@ -63,6 +63,7 @@ module Moon
       initialize_events    # initialize events
       yield self if block_given?
       post_initialize
+      on_resize :w, :h
     end
 
     # Called before all other initializations
