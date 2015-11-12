@@ -3,6 +3,38 @@ require 'std/core_ext/object'
 require 'std/core_ext/hash'
 
 describe Hash do
+  context '#dig' do
+    it 'digs through a Hash' do
+      data = {
+        egg: { value: 1, age: 5 },
+        bread: { value: 2, age: 1 },
+      }
+
+      expect(data.dig(:egg)).to eq(value: 1, age: 5)
+      expect(data.dig(:egg, :value)).to eq(1)
+      expect(data.dig(:egg, :derp)).to eq(nil)
+      expect(data.dig(:egg, :value, :something_else)).to eq(nil)
+    end
+
+    it 'digs through a Hash with diggable elements' do
+      data = {
+        egg: [1, 2, 3],
+        bread: { a: [1, 2, 3], b: [4, 5, 6] }
+      }
+
+      expect(data.dig(:egg)).to eq([1, 2, 3])
+      expect(data.dig(:something_else)).to eq(nil)
+      expect(data.dig(:something_else, :value)).to eq(nil)
+      expect(data.dig(:something_else, :value, :all_the_way)).to eq(nil)
+      expect(data.dig(:egg, 0)).to eq(1)
+      expect(data.dig(:egg, 1)).to eq(2)
+      expect(data.dig(:bread, :a)).to eq([1, 2, 3])
+      expect(data.dig(:bread, :b)).to eq([4, 5, 6])
+      expect(data.dig(:bread, :b, 0)).to eq(4)
+      expect(data.dig(:bread, :b, 0, 0)).to eq(nil)
+    end
+  end
+
   context '#has_slice?' do
     it 'checks if the Hash includes a slice' do
       slce = { a: 2, b: 3 }

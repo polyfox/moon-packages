@@ -1,8 +1,34 @@
 require 'spec_helper'
 require 'std/core_ext/object'
 require 'std/core_ext/array'
+require 'std/core_ext/array/dig'
+require 'std/core_ext/hash/dig'
 
 describe Array do
+  context '#dig' do
+    it 'can dig through an Array of Arrays' do
+      data = [
+        [:first, [0, 1, 2]],
+        [:second, [3, 4, 5]]
+      ]
+      expect(data.dig(0)).to eq([:first, [0, 1, 2]])
+      expect(data.dig(0, 0)).to eq(:first)
+      expect(data.dig(1, 0)).to eq(:second)
+      expect(data.dig(1, 1)).to eq([3, 4, 5])
+      expect(data.dig(1, 1, 0)).to eq(3)
+    end
+
+    it 'can dig through an Array of Diggables' do
+      data = [
+        { first_name: 'John', last_name: 'Doe' },
+        { first_name: 'Foo', last_name: 'Bar' }
+      ]
+
+      expect(data.dig(0, :first_name)).to eq('John')
+      expect(data.dig(1, :last_name)).to eq('Bar')
+    end
+  end
+
   context '#blank?' do
     it 'should report being blank, if the Array is empty?' do
       expect([].blank?).to eq(true)

@@ -154,12 +154,17 @@ module Moon
     #   @return [Object] click target
     attr_accessor :target
 
+    # @!attribute button
+    #   @return [Symbol] button
+    attr_accessor :button
+
     # @param [Object] target
     # @param [Vector2] position
     # @param [Symbol] type
-    def initialize(target, position, type = :click)
+    def initialize(target, position, button, type)
       @target = target
       @position = position
+      @button = button
       super type
     end
   end
