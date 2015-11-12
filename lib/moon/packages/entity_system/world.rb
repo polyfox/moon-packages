@@ -235,8 +235,8 @@ module Moon
       # Renders the internal systems
       #
       # @return [self]
-      def render(x = 0, y = 0, z = 0, options = {})
-        @systems.each { |system| system.render x, y, z, options }
+      def render(x = 0, y = 0, z = 0)
+        @systems.each { |system| system.render x, y, z }
       end
 
       # @return [Hash<Symbol, Object>]

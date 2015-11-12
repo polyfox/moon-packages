@@ -16,7 +16,7 @@ class Hash
   def has_slice?(other)
     other.all? do |pair|
       key, value = *pair
-      key?(key) && (self[key] == value)
+      key?(key) && (value == self[key])
     end
   end
 

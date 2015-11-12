@@ -14,7 +14,7 @@ module Moon
     # @param [String] string initial ASCII string value
     # @param [Hash<Symbol, Object>] options
     def initialize(spritesheet, string = '', options = {})
-      super(options)
+      super options
       @color = Vector4.new(1.0, 1.0, 1.0, 1.0)
       @spritesheet = spritesheet
       self.string = string
@@ -38,8 +38,7 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
-    protected def render_content(x, y, z, options)
+    protected def render_content(x, y, z)
       return unless @string
       offset = @bold ? 256 : 0
       row = 0

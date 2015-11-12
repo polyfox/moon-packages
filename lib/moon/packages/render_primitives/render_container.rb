@@ -8,8 +8,20 @@ module Moon
   # other RenderContainers or RenderContext objects, they serve the purpose
   # of constructing Render Trees
   class RenderContainer < RenderContext
+    include RenderPrimitive::Containable::Parent
+
     # @return [Array<Moon::RenderContext>]
     attr_reader :elements
+
+    protected def on_child_adopt(child)
+      @elements.push child
+      refresh_size
+    end
+
+    protected def on_child_disown(child)
+      @elements.delete child
+      refresh_size
+    end
 
     protected def initialize_members
       super
@@ -42,7 +54,8 @@ module Moon
     end
 
     def on_resize(*attrs)
-      trigger ResizeEvent.new(self)
+      super
+      trigger { ResizeEvent.new(self, attrs) }
     end
 
     # @return [Integer]
@@ -56,15 +69,6 @@ module Moon
       @w ||= compute_w
     end
 
-    # Sets the containers w.
-    # This will trigger a +ResizeEvent+.
-    #
-    # @param [Integer] w
-    def w=(w)
-      @w = w
-      on_resize :w
-    end
-
     # @return [Integer]
     private def compute_h
       _, y, _, y2 = *Moon::Rect.bb_for(@elements)
@@ -74,15 +78,6 @@ module Moon
     # @return [Integer]
     def h
       @h ||= compute_h
-    end
-
-    # Sets the containers h.
-    # This will trigger a +ResizeEvent+.
-    #
-    # @param [Integer] h
-    def h=(h)
-      @h = h
-      on_resize :h
     end
 
     #
@@ -96,22 +91,16 @@ module Moon
     end
 
     # @param [Moon::RenderContext] element
+    # @return [Moon::RenderContext] element
     def add(element)
-      @elements.push(element)
-      element.parent = self
-
-      refresh_size
-
+      adopt element
       element
     end
 
     # @param [Moon::RenderContext] element
+    # @return [Moon::RenderContext] element
     def remove(element)
-      @elements.delete(element)
-      element.parent = nil
-
-      refresh_size
-
+      disown element
       element
     end
 
@@ -119,6 +108,7 @@ module Moon
     def clear_elements
       @elements.clear
       refresh_size
+      self
     end
 
     # @param [Float] delta
@@ -134,19 +124,17 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
-    protected def render_elements(x, y, z, options)
+    protected def render_elements(x, y, z)
       @elements.each do |e|
-        e.render x, y, z, options
+        e.render x, y, z
       end
     end
 
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
-    protected def render_content(x, y, z, options)
-      render_elements(x, y, z, options)
+    protected def render_content(x, y, z)
+      render_elements(x, y, z)
     end
   end
 end

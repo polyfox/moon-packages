@@ -63,6 +63,7 @@ module Moon
       initialize_events    # initialize events
       yield self if block_given?
       post_initialize
+      on_resize :w, :h
     end
 
     # Called before all other initializations
@@ -81,6 +82,11 @@ module Moon
     protected def post_initialize
     end
 
+    # Initializes an input observer
+    protected def initialize_input
+      @input = Moon::Input::Observer.new
+    end
+
     # Extend this method to initialize data objects, such as integers, vectors
     # and so forth, if you need to initailzie renderables use
     # {#initialize_content} instead
@@ -92,7 +98,7 @@ module Moon
       @parent   = nil
       @tick     = 0.0
       @tags     = []
-      @input    = Moon::Input::Observer.new
+      initialize_input
     end
 
     # Extend this method to initialize your object from given options
@@ -103,7 +109,7 @@ module Moon
     # @option options [Integer] :w
     # @option options [Integer] :h
     protected def initialize_from_options(options)
-      @position = options[:position] || @position
+      @position.set(options.fetch(:position, @position))
       @visible  = options.fetch(:visible, @visible)
       @w        = options.fetch(:w, @w) # can be nil to invalidate.
       @h        = options.fetch(:h, @h) # can be nil to invalidate.
@@ -157,7 +163,7 @@ module Moon
 
       input.on :mousemove do |event|
         p = event.position
-        trigger MouseHoverEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y))
+        trigger { MouseHoverEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y)) }
       end
 
       # click event generation
@@ -178,7 +184,7 @@ module Moon
             @expecting_release = false
             p = event.position
             if screen_bounds.contains?(p.x, p.y)
-              trigger ClickEvent.new(self, p, :click)
+              trigger { ClickEvent.new(self, p, :click) }
             end
           end
         end
@@ -189,7 +195,7 @@ module Moon
         now = @tick
         @last_click_at ||= 0.0
         if (now - @last_click_at) < 0.500
-          trigger ClickEvent.new(self, event.position, :double_click)
+          trigger { ClickEvent.new(self, event.position, :double_click) }
           # reset the distance, so we can't trigger
           #consecutive double clicks with a single click
           @last_click_at = 0.0
@@ -246,7 +252,7 @@ module Moon
       input.on [:press, :repeat] do |event|
         if event.is_a?(MouseEvent)
           p = event.position
-          trigger MouseFocusedEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y))
+          trigger { MouseFocusedEvent.new(event, self, p, screen_bounds.contains?(p.x, p.y)) }
         end
       end
     end
@@ -281,8 +287,7 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
-    protected def render_content(x, y, z, options)
+    protected def render_content(x, y, z)
       #
     end
 
@@ -292,11 +297,10 @@ module Moon
     # @param [Integer] x
     # @param [Integer] y
     # @param [Integer] z
-    # @param [Hash<Symbol, Object>] options
     # @api protected
-    protected def render_abs(x, y, z, options)
+    protected def render_abs(x, y, z)
       px, py, pz = *apply_position_modifier(x, y, z)
-      render_content(px, py, pz, options)
+      render_content(px, py, pz)
     end
   end
 end

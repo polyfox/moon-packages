@@ -138,7 +138,7 @@ module Moon
       resize nil, nil
     end
 
-    def render_content(x, y, z, options)
+    def render_content(x, y, z)
       @text.render x, y, z
     end
 

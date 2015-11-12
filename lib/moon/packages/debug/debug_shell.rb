@@ -66,7 +66,7 @@ end
 
 class DebugShell < Moon::RenderContainer
   class Caret < Moon::RenderContext
-    def initialize_members
+    protected def initialize_members
       super
       @index = 0
       @spritesheet = Moon::Spritesheet.new("resources/ui/caret_8x16_ffffffff.png", 8, 16)
@@ -82,8 +82,8 @@ class DebugShell < Moon::RenderContainer
       @h ||= @spritesheet.h
     end
 
-    def render_content(x, y, z, options)
-      @spritesheet.render(x, y, z, @index, options.merge(opacity: @opacity))
+    def render_content(x, y, z)
+      @spritesheet.render(x, y, z, @index, opacity: @opacity)
     end
 
     def update_content(delta)
@@ -99,9 +99,13 @@ class DebugShell < Moon::RenderContainer
     #
   end
 
-  def initialize_content
+  protected def initialize_from_options(options)
     super
-    font = FontCache.font('uni0553', 16)
+    @font = options.fetch(:font)
+  end
+
+  protected def initialize_content
+    super
     @input_background = Moon::SkinSlice9.new
     @input_background.windowskin = Moon::Spritesheet.new("resources/ui/console_windowskin_dark_16x16.png", 16, 16)
 
@@ -113,8 +117,8 @@ class DebugShell < Moon::RenderContainer
     @history = []
     @history_index = 0
     @contents = []
-    @input_text = Moon::Label.new("", font)
-    @log_text = Moon::Label.new("", font)
+    @input_text = Moon::Label.new("", @font)
+    @log_text = Moon::Label.new("", @font)
     @log_text.line_h = 1
     @context = DebugContext.new
 
