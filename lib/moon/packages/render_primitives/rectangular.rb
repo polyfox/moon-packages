@@ -91,13 +91,23 @@ module Moon
       end
 
       # Resizes the container provided a w and h
+      #
+      # @param [Integer] w  width
+      # @param [Integer] h  height
+      # @return [self]
+      def resize!(w, h)
+        @w, @h = w, h
+        self
+      end
+
+      # Resizes the container provided a w and h
       # This will trigger a +ResizeEvent+.
       #
       # @param [Integer] w  width
       # @param [Integer] h  height
       # @return [self]
       def resize(w, h)
-        @w, @h = w, h
+        resize!(w, h)
         on_resize :w, :h
         self
       end
