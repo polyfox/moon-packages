@@ -6,7 +6,12 @@ addons:
 rvm:
 - 2.1
 - 2.2
+- 2.3
 - ruby-head
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+
 before_install:
 - gem install bundle
 install:
