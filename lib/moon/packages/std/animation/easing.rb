@@ -167,9 +167,9 @@ module Moon
         a = 0.1
         p = 0.4
         if (k == 0)
-          0
+          return 0
         elsif (k == 1)
-          1
+          return 1
         end
         if (!a || a < 1)
           a = 1
@@ -187,9 +187,9 @@ module Moon
         a = 0.1
         p = 0.4
         if k == 0
-          0
+          return 0
         elsif k == 1
-          1
+          return 1
         end
 
         if a == 0 || a < 1
@@ -208,9 +208,9 @@ module Moon
         a = 0.1
         p = 0.4
         if k == 0
-          0
+          return 0
         elsif k == 1
-          1
+          return 1
         end
 
         if a == 0 || a < 1
