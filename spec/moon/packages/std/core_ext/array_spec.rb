@@ -1,8 +1,6 @@
 require 'spec_helper'
 require 'std/core_ext/object'
 require 'std/core_ext/array'
-require 'std/core_ext/array/dig'
-require 'std/core_ext/hash/dig'
 
 describe Array do
   context '#dig' do
