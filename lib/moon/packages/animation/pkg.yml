@@ -1,0 +1,7 @@
+---
+name: Animation
+author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
+description: Utility library for animating with easers and interpolators
+require: _basalt.rb
+deps:
+- scheduler

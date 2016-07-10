@@ -1,4 +1,4 @@
-require 'std/mixins/transition_host'
+require 'animation/transition_host'
 
 module Moon
   module Transitionable

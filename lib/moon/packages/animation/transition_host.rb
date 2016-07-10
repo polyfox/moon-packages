@@ -1,3 +1,6 @@
+require 'animation/transition'
+require 'animation/easing'
+
 module Moon
   module TransitionHost
     # @param [Object] src

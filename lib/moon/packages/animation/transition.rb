@@ -1,4 +1,5 @@
 require 'scheduler/jobs/timed_process'
+require 'animation/easing'
 
 module Moon
   class Transition < Scheduler::Jobs::TimedProcess
