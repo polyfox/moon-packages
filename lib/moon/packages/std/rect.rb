@@ -1,6 +1,5 @@
 require 'std/core_ext/array'
 require 'std/vector2'
-require 'moon-serializable/load'
 
 module Moon
   class Rect
@@ -54,14 +53,6 @@ module Moon
         end
       end
     end
-
-    include Serializable::Properties
-    include Serializable
-
-    add_property :x
-    add_property :y
-    add_property :w
-    add_property :h
 
     # Splits the current Rect into 4 sub rects of half its original size
     #

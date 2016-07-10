@@ -40,22 +40,6 @@ module Moon
       end
     end
 
-    include Serializable::Properties
-    include Serializable
-
-    # @return [Integer]
-    property_accessor :x
-    # @return [Integer]
-    property_accessor :y
-    # @return [Integer]
-    property_accessor :z
-    # @return [Integer]
-    property_accessor :w
-    # @return [Integer]
-    property_accessor :h
-    # @return [Integer]
-    property_accessor :d
-
     # @overload initialize(cuboid)
     #   @param [Cuboid] cuboid
     # @overload initialize(num)

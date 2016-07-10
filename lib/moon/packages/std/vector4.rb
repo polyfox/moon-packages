@@ -1,13 +1,5 @@
 module Moon
   class Vector4
-    include Serializable::Properties
-    include Serializable
-
-    add_property :x
-    add_property :y
-    add_property :z
-    add_property :w
-
     # @return [Float]
     def sum
       x + y + z + w
