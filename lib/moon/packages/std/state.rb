@@ -1,9 +1,5 @@
 # Base class for all States
 class State
-  # @!attribute [r] ticks
-  #   @return [Integer]
-  attr_reader :ticks
-
   # @!attribute [r] engine
   #   @return [Void]
   attr_reader :engine
@@ -47,7 +43,6 @@ class State
 
   # @return [self]
   def reset
-    @ticks = 0
     @started = false
     init
     @inited = true
@@ -62,8 +57,6 @@ class State
     end
     # game logic
     update delta
-    #
-    @ticks += 1
   end
 
   # Init
