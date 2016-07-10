@@ -63,13 +63,4 @@ describe Moon::Vector1 do
       expect(result.x).to eq(1)
     end
   end
-
-  context 'Serialization' do
-    it 'serializes' do
-      src = described_class.new(12)
-      result = described_class.load(src.export)
-
-      expect(result).to eq(src)
-    end
-  end
 end

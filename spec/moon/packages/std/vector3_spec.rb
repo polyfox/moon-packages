@@ -139,15 +139,6 @@ describe Moon::Vector3 do
     end
   end
 
-  context 'Serialization' do
-    it 'serializes' do
-      src = described_class.new(12, 8, 4)
-      result = described_class.load(src.export)
-
-      expect(result).to eq(src)
-    end
-  end
-
   context '.zero' do
     it 'returns a zero vector' do
       result = described_class.zero

@@ -1,19 +1,21 @@
+require 'std/cuboid'
+
 module Moon
   class Cuboid
     include Serializable::Properties
     include Serializable
 
     # @return [Integer]
-    property_accessor :x
+    add_property :x
     # @return [Integer]
-    property_accessor :y
+    add_property :y
     # @return [Integer]
-    property_accessor :z
+    add_property :z
     # @return [Integer]
-    property_accessor :w
+    add_property :w
     # @return [Integer]
-    property_accessor :h
+    add_property :h
     # @return [Integer]
-    property_accessor :d
+    add_property :d
   end
 end

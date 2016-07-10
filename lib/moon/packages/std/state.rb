@@ -1,6 +1,4 @@
-#
-# core/state.rb
-#   Base class for all States
+# Base class for all States
 class State
   # @!attribute [r] ticks
   #   @return [Integer]

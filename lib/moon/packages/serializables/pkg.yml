@@ -4,4 +4,5 @@ author: IceDragon200 (Corey Powell) (mistdragon100@gmail.com)
 description: Extension for existing classes
 require: _basalt.rb
 deps:
+- std
 - moon-serializable

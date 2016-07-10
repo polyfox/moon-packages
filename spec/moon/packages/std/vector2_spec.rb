@@ -139,11 +139,4 @@ describe Moon::Vector2 do
       expect(described_class.zero).to eq(described_class[0, 0])
     end
   end
-
-  context 'Serialization' do
-    it 'serializes' do
-      src = described_class.new(2, 3)
-      expect(described_class.load(src.export)).to eq(described_class[2, 3])
-    end
-  end
 end

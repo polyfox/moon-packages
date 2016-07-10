@@ -40,6 +40,19 @@ module Moon
       end
     end
 
+    # @return [Integer]
+    attr_accessor :x
+    # @return [Integer]
+    attr_accessor :y
+    # @return [Integer]
+    attr_accessor :z
+    # @return [Integer]
+    attr_accessor :w
+    # @return [Integer]
+    attr_accessor :h
+    # @return [Integer]
+    attr_accessor :d
+
     # @overload initialize(cuboid)
     #   @param [Cuboid] cuboid
     # @overload initialize(num)
@@ -93,7 +106,7 @@ module Moon
 
     # @return [Hash<Symbol, Integer>]
     def to_h
-      properties_to_h
+      { x: x, y: y, z: z, w: w, h: h, d: d }
     end
 
     # @return [Rect]

@@ -1,3 +1,5 @@
+require 'std/rect'
+
 module Moon
   class Rect
     include Serializable::Properties

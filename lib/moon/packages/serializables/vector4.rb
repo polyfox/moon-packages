@@ -1,3 +1,5 @@
+require 'std/vector4'
+
 module Moon
   class Vector4
     include Serializable::Properties
