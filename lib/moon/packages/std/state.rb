@@ -63,25 +63,9 @@ class State
       @started = true
     end
     # game logic
-    update_step delta
-    # rendering
-    render_step
+    update delta
     #
     @ticks += 1
-  end
-
-  # @param [Float] delta
-  private def update_step(delta)
-    pre_update delta
-    update delta
-    post_update delta
-  end
-
-  #
-  private def render_step
-    pre_render
-    render
-    post_render
   end
 
   # Init
@@ -112,37 +96,11 @@ class State
     #
   end
 
-  # @param [Float] delta
-  def pre_update(delta)
-    #
-  end
-
   # Per frame update function, called by moon
+  #
   # @param [Float] delta
   # @return [Void]
   def update(delta)
-    #
-  end
-
-  # @param [Float] delta
-  def post_update(delta)
-    #
-  end
-
-  # @return [Void]
-  def pre_render
-    #
-  end
-
-  # Per frame render function, called by moon
-  # called when the state is intended to be rendered to screen
-  # @return [Void]
-  def render
-    #
-  end
-
-  # @return [Void]
-  def post_render
     #
   end
 end
