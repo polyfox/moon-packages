@@ -1,4 +1,4 @@
-require 'std/mixins/transitionable'
+require 'animation/transitionable'
 require 'std/mixins/eventable'
 require 'std/mixins/taggable'
 require 'std/input/observer'

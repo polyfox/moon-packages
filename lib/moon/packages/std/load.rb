@@ -21,7 +21,6 @@ require 'std/vector4'
 require 'std/matrix4'
 # addon
 require 'std/cache_base'
-require 'std/animation'
 require 'std/palette_parser'
 # data
 require 'std/tree'
