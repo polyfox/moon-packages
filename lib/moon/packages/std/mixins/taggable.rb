@@ -9,6 +9,7 @@ module Moon
     # @param [String] tgs
     def tag(*tgs)
       self.tags |= tgs
+      self
     end
 
     # Removes tags from the object
@@ -16,6 +17,7 @@ module Moon
     # @param [String] tgs
     def untag(*tgs)
       self.tags -= tgs
+      self
     end
 
     # Checks if the object includes the tags
