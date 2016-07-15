@@ -1,5 +1,3 @@
-require 'moon-serializable/load'
-
 module Moon
   class Cuboid
     module Cast
