@@ -5,4 +5,5 @@ version: 2.0.0
 description: Primitive render objects
 require: _basalt.rb
 deps:
-  - std
+- std
+- animation
