@@ -69,7 +69,7 @@ class DebugShell < Moon::RenderContainer
     protected def initialize_members
       super
       @index = 0
-      @spritesheet = Moon::Spritesheet.new("resources/ui/caret_8x16_ffffffff.png", 8, 16)
+      @spritesheet = Moon::Spritesheet.new(Game.instance.textures['ui/caret/caret_8x16_ffffffff'], 8, 16)
       @phase = -1
       @opacity = 1.0
     end
@@ -101,16 +101,16 @@ class DebugShell < Moon::RenderContainer
 
   protected def initialize_from_options(options)
     super
-    @font = options.fetch(:font)
+    @font = options.fetch(:font, Game.instance.font_cache['uni0553.16'])
   end
 
   protected def initialize_content
     super
     @input_background = Moon::SkinSlice9.new
-    @input_background.windowskin = Moon::Spritesheet.new("resources/ui/console_windowskin_dark_16x16.png", 16, 16)
+    @input_background.windowskin = Moon::Spritesheet.new(Game.instance.textures["ui/console_windowskin_dark_16x16"], 16, 16)
 
-    @separator = Moon::SkinSlice3.new
-    @separator.windowskin = Moon::Spritesheet.new("resources/ui/line_96x1_ff777777.png", 32, 1)
+    #@separator = Moon::SkinSlice3.new
+    #@separator.windowskin = Moon::Spritesheet.new(Game.instance.textures["ui/line_96x1_ff777777"], 32, 1)
 
     @caret = Caret.new
 
@@ -119,32 +119,35 @@ class DebugShell < Moon::RenderContainer
     @contents = []
     @input_text = Moon::Label.new("", @font)
     @log_text = Moon::Label.new("", @font)
-    @log_text.line_h = 1
+    @log_text.line_height = 1.0
     @context = DebugContext.new
 
     @input_text.color = Moon::Vector4.new(1, 1, 1, 1)
     @log_text.color = Moon::Vector4.new(1, 1, 1, 1)
 
+    @absolute_height = 16 * 6
+
     on :resize do
-      @input_background.w = w
-      @input_background.h = h
-      @separator.w = w
-      @separator.h = 1
+      @input_background.resize!(self.w, @absolute_height)
+      if @separator
+        @separator.w = self.w
+        @separator.h = 1
+      end
 
       @log_text.position.set(4, -4, 0)
-      @input_text.position.set(4, h - @input_text.font.size - 8, 0)
-      @separator.position.set(0, @input_text.y, 0)
-      @caret.position.set(@input_text.x, @input_text.position.y + 2, 0)
+      @input_text.position.set(4, @absolute_height - @input_text.font.size - 8, 0)
+      @separator.position.set(0, @input_text.y, 0) if @separator
+      @caret.position.set(@input_text.x + @input_text.w + 4, @input_text.position.y + 2, 0)
     end
 
     add @input_background
-    add @separator
+    add @separator if @separator
     add @input_text
     add @log_text
     add @caret
 
     self.w = 400
-    self.h = 16 * 6
+    self.h = @absolute_height
 
     @text_comp = TextInput.new self
     register_input
@@ -156,7 +159,7 @@ class DebugShell < Moon::RenderContainer
 
   def string=(str)
     @input_text.string = str[0, @text_comp.index]
-    @caret.position.x = @input_text.x + @input_text.w + 4
+    @caret.position.set(@input_text.x + @input_text.w + 4, @caret.position.y, @caret.position.z)
     @input_text.string = str
     @input_text.color.set(1, 1, 1, 1)
   end
