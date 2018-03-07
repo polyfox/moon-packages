@@ -1,3 +1,5 @@
+require 'date'
+
 Gem::Specification.new do |s|
   s.name        = 'moon-packages'
   s.summary     = 'Moon Game Packages'
